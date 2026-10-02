@@ -33,6 +33,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* thanh trên */
 .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .top h1{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,5vw,2.1rem);line-height:1.1;margin:0;flex:1;min-width:0;text-wrap:balance;color:var(--card);text-shadow:0 3px 0 var(--t4d),0 6px 0 rgba(27,37,89,.25)}
+.top h1.full{flex:1 1 100%}
 .chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:3px solid var(--edge);border-radius:999px;padding:6px 14px;font-weight:700;min-height:48px}
 .chip .st{color:var(--sun);font-size:1.3rem;-webkit-text-stroke:1px var(--ink)}
 .round{width:52px;height:52px;border-radius:50%;background:var(--card);border:3px solid var(--edge);box-shadow:0 4px 0 var(--edge);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.4rem;padding:0}
@@ -104,6 +105,14 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
 .round.big{width:84px;height:84px;background:var(--sun);border-color:var(--card);box-shadow:0 5px 0 var(--t1d)}
 .round.big:active{box-shadow:0 1px 0 var(--t1d)}
 .round.big svg{width:42px;height:42px}
+
+.sec{font-family:var(--display);font-weight:800;font-size:1.35rem;line-height:1.1;margin:4px 0 -6px;color:var(--card);text-shadow:0 2px 0 var(--t4d)}
+.tile.reward{flex-direction:row;align-items:center;gap:14px;text-align:left;padding:16px 18px;width:100%}
+.tile.reward b{font-size:3.2rem}
+.rwText{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.rwText small{font-size:.95rem;font-weight:700}
+.bar{display:block;height:14px;border-radius:999px;background:var(--card);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;width:0;background:var(--leaf);border-radius:999px}
 
 /* quà */
 .goal{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -226,10 +235,12 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     </div>
   </section>
 
-  <!-- CHỌN MÔN HỌC -->
+  <!-- TRANG CHỦ -->
   <section id="subject" class="app" style="min-height:0" hidden>
     <div class="top">
-      <h1>Chọn môn học</h1>
+      <h1 class="full">Bé Vui Học Tập</h1>
+      <button class="chip" id="pfBtn" aria-label="Sửa hồ sơ của bé"></button>
+      <span class="chip" title="Tổng số sao"><span class="st">★</span><span class="totalv">0</span></span>
       <button class="round snd" id="soundBtn0" aria-label="Bật tắt nhạc"></button>
     </div>
     <div class="guide">
@@ -242,62 +253,20 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       </g></svg>
       <div class="bubble" id="subjBubble">Hôm nay con muốn học môn nào?</div>
     </div>
+    <h2 class="sec">Các môn học</h2>
     <div class="tiles subjects">
       <button class="tile t1" id="subjMath"><b>1 + 2</b><span>Toán</span><small>Đếm, cộng, trừ, so sánh</small></button>
       <button class="tile t4" id="subjEn"><b>A B C</b><span>Tiếng Anh</span><small>Từ vựng, ngữ pháp, truyện</small></button>
     </div>
-  </section>
-
-  <!-- MÀN HÌNH CHÍNH -->
-  <section id="home" class="app" style="min-height:0">
-    <div class="top">
-      <button class="round" id="subjBack" aria-label="Chọn môn học"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <h1 id="homeTitle">Toán</h1>
-      <button class="chip" id="pfBtn" aria-label="Sửa hồ sơ của bé"></button>
-      <span class="chip" title="Tổng số sao"><span class="st">★</span><span id="total">0</span></span>
-      <button class="round snd" id="soundBtn" aria-label="Bật tắt nhạc"></button>
-    </div>
-    <div class="guide">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><g class="sunface">
-        <g stroke="var(--sun)" stroke-width="7" stroke-linecap="round" fill="none"><path d="M50 4v10M50 86v10M4 50h10M86 50h10M17 17l7 7M76 76l7 7M83 17l-7 7M24 76l-7 7"/></g>
-        <circle cx="50" cy="50" r="30" fill="var(--sun)"/>
-        <circle cx="40" cy="45" r="4" fill="#1E2A52"/><circle cx="60" cy="45" r="4" fill="#1E2A52"/>
-        <path d="M38 57q12 12 24 0" stroke="#1E2A52" stroke-width="4" stroke-linecap="round" fill="none"/>
-        <circle cx="33" cy="55" r="4" fill="#FF9CC0"/><circle cx="67" cy="55" r="4" fill="#FF9CC0"/>
-      </g></svg>
-      <div class="bubble" id="homeBubble">Chào con! Hôm nay mình chơi trò gì nào?</div>
-    </div>
-    <div class="tiles" id="tiles"></div>
-    <div class="panel">
-      <h2>Phiếu bé ngoan và quà của con</h2>
-      <div class="goal" id="goal"></div>
-      <div class="shelf" id="shelf"></div>
-      <p class="hint" id="shelfHint"></p>
-      <div class="cta">
-        <button class="btn" id="claimBtn" hidden>Nhận quà</button>
-        <button class="btn" id="pickBtn">Chọn quà</button>
-      </div>
-      <div class="claim" id="claimBox" hidden>
-        <span id="claimText"></span>
-        <div class="cta">
-          <button class="btn" id="claimYes">Đã tặng</button>
-          <button class="btn alt" id="claimNo">Chưa</button>
-        </div>
-      </div>
-      <p class="hint" id="gotLine" hidden></p>
-    </div>
-    <div class="panel" id="rangePanel">
-      <h2>Dành cho bố mẹ · phạm vi số</h2>
-      <div class="seg" id="range">
-        <button data-max="5" aria-pressed="false">Đến 5</button>
-        <button data-max="10" aria-pressed="true">Đến 10</button>
-        <button data-max="20" aria-pressed="false">Đến 20</button>
-      </div>
-    </div>
+    <h2 class="sec">Điểm thưởng</h2>
+    <button class="tile t2 reward" id="rewardTile">
+      <b id="rwIcon">🎁</b>
+      <span class="rwText"><span>Phiếu bé ngoan và quà</span><small id="rwSum"></small><span class="bar"><i id="rwBar"></i></span></span>
+    </button>
     <div class="panel">
       <h2>Dành cho bố mẹ · đồng bộ tự động</h2>
       <div class="stack" id="syncOff">
-        <p class="hint">Bật đồng bộ để mọi thiết bị dùng chung một bộ hồ sơ, sao, hình dán và quà.</p>
+        <p class="hint">Bật đồng bộ để mọi thiết bị dùng chung một bộ hồ sơ, sao, phiếu bé ngoan và quà.</p>
         <div class="field">
           <label for="syncUrl">Địa chỉ cơ sở dữ liệu</label>
           <input id="syncUrl" type="url" autocomplete="off" spellcheck="false" value="https://be-vui-hoc-toan-61e34-default-rtdb.asia-southeast1.firebasedatabase.app" placeholder="https://ten-du-an-default-rtdb.firebaseio.com">
@@ -319,6 +288,76 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     </div>
   </section>
 
+  <!-- ĐIỂM THƯỞNG -->
+  <section id="rewards" class="app" style="min-height:0" hidden>
+    <div class="top">
+      <button class="round" id="rwBack" aria-label="Về trang chủ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h1>Điểm thưởng</h1>
+      <span class="chip" title="Tổng số sao"><span class="st">★</span><span class="totalv">0</span></span>
+    </div>
+    <div class="guide">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><g class="sunface">
+        <g stroke="var(--sun)" stroke-width="7" stroke-linecap="round" fill="none"><path d="M50 4v10M50 86v10M4 50h10M86 50h10M17 17l7 7M76 76l7 7M83 17l-7 7M24 76l-7 7"/></g>
+        <circle cx="50" cy="50" r="30" fill="var(--sun)"/>
+        <circle cx="40" cy="45" r="4" fill="#1E2A52"/><circle cx="60" cy="45" r="4" fill="#1E2A52"/>
+        <path d="M38 57q12 12 24 0" stroke="#1E2A52" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <circle cx="33" cy="55" r="4" fill="#FF9CC0"/><circle cx="67" cy="55" r="4" fill="#FF9CC0"/>
+      </g></svg>
+      <div class="bubble" id="rwBubble">Con thích món quà nào?</div>
+    </div>
+    <div class="panel">
+      <h2>Phiếu bé ngoan và quà của con</h2>
+      <div class="goal" id="goal"></div>
+      <div class="shelf" id="shelf"></div>
+      <p class="hint" id="shelfHint"></p>
+      <div class="cta">
+        <button class="btn" id="claimBtn" hidden>Nhận quà</button>
+        <button class="btn" id="pickBtn">Chọn quà</button>
+      </div>
+      <div class="claim" id="claimBox" hidden>
+        <span id="claimText"></span>
+        <div class="cta">
+          <button class="btn" id="claimYes">Đã tặng</button>
+          <button class="btn alt" id="claimNo">Chưa</button>
+        </div>
+      </div>
+      <p class="hint" id="gotLine" hidden></p>
+    </div>
+    <div class="panel">
+      <h2>Cách nhận phiếu bé ngoan</h2>
+      <p class="hint">Học Toán hay Tiếng Anh đều được cộng chung vào một chỗ. Mỗi lượt làm đúng ngay lần đầu từ 6 trên 10 câu, hoặc từ 3 trên 4 câu hỏi truyện, con được một phiếu bé ngoan.</p>
+    </div>
+  </section>
+
+  <!-- MÀN HÌNH CHÍNH -->
+  <section id="home" class="app" style="min-height:0">
+    <div class="top">
+      <button class="round" id="subjBack" aria-label="Chọn môn học"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h1 id="homeTitle">Toán</h1>
+      <span class="chip" title="Tổng số sao"><span class="st">★</span><span class="totalv">0</span></span>
+      <button class="round snd" id="soundBtn" aria-label="Bật tắt nhạc"></button>
+    </div>
+    <div class="guide">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><g class="sunface">
+        <g stroke="var(--sun)" stroke-width="7" stroke-linecap="round" fill="none"><path d="M50 4v10M50 86v10M4 50h10M86 50h10M17 17l7 7M76 76l7 7M83 17l-7 7M24 76l-7 7"/></g>
+        <circle cx="50" cy="50" r="30" fill="var(--sun)"/>
+        <circle cx="40" cy="45" r="4" fill="#1E2A52"/><circle cx="60" cy="45" r="4" fill="#1E2A52"/>
+        <path d="M38 57q12 12 24 0" stroke="#1E2A52" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <circle cx="33" cy="55" r="4" fill="#FF9CC0"/><circle cx="67" cy="55" r="4" fill="#FF9CC0"/>
+      </g></svg>
+      <div class="bubble" id="homeBubble">Chào con! Hôm nay mình chơi trò gì nào?</div>
+    </div>
+    <div class="tiles" id="tiles"></div>
+    <div class="panel" id="rangePanel">
+      <h2>Dành cho bố mẹ · phạm vi số</h2>
+      <div class="seg" id="range">
+        <button data-max="5" aria-pressed="false">Đến 5</button>
+        <button data-max="10" aria-pressed="true">Đến 10</button>
+        <button data-max="20" aria-pressed="false">Đến 20</button>
+      </div>
+    </div>
+  </section>
+
   <!-- CHỌN QUÀ -->
   <section id="gifts" class="app" style="min-height:0" hidden>
     <div class="top">
@@ -328,7 +367,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       <h1>Chọn quà</h1>
     </div>
     <div class="panel">
-      <h2>Đồ chơi · từ 10 hình dán</h2>
+      <h2>Đồ chơi · từ 10 phiếu bé ngoan</h2>
       <div class="gifts" id="toyGrid"></div>
     </div>
     <div class="panel">
@@ -340,7 +379,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       <div class="field"><label for="cgName">Tên món quà</label><input id="cgName" type="text" maxlength="24" autocomplete="off" placeholder="Ví dụ: Bộ lắp ráp"></div>
       <div class="two">
         <div class="field"><label for="cgType">Loại quà</label><select id="cgType"><option value="toy">Đồ chơi</option><option value="small">Quà nhỏ</option></select></div>
-        <div class="field"><label for="cgCost">Số hình dán</label><input id="cgCost" type="number" inputmode="numeric" min="1" max="60" value="10"></div>
+        <div class="field"><label for="cgCost">Số phiếu bé ngoan</label><input id="cgCost" type="number" inputmode="numeric" min="1" max="60" value="10"></div>
       </div>
       <p class="err" id="cgErr" hidden></p>
       <button class="btn alt" type="submit">Chọn quà này</button>
@@ -378,7 +417,8 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     <p class="hint" id="endNote"></p>
     <div class="cta">
       <button class="btn" id="againBtn">Chơi lại</button>
-      <button class="btn alt" id="homeBtn">Về nhà</button>
+      <button class="btn alt" id="homeBtn">Bài khác</button>
+      <button class="btn alt" id="giftBtn">Xem quà</button>
     </div>
   </section>
 </div>
@@ -713,7 +753,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     }
     $("#dots").innerHTML=h;
   }
-  function show(id){["welcome","subject","home","gifts","play","end"].forEach(function(x){$("#"+x).hidden=x!==id});window.scrollTo(0,0)}
+  function show(id){["welcome","subject","rewards","home","gifts","play","end"].forEach(function(x){$("#"+x).hidden=x!==id});window.scrollTo(0,0)}
 
   /* ---------- luồng chơi ---------- */
   function ask(){
@@ -760,12 +800,12 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     var h="";for(var i=0;i<st.len;i++)h+='<span class="'+(st.marks[i]?"on":"off")+'">★</span>';
     $("#bigstars").innerHTML=h;
     var note="Con được "+got+" trên "+st.len+" sao";
-    if(!earn)note+=". Được từ "+Math.ceil(st.len*.6)+" sao là có hình dán bé ngoan, con thử lại nhé!";
+    if(!earn)note+=". Được từ "+Math.ceil(st.len*.6)+" sao là có phiếu bé ngoan, con thử lại nhé!";
     else{
-      note+=" và một hình dán bé ngoan. ";
+      note+=" và một phiếu bé ngoan. ";
       if(!g)note+="Về nhà chọn món quà con thích nhé!";
-      else if(save.stickers>=g.c)note+="Con đã đủ hình dán để nhận "+g.n+"!";
-      else note+="Còn "+(g.c-save.stickers)+" hình dán nữa là đổi được "+g.n+".";
+      else if(save.stickers>=g.c)note+="Con đã đủ phiếu bé ngoan để nhận "+g.n+"!";
+      else note+="Còn "+(g.c-save.stickers)+" phiếu bé ngoan nữa là đổi được "+g.n+".";
     }
     $("#endNote").textContent=note;
     show("end");tone([523,659,784,1047],.14);
@@ -782,8 +822,10 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   }
 
   /* ---------- màn hình chính ---------- */
-  function home(){
-    $("#total").textContent=save.total;
+  function home(){paint();show("home")}
+  function rewards(){paint();show("rewards")}
+  function paint(){
+    document.querySelectorAll(".totalv").forEach(function(el){el.textContent=save.total});
     var p=save.profile,pb=$("#pfBtn");pb.innerHTML="";
     if(p){
       var a=ageOf(p),s1=document.createElement("span"),s2=document.createElement("span");
@@ -806,8 +848,8 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       });
     }
     goal.hidden=!g;
-    $("#shelfHint").textContent=!g?"Con đang có "+n+" hình dán. Chọn một món quà con thích để bắt đầu sưu tập.":
-      n>=g.c?"Con đã đủ hình dán rồi! Nhờ bố mẹ tặng quà nhé.":"Còn "+(g.c-n)+" hình dán nữa là đổi được quà. Mỗi lượt làm đúng phần lớn số câu là có một hình dán.";
+    $("#shelfHint").textContent=!g?"Con đang có "+n+" phiếu bé ngoan. Chọn một món quà con thích để bắt đầu sưu tập.":
+      n>=g.c?"Con đã đủ phiếu bé ngoan rồi! Nhờ bố mẹ tặng quà nhé.":"Còn "+(g.c-n)+" phiếu bé ngoan nữa là đổi được quà. Mỗi lượt làm đúng phần lớn số câu là có một phiếu bé ngoan.";
     $("#claimBtn").hidden=!(g&&n>=g.c);
     $("#pickBtn").textContent=g?"Đổi quà khác":"Chọn quà";
     $("#pickBtn").className=g?"btn alt":"btn";
@@ -817,7 +859,11 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     document.querySelectorAll("#range button").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.max===save.max))});
     $("#syncOff").hidden=!!save.sync;$("#syncOnBox").hidden=!save.sync;
     if(save.sync){$("#syncCode").value=location.origin+location.pathname+"#"+encSync(save.sync);$("#syncStatus").textContent=syncState||"Đồng bộ đang bật."}
-    soundIcon();show("home");
+    $("#rwIcon").textContent=g?g.e:"🎁";
+    $("#rwSum").textContent=g?Math.min(n,g.c)+" / "+g.c+" phiếu · "+g.n:n+" phiếu · Chọn món quà con thích";
+    $("#rwBar").style.width=(g?Math.min(100,Math.round(n/g.c*100)):0)+"%";
+    $("#rwBubble").textContent=!g?"Con thích món quà nào?":n>=g.c?"Con đủ phiếu rồi! Nhờ bố mẹ tặng quà nhé.":"Cố lên! Còn "+(g.c-n)+" phiếu nữa thôi.";
+    soundIcon();
   }
 
   /* ---------- quà ---------- */
@@ -828,7 +874,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     {e:"🍦",n:"Một que kem",c:3},{e:"📚",n:"Truyện tranh",c:5},{e:"🖍️",n:"Hộp bút màu",c:6},
     {e:"🎡",n:"Đi công viên",c:8},{e:"🍰",n:"Bánh ngọt",c:4},{e:"🏊",n:"Đi bơi",c:8}
   ];
-  function pickGift(g){save.gift={e:g.e,n:g.n,c:g.c};persist();tone([520,780,1040],.09);home()}
+  function pickGift(g){save.gift={e:g.e,n:g.n,c:g.c};persist();tone([520,780,1040],.09);rewards()}
   function giftScreen(){
     var cur=save.gift;
     [["#toyGrid",true],["#smallGrid",false]].forEach(function(x){
@@ -836,7 +882,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       GIFTS.filter(function(g){return !!g.toy===x[1]}).forEach(function(g){
         var b=document.createElement("button");b.className="gift";b.type="button";
         b.setAttribute("aria-pressed",String(!!cur&&cur.n===g.n&&cur.c===g.c));
-        [["ge",g.e],["gn",g.n],["gc",g.c+" hình dán"]].forEach(function(y){
+        [["ge",g.e],["gn",g.n],["gc",g.c+" phiếu"]].forEach(function(y){
           var el=document.createElement("span");el.className=y[0];el.textContent=y[1];b.appendChild(el);
         });
         b.addEventListener("click",function(){pickGift(g)});
@@ -846,24 +892,24 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     $("#cgErr").hidden=true;show("gifts");
   }
   $("#pickBtn").addEventListener("click",giftScreen);
-  $("#giftBack").addEventListener("click",home);
+  $("#giftBack").addEventListener("click",rewards);
   $("#cgForm").addEventListener("submit",function(ev){
     ev.preventDefault();
     var name=$("#cgName").value.trim(),cost=Math.floor(+$("#cgCost").value),toy=$("#cgType").value==="toy",err=$("#cgErr");
     if(!name){err.textContent="Bố mẹ nhập tên món quà nhé.";err.hidden=false;return}
-    if(!(cost>=1&&cost<=60)){err.textContent="Số hình dán cần từ 1 đến 60.";err.hidden=false;return}
-    if(toy&&cost<10){err.textContent="Đồ chơi cần ít nhất 10 hình dán.";err.hidden=false;return}
+    if(!(cost>=1&&cost<=60)){err.textContent="Số phiếu bé ngoan cần từ 1 đến 60.";err.hidden=false;return}
+    if(toy&&cost<10){err.textContent="Đồ chơi cần ít nhất 10 phiếu bé ngoan.";err.hidden=false;return}
     pickGift({e:"🎁",n:name,c:cost});
   });
   $("#claimBtn").addEventListener("click",function(){
-    $("#claimText").textContent="Bố mẹ xác nhận: đã tặng "+save.gift.n+" cho bé chưa? Bấm Đã tặng sẽ dùng "+save.gift.c+" hình dán.";
+    $("#claimText").textContent="Bố mẹ xác nhận: đã tặng "+save.gift.n+" cho bé chưa? Bấm Đã tặng sẽ dùng "+save.gift.c+" phiếu bé ngoan.";
     $("#claimBox").hidden=false;
   });
   $("#claimNo").addEventListener("click",function(){$("#claimBox").hidden=true});
   $("#claimYes").addEventListener("click",function(){
     var g=save.gift;if(!g||save.stickers<g.c)return;
     save.stickers-=g.c;save.got.push(g.e+" "+g.n);if(save.got.length>20)save.got.shift();
-    save.gift=null;persist();tone([523,659,784,1047],.14);confetti();home();
+    save.gift=null;persist();tone([523,659,784,1047],.14);confetti();rewards();
   });
 
   function soundIcon(){
@@ -894,6 +940,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     });
   }
   function subject(){
+    paint();
     var p=save.profile;
     $("#subjBubble").textContent=(p?"Chào "+p.name+"! ":"")+"Hôm nay con muốn học môn nào?";
     soundIcon();show("subject");
@@ -909,6 +956,9 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   $("#backBtn").addEventListener("click",home);
   $("#againBtn").addEventListener("click",function(){if(st.story)startStory(st.story);else startRound(st.mode)});
   $("#homeBtn").addEventListener("click",home);
+  $("#giftBtn").addEventListener("click",rewards);
+  $("#rewardTile").addEventListener("click",function(){tone([520,780],.08);rewards()});
+  $("#rwBack").addEventListener("click",subject);
 
   /* ---------- hồ sơ của bé ---------- */
   var AVS=["🐯","🐰","🐼","🦊","🐸","🦄"],pfAv=AVS[0];
@@ -1023,7 +1073,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
         setStatus("Đồng bộ đang bật. Đã kiểm tra máy chủ lúc "+hhmm()+".");
         if(o&&o.t>save.t){
           var r=clean(o.data);
-          if(r&&r.profile){apply(r,o.t);if(!$("#home").hidden)home()}
+          if(r&&r.profile){apply(r,o.t);paint()}
         }else if(!o||o.t<save.t)push();
       },function(){setStatus(OFFLINE)});
     }catch(e){setStatus(OFFLINE)}
@@ -1055,11 +1105,11 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       fetch(endpoint(y),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:t,data:snapshot()})}).then(function(r){
         if(!r.ok){fail("Máy chủ từ chối lưu. Bố mẹ kiểm tra lại phần Rules của Firebase.");return}
         save.sync=y;save.t=t;persist(true);btn.disabled=false;err.hidden=true;
-        syncState="Đồng bộ đang bật. Đã lưu lên máy chủ lúc "+hhmm()+".";home();
+        syncState="Đồng bộ đang bật. Đã lưu lên máy chủ lúc "+hhmm()+".";paint();
       },function(){fail("Chưa kết nối được máy chủ. Bố mẹ kiểm tra địa chỉ và kết nối mạng.")});
     }catch(e){fail("Chưa kết nối được máy chủ. Bố mẹ kiểm tra địa chỉ và kết nối mạng.")}
   });
-  $("#syncStop").addEventListener("click",function(){save.sync=null;syncState="";persist(true);home()});
+  $("#syncStop").addEventListener("click",function(){save.sync=null;syncState="";persist(true);paint()});
   $("#syncCopy").addEventListener("click",function(){
     var out=$("#syncCode");
     function manual(){out.focus();out.select();setStatus("Link đã được chọn. Bố mẹ bấm Sao chép trong menu.")}
