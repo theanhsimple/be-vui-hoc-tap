@@ -70,6 +70,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label,.field .lab{font-weight:700;font-size:1rem}
 .field input,.field select{font:inherit;font-size:1.15rem;font-weight:700;color:var(--ink);background:var(--card);border:3px solid var(--edge);border-radius:16px;min-height:54px;padding:8px 14px;width:100%;min-width:0}
+.field textarea{font:inherit;font-size:.9rem;color:var(--ink);background:var(--card);border:3px solid var(--edge);border-radius:16px;padding:10px 12px;width:100%;min-width:0;word-break:break-all;resize:vertical}
+.stack{display:flex;flex-direction:column;gap:10px}
 .dob{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:8px}
 .agebox{font-family:var(--display);font-weight:800;font-size:1.3rem;color:var(--pink);min-height:1.6em}
 .avs{display:flex;gap:10px;flex-wrap:wrap}
@@ -188,8 +190,17 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       </div>
       <p class="err" id="pfErr" hidden></p>
       <button class="btn" type="submit">Bắt đầu chơi</button>
-      <p class="hint">Hồ sơ chỉ lưu trên trình duyệt của thiết bị này.</p>
     </form>
+    <div class="panel">
+      <h2>Đã có hồ sơ trên thiết bị khác?</h2>
+      <div class="field">
+        <label for="xferIn">Dán link kết nối vào đây</label>
+        <textarea id="xferIn" rows="3" autocomplete="off" spellcheck="false"></textarea>
+      </div>
+      <p class="hint">Link kết nối nằm ở cuối màn hình chính trên thiết bị đã bật đồng bộ. Kết nối sẽ thay dữ liệu đang có trên thiết bị này.</p>
+      <p class="err" id="xferErr" hidden></p>
+      <div class="cta"><button class="btn alt" id="xferImport" type="button">Kết nối</button></div>
+    </div>
   </section>
 
   <!-- MÀN HÌNH CHÍNH -->
@@ -242,6 +253,29 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
         <button data-max="5" aria-pressed="false">Đến 5</button>
         <button data-max="10" aria-pressed="true">Đến 10</button>
         <button data-max="20" aria-pressed="false">Đến 20</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Dành cho bố mẹ · đồng bộ tự động</h2>
+      <div class="stack" id="syncOff">
+        <p class="hint">Bật đồng bộ để mọi thiết bị dùng chung một bộ hồ sơ, sao, hình dán và quà.</p>
+        <div class="field">
+          <label for="syncUrl">Địa chỉ cơ sở dữ liệu</label>
+          <input id="syncUrl" type="url" autocomplete="off" spellcheck="false" value="https://be-vui-hoc-toan-61e34-default-rtdb.asia-southeast1.firebasedatabase.app" placeholder="https://ten-du-an-default-rtdb.firebaseio.com">
+        </div>
+        <p class="err" id="syncErr" hidden></p>
+        <div class="cta"><button class="btn alt" id="syncOn" type="button">Bật đồng bộ</button></div>
+      </div>
+      <div class="stack" id="syncOnBox" hidden>
+        <p class="hint" id="syncStatus" aria-live="polite"></p>
+        <div class="field">
+          <label for="syncCode">Link kết nối cho thiết bị khác</label>
+          <textarea id="syncCode" rows="3" readonly></textarea>
+        </div>
+        <div class="cta">
+          <button class="btn alt" id="syncCopy" type="button">Sao chép link kết nối</button>
+          <button class="btn alt" id="syncStop" type="button">Tắt đồng bộ ở máy này</button>
+        </div>
       </div>
     </div>
   </section>
@@ -319,9 +353,9 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   var PRAISE=["Giỏi quá!","Đúng rồi!","Tuyệt vời!","Con làm tốt lắm!","Hoan hô!"];
   var TYPES=["count","add","sub","cmp","miss"];
 
-  var save={stickers:0,total:0,max:10,sound:true,profile:null,gift:null,got:[],seen:[]};
+  var save={stickers:0,total:0,max:10,sound:true,profile:null,gift:null,got:[],seen:[],sync:null,t:0};
   try{var s=JSON.parse(localStorage.getItem("bvht")||"null");if(s)for(var k in save)if(k in s)save[k]=s[k];}catch(e){}
-  function persist(){try{localStorage.setItem("bvht",JSON.stringify(save));}catch(e){}}
+  function persist(local){if(!local)save.t=Date.now();try{localStorage.setItem("bvht",JSON.stringify(save));}catch(e){}if(!local&&save.sync)schedulePush()}
 
   var st={mode:"count",i:0,marks:[],q:null,first:true,lock:false,plan:[],used:{}};
 
@@ -487,7 +521,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     var v=VARIANTS[mode],plan=[];
     while(plan.length<ROUND)plan=plan.concat(shuffle(v.slice()));
     st.plan=plan.slice(0,ROUND);st.used={};
-    st.mode=mode;st.i=0;st.marks=[];show("play");ask();
+    st.mode=mode;st.i=0;st.marks=[];show("play");ask();pull();
   }
   function choose(btn,val){
     if(st.lock)return;
@@ -563,6 +597,8 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     $("#gotLine").hidden=!save.got.length;
     $("#gotLine").textContent="Quà con đã nhận: "+save.got.join(", ");
     document.querySelectorAll("#range button").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.max===save.max))});
+    $("#syncOff").hidden=!!save.sync;$("#syncOnBox").hidden=!save.sync;
+    if(save.sync){$("#syncCode").value=location.origin+location.pathname+"#"+encSync(save.sync);$("#syncStatus").textContent=syncState||"Đồng bộ đang bật."}
     soundIcon();show("home");
   }
 
@@ -677,7 +713,119 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   });
   $("#pfBtn").addEventListener("click",welcome);
 
+  /* ---------- mã chuyển giữa các thiết bị ---------- */
+  function enc(o){return "BVHT1."+btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+  function intIn(v,lo,hi,d){v=Math.floor(+v);return v>=lo&&v<=hi?v:d}
+  function clean(o){
+    if(!o||typeof o!=="object")return null;
+    var p=o.profile,g=o.gift,r={stickers:intIn(o.stickers,0,9999,0),total:intIn(o.total,0,999999,0),max:[5,10,20].indexOf(+o.max)>=0?+o.max:10,sound:o.sound!==false,profile:null,gift:null,got:[]};
+    if(p&&typeof p.name==="string"&&p.name.trim()&&validDob(+p.d,+p.m,+p.y))r.profile={name:p.name.trim().slice(0,20),d:+p.d,m:+p.m,y:+p.y,avatar:AVS.indexOf(p.avatar)>=0?p.avatar:AVS[0]};
+    if(g&&typeof g.n==="string"&&g.n.trim())r.gift={e:String(g.e||"🎁").slice(0,8),n:g.n.trim().slice(0,24),c:intIn(g.c,1,60,10)};
+    if(Array.isArray(o.got))r.got=o.got.filter(function(x){return typeof x==="string"}).map(function(x){return x.slice(0,40)}).slice(-20);
+    return r;
+  }
+  function dec(code){
+    code=String(code).replace(/\s+/g,"");
+    if(code.indexOf("BVHT1.")!==0)return null;
+    var b=code.slice(6).replace(/-/g,"+").replace(/_/g,"/");while(b.length%4)b+="=";
+    try{return clean(JSON.parse(decodeURIComponent(escape(atob(b)))))}catch(e){return null}
+  }
+  $("#xferImport").addEventListener("click",function(){
+    var raw=$("#xferIn").value.replace(/\s+/g,""),err=$("#xferErr");
+    if(raw.indexOf("#")>=0)raw=raw.slice(raw.lastIndexOf("#")+1);
+    if(raw.indexOf("BVHTS1.")===0){connect(raw,err);return}
+    var r=dec(raw);
+    if(!r||!r.profile){err.textContent="Link chưa đúng. Bố mẹ sao chép lại toàn bộ link rồi dán lại nhé.";err.hidden=false;return}
+    for(var k in r)save[k]=r[k];
+    persist();err.hidden=true;$("#xferIn").value="";tone([520,780,1040],.09);home();
+  });
+
+  /* ---------- đồng bộ tự động qua Firebase Realtime Database ---------- */
+  var syncTimer=null,syncState="";
+  function b64e(t){return btoa(unescape(encodeURIComponent(t))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+  function b64d(b){b=b.replace(/-/g,"+").replace(/_/g,"/");while(b.length%4)b+="=";return decodeURIComponent(escape(atob(b)))}
+  function normUrl(u){
+    u=String(u).trim().replace(/\/+$/,"");
+    return /^https:\/\/[a-z0-9.-]+\.(firebaseio\.com|firebasedatabase\.app)$/i.test(u)?u:null;
+  }
+  function encSync(y){return "BVHTS1."+b64e(y.url+"|"+y.code)}
+  function decSync(c){
+    try{var a=b64d(String(c).replace(/\s+/g,"").slice(7)).split("|"),u=normUrl(a[0]);
+      return u&&/^[a-z0-9]{16,40}$/.test(a[1]||"")?{url:u,code:a[1]}:null}catch(e){return null}
+  }
+  function endpoint(y){return y.url+"/families/"+y.code+".json"}
+  function snapshot(){return {stickers:save.stickers,total:save.total,max:save.max,sound:save.sound,profile:save.profile,gift:save.gift,got:save.got}}
+  function hhmm(){var d=new Date();return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)}
+  function setStatus(t){syncState=t;$("#syncStatus").textContent=t}
+  var OFFLINE="Chưa kết nối được máy chủ. Trò chơi vẫn lưu trên máy này và sẽ thử lại sau.";
+  function push(keep){
+    clearTimeout(syncTimer);syncTimer=null;
+    if(!save.sync)return;
+    try{
+      fetch(endpoint(save.sync),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:save.t,data:snapshot()}),keepalive:!!keep})
+        .then(function(r){setStatus(r.ok?"Đồng bộ đang bật. Đã lưu lên máy chủ lúc "+hhmm()+".":"Máy chủ từ chối lưu. Bố mẹ kiểm tra phần Rules của Firebase.")},
+              function(){setStatus(OFFLINE)});
+    }catch(e){setStatus(OFFLINE)}
+  }
+  function schedulePush(){clearTimeout(syncTimer);syncTimer=setTimeout(push,400)}
+  function apply(r,t){for(var k in r)save[k]=r[k];save.t=t;persist(true)}
+  function pull(){
+    if(!save.sync)return;
+    try{
+      fetch(endpoint(save.sync)).then(function(r){return r.ok?r.json():Promise.reject()}).then(function(o){
+        setStatus("Đồng bộ đang bật. Đã kiểm tra máy chủ lúc "+hhmm()+".");
+        if(o&&o.t>save.t){
+          var r=clean(o.data);
+          if(r&&r.profile){apply(r,o.t);if(!$("#home").hidden)home()}
+        }else if(!o||o.t<save.t)push();
+      },function(){setStatus(OFFLINE)});
+    }catch(e){setStatus(OFFLINE)}
+  }
+  function connect(raw,err){
+    var y=decSync(raw);
+    function fail(t){err.textContent=t;err.hidden=false}
+    if(!y){fail("Link kết nối chưa đúng. Bố mẹ sao chép lại toàn bộ link rồi dán lại nhé.");return}
+    try{
+      fetch(endpoint(y)).then(function(r){return r.ok?r.json():Promise.reject()}).then(function(o){
+        var r=o&&clean(o.data);
+        if(!r||!r.profile){fail("Chưa tìm thấy hồ sơ nào với link này.");return}
+        save.sync=y;apply(r,o.t);err.hidden=true;$("#xferIn").value="";tone([520,780,1040],.09);home();
+      },function(){fail("Chưa kết nối được máy chủ. Thiết bị cần có mạng.")});
+    }catch(e){fail("Chưa kết nối được máy chủ. Thiết bị cần có mạng.")}
+  }
+  function newCode(){
+    var abc="abcdefghijklmnopqrstuvwxyz0123456789",a=new Uint8Array(20),out="",i;
+    try{crypto.getRandomValues(a)}catch(e){for(i=0;i<20;i++)a[i]=rand(0,255)}
+    for(i=0;i<20;i++)out+=abc[a[i]%abc.length];
+    return out;
+  }
+  $("#syncOn").addEventListener("click",function(){
+    var u=normUrl($("#syncUrl").value),err=$("#syncErr"),btn=this,y,t;
+    function fail(m){err.textContent=m;err.hidden=false;btn.disabled=false}
+    if(!u){fail("Địa chỉ chưa đúng. Địa chỉ có dạng https://…firebaseio.com hoặc https://…firebasedatabase.app.");return}
+    y={url:u,code:newCode()};t=Date.now();btn.disabled=true;
+    try{
+      fetch(endpoint(y),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:t,data:snapshot()})}).then(function(r){
+        if(!r.ok){fail("Máy chủ từ chối lưu. Bố mẹ kiểm tra lại phần Rules của Firebase.");return}
+        save.sync=y;save.t=t;persist(true);btn.disabled=false;err.hidden=true;
+        syncState="Đồng bộ đang bật. Đã lưu lên máy chủ lúc "+hhmm()+".";home();
+      },function(){fail("Chưa kết nối được máy chủ. Bố mẹ kiểm tra địa chỉ và kết nối mạng.")});
+    }catch(e){fail("Chưa kết nối được máy chủ. Bố mẹ kiểm tra địa chỉ và kết nối mạng.")}
+  });
+  $("#syncStop").addEventListener("click",function(){save.sync=null;syncState="";persist(true);home()});
+  $("#syncCopy").addEventListener("click",function(){
+    var out=$("#syncCode");
+    function manual(){out.focus();out.select();setStatus("Link đã được chọn. Bố mẹ bấm Sao chép trong menu.")}
+    try{navigator.clipboard.writeText(out.value).then(function(){setStatus("Đã sao chép link kết nối.")},manual)}catch(e){manual()}
+  });
+  document.addEventListener("visibilitychange",function(){if(document.hidden){if(syncTimer)push(true)}else pull()});
+
   if(save.profile)home();else welcome();
+  var hashCode=(location.hash||"").slice(1);
+  if(hashCode.indexOf("BVHTS1.")===0){
+    try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+    connect(hashCode,$("#xferErr"));
+  }else pull();
 })();
 </script>
 
