@@ -15,13 +15,14 @@
   --t1:#FFD21F; --t2:#FF6FA8; --t3:#4BD67B; --t4:#49AEFF; --t5:#B08CFF; --t6:#FF9233; --on-tile:#1B2559;
   --t1d:#D9A800; --t2d:#D83F7E; --t4d:#1E7FD8;
   --r1:#FF4D6D; --r2:#FF9233; --r3:#FFD21F; --r4:#3CCB5A; --r5:#4D8DFF; --r6:#B45CFF;
+  --scrim:rgba(27,37,89,.6);
   --display:"Baloo 2","Be Vietnam Pro",system-ui,sans-serif;
   --body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
-body{background:var(--sky2) linear-gradient(var(--sky1),var(--sky2) 75%) fixed;color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.45;padding-inline:16px;padding-block:14px 24px;position:relative;overflow-x:hidden}
+html,body{height:100%;overscroll-behavior-y:contain}
+body{background:var(--sky2) linear-gradient(var(--sky1),var(--sky2) 75%) fixed;color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.45;padding-inline:16px;padding-block:14px 24px;position:relative;overflow-x:hidden;touch-action:manipulation}
 body::before{content:"";position:fixed;left:50%;bottom:9vh;width:min(96vw,720px);aspect-ratio:2/1;transform:translateX(-50%);z-index:0;pointer-events:none;opacity:.8;
   background:radial-gradient(circle farthest-side at 50% 100%,transparent 0 70%,var(--r6) 70% 75%,var(--r5) 75% 80%,var(--r4) 80% 85%,var(--r3) 85% 90%,var(--r2) 90% 95%,var(--r1) 95% 100%,transparent 100%)}
 body::after{content:"";position:fixed;left:-10%;right:-10%;bottom:0;height:22vh;z-index:0;pointer-events:none;
@@ -189,6 +190,21 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
 .ans.ok small{color:var(--on-leaf)}
 .ans.no{opacity:.4;animation:shake .4s;box-shadow:none}
 
+.fb{align-self:center;margin:0;background:var(--card);border-radius:999px;padding:6px 18px;font-family:var(--display);font-weight:800;font-size:1.2rem;line-height:1.25;text-align:center;max-width:100%}
+.fb:empty{display:none}
+.fb.bad{color:var(--pink)}
+.cue{font-family:var(--display);font-weight:800;font-size:1.9rem;line-height:1;display:flex;align-items:center;gap:.3em;background:var(--sky);border-radius:999px;padding:6px 16px}
+.optgrp{font-size:clamp(1.15rem,5.4vw,1.7rem);line-height:1.2;display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
+.bubble.tap{cursor:pointer}
+.sheet{position:fixed;inset:0;z-index:10;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:16px}
+.sheet .panel{width:min(100%,380px);gap:16px}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;font-size:1.1rem}
+.setrow small{display:block;font-weight:500;font-size:.85rem;color:var(--muted)}
+.tog{flex:none;width:68px;height:38px;border-radius:999px;border:3px solid var(--edge);background:var(--sky);position:relative;padding:0}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--muted);transition:left .15s}
+.tog[aria-checked="true"]{background:var(--leaf);border-color:var(--leaf)}
+.tog[aria-checked="true"]::after{left:33px;background:var(--card)}
+
 /* kết thúc */
 .end{align-items:center;text-align:center;background:var(--card);border:4px solid var(--sun);border-radius:28px;padding:24px 16px}
 .end h2{font-family:var(--display);font-weight:800;font-size:clamp(2rem,8vw,3rem);line-height:1.1;margin:0;text-wrap:balance}
@@ -294,7 +310,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       <h1 class="full">Bé Vui Học Tập</h1>
       <button class="chip" id="pfBtn" aria-label="Đổi hồ sơ"></button>
       <span class="chip" title="Tổng số sao"><span class="st">★</span><span class="totalv">0</span></span>
-      <button class="round snd" id="soundBtn0" aria-label="Bật tắt nhạc"></button>
+      <button class="round snd" id="soundBtn0" aria-label="Cài đặt âm thanh"></button>
     </div>
     <div class="guide">
       <svg viewBox="0 0 100 100" aria-hidden="true"><g class="sunface">
@@ -388,7 +404,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       <button class="round" id="subjBack" aria-label="Chọn môn học"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h1 id="homeTitle">Toán</h1>
       <span class="chip" title="Tổng số sao"><span class="st">★</span><span class="totalv">0</span></span>
-      <button class="round snd" id="soundBtn" aria-label="Bật tắt nhạc"></button>
+      <button class="round snd" id="soundBtn" aria-label="Cài đặt âm thanh"></button>
     </div>
     <div class="guide">
       <svg viewBox="0 0 100 100" aria-hidden="true"><g class="sunface">
@@ -446,7 +462,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
       </button>
       <div class="dots" id="dots"></div>
-      <button class="round snd" id="sndBtn2" aria-label="Bật tắt nhạc"></button>
+      <button class="round snd" id="sndBtn2" aria-label="Cài đặt âm thanh"></button>
     </div>
     <div class="guide">
       <svg viewBox="0 0 100 100" aria-hidden="true"><g class="sunface">
@@ -456,9 +472,10 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
         <path d="M38 57q12 12 24 0" stroke="#1E2A52" stroke-width="4" stroke-linecap="round" fill="none"/>
         <circle cx="33" cy="55" r="4" fill="#FF9CC0"/><circle cx="67" cy="55" r="4" fill="#FF9CC0"/>
       </g></svg>
-      <div class="bubble" id="bubble" aria-live="polite"></div>
+      <div class="bubble tap" id="bubble" aria-live="polite"></div>
     </div>
     <div class="stage" id="stage"></div>
+    <p class="fb" id="fb" aria-live="polite"></p>
     <div class="answers" id="answers"></div>
   </section>
 
@@ -476,6 +493,15 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   </section>
 </div>
 
+<div class="sheet" id="setSheet" hidden>
+  <div class="panel" role="dialog" aria-labelledby="setTitle">
+    <h2 id="setTitle">Cài đặt âm thanh</h2>
+    <div class="setrow"><span>Nhạc nền<small>Giai điệu chạy suốt lúc chơi</small></span><button class="tog" id="setMusic" role="switch" aria-label="Nhạc nền"></button></div>
+    <div class="setrow"><span>Giọng đọc<small>Đọc câu hỏi, từ tiếng Anh và truyện</small></span><button class="tog" id="setVoice" role="switch" aria-label="Giọng đọc"></button></div>
+    <div class="setrow"><span>Tiếng báo đúng, sai<small>Tiếng chuông khi trả lời</small></span><button class="tog" id="setFx" role="switch" aria-label="Tiếng báo đúng, sai"></button></div>
+    <button class="btn" id="setDone" type="button">Xong</button>
+  </div>
+</div>
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)};
@@ -484,8 +510,8 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   var PRAISE=["Giỏi quá!","Đúng rồi!","Tuyệt vời!","Con làm tốt lắm!","Hoan hô!"];
   var TYPES=["count","add","sub","cmp","miss"];
 
-  var save={stickers:0,total:0,max:10,sound:true,profile:null,gift:null,got:[],seen:[],sync:null,t:0,kids:[],cur:null,gone:[]};
-  try{var s=JSON.parse(localStorage.getItem("bvht")||"null");if(s)for(var k in save)if(k in s)save[k]=s[k];}catch(e){}
+  var save={stickers:0,total:0,max:10,sound:true,music:true,voice:true,fx:true,profile:null,gift:null,got:[],seen:[],sync:null,t:0,kids:[],cur:null,gone:[]};
+  try{var s=JSON.parse(localStorage.getItem("bvht")||"null");if(s){for(var k in save)if(k in s)save[k]=s[k];if(s.sound===false&&!("music" in s)){save.music=false;save.voice=false;save.fx=false}}}catch(e){}
   var KF=["stickers","total","max","profile","gift","got","seen"];
   function kidById(id){for(var i=0;i<save.kids.length;i++)if(save.kids[i].id===id)return save.kids[i];return null}
   function stash(touch){var k=kidById(save.cur);if(!k)return;KF.forEach(function(f){k[f]=save[f]});if(touch)k.t=Date.now()}
@@ -531,7 +557,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     o.connect(g);g.connect(ctx.destination);o.start(t);o.stop(t+dur+.05);
   }
   function tone(freqs,dur){
-    if(!save.sound)return;
+    if(!save.fx)return;
     try{if(!ac())return;freqs.forEach(function(f,n){note(f,ctx.currentTime+n*dur,dur*1.5,.2,"triangle")})}catch(e){}
   }
   var MEL=[659,0,523,0,392,0,440,523, 587,0,523,0,440,0,392,0, 330,392,440,0,523,0,440,392, 330,0,294,330,392,0,0,0,
@@ -550,7 +576,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     }catch(e){}
   }
   function startMusic(){
-    if(!save.sound||music.timer||document.hidden)return;
+    if(!save.music||music.timer||document.hidden)return;
     try{if(!ac())return;music.next=ctx.currentTime+.06;sched();music.timer=setInterval(sched,100)}catch(e){}
   }
   function stopMusic(){if(music.timer){clearInterval(music.timer);music.timer=null}}
@@ -570,10 +596,10 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     count:["count","countMix"],
     add:["add","addMiss","bond","add"],
     sub:["sub","subMiss","sub"],
-    cmp:["cmp","max","min","cmp"],
+    cmp:["more","cmp","more"],
     miss:["seq","seqDown","before","after","skip2"]
   };
-  VARIANTS.mix=["count","countMix","add","addMiss","bond","sub","subMiss","cmp","max","min","seq","seqDown","before","after","skip2"];
+  VARIANTS.mix=["count","countMix","add","addMiss","bond","sub","subMiss","cmp","more","seq","seqDown","before","after","more"];
   function mixed(a,ea,b,eb){
     var arr=[],n=a+b,i;
     for(i=0;i<a;i++)arr.push(ea);for(i=0;i<b;i++)arr.push(eb);shuffle(arr);
@@ -590,7 +616,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     }else if(type==="countMix"){
       var u;do{u=THINGS[rand(0,THINGS.length-1)]}while(u===t);
       a=rand(1,Math.min(max,9));b=rand(1,Math.min(max,5));
-      q.key="cm"+a+"-"+b;q.text="Có bao nhiêu "+t[1]+"?";q.html=mixed(a,e,b,u[0]);num(a);
+      q.key="cm"+a+"-"+b;q.text="Có bao nhiêu "+t[1]+"?";q.html='<div class="cue"><span>'+e+"</span><span>= ?</span></div>"+mixed(a,e,b,u[0]);num(a);
     }else if(type==="add"){
       a=rand(1,max-1);b=rand(1,max-a);q.key="a"+a+"+"+b;q.text=a+" cộng "+b+" bằng mấy?";
       q.html='<div class="row">'+group(a,e)+'<span class="op">+</span>'+group(b,e)+"</div>"+eq([a,"+",b,"=","?"]);num(a+b);
@@ -611,6 +637,11 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       q.ans=a>b?">":a<b?"<":"=";q.text=a+" lớn hơn, bé hơn, hay bằng "+b+"?";
       q.html='<div class="row">'+group(a,e)+'<span class="op">?</span>'+group(b,e)+"</div>"+eq([a,"?",b]);
       q.opts=[{label:">",value:">",sub:"lớn hơn"},{label:"<",value:"<",sub:"bé hơn"},{label:"=",value:"=",sub:"bằng nhau"}];
+    }else if(type==="more"){
+      a=rand(1,Math.min(max,10));do{b=rand(1,Math.min(max,10))}while(b===a);
+      q.key="mo"+a+"-"+b;q.text="Bên nào nhiều hơn?";q.layout="two";q.ans=String(Math.max(a,b));
+      q.html='<div class="sent">Bên nào nhiều hơn?</div>';
+      q.opts=[a,b].map(function(n){var h="";for(i=0;i<n;i++)h+="<span>"+e+"</span>";return {html:'<span class="optgrp">'+h+"</span>",value:String(n),aria:n+" hình"}});
     }else if(type==="max"||type==="min"){
       arr=[];for(i=1;i<=max;i++)arr.push(i);arr=shuffle(arr).slice(0,3);
       q.ans=Math[type].apply(null,arr);q.key=type+arr.slice().sort(function(x,y){return x-y}).join(",");
@@ -779,7 +810,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     {k:"food2",lv:3,icon:"🥪",en:"More food",vi:"Thêm đồ ăn",w:[["cheese","🧀","phô mai"],["soup","🍲","súp"],["salad","🥗","sa lát"],["sandwich","🥪","bánh mì kẹp"],["pasta","🍝","mì Ý"],["pancake","🥞","bánh kếp"],["honey","🍯","mật ong"],["cookie","🍪","bánh quy"],["strawberry","🍓","dâu tây"],["mushroom","🍄","nấm"],["corn","🌽","ngô"],["salt","🧂","muối"],["pizza","🍕","bánh pizza"],["popcorn","🍿","bỏng ngô"],["tea","🍵","trà"],["coffee","☕","cà phê"]]}
   ];
   function enTopics(){var lv=enLv();return EN.filter(function(t){return (t.lv||1)<=lv}).sort(function(a,b){return (b.lv||1)-(a.lv||1)})}
-  function enTypes(){return {1:["w2p","p2w","listen","letter","w2p","p2w"],2:["p2w","listen","spell","gap","w2p","listen2w"],3:["spell","gap","listen2w","vi2en","p2w","spell"]}[enLv()]}
+  function enTypes(){if(curGrade()===0)return ["listen","w2p","listen","w2p"];return {1:["w2p","p2w","listen","letter","w2p","p2w"],2:["p2w","listen","spell","gap","w2p","listen2w"],3:["spell","gap","listen2w","vi2en","p2w","spell"]}[enLv()]}
 
   /* ---------- tiếng Anh: ngữ pháp ---------- */
   var NUMW=["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve"];
@@ -903,31 +934,31 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   /* ---------- tiếng Anh: truyện ---------- */
   var STORIES=[
     {t:"The Red Kite",vi:"Chiếc diều đỏ",icon:"🪁",p:[["🪁","Tom has a red kite.","Tom có một chiếc diều màu đỏ."],["🌬️","It is a windy day.","Hôm nay trời nhiều gió."],["🏃","Tom runs in the park.","Tom chạy trong công viên."],["☁️","The kite flies up to the clouds.","Chiếc diều bay lên tận mây."],["🌳","Oh no! The kite is in a tree.","Ôi không! Diều mắc trên cây."],["👨","Dad helps Tom. Tom is happy.","Bố giúp Tom. Tom rất vui."]],
-     q:[["What colour is the kite?","red","blue","green"],["Where does Tom run?","in the park","in the house","at school"],["Where is the kite?","in a tree","in the sea","in a bag"],["Who helps Tom?","Dad","a cat","a bird"]]},
+     q:[["What colour is the kite?","red","blue","green",["#E53935","#1E88E5","#43A047"]],["Where does Tom run?","in the park","in the house","at school",["🏞️","🏠","🏫"]],["Where is the kite?","in a tree","in the sea","in a bag",["🌳","🌊","🎒"]],["Who helps Tom?","Dad","a cat","a bird",["👨","🐱","🐦"]]]},
     {t:"My Cat Mimi",vi:"Bạn mèo Mimi",icon:"🐱",p:[["🐱","I have a cat. Her name is Mimi.","Mình có một bạn mèo. Tên bạn ấy là Mimi."],["🤍","Mimi is white and small.","Mimi màu trắng và nhỏ xíu."],["🥛","She likes milk.","Bạn ấy thích sữa."],["⚽","She plays with a ball.","Bạn ấy chơi với quả bóng."],["🛏️","At night, Mimi sleeps on my bed.","Buổi tối, Mimi ngủ trên giường của mình."],["❤️","I love my cat.","Mình yêu bạn mèo của mình."]],
-     q:[["What is the cat's name?","Mimi","Lulu","Tom"],["What colour is Mimi?","white","black","brown"],["What does Mimi like?","milk","cake","rice"],["Where does Mimi sleep?","on my bed","in a tree","in the car"]]},
+     q:[["What is the cat's name?","Mimi","Lulu","Tom"],["What colour is Mimi?","white","black","brown",["#FFFFFF","#111111","#795548"]],["What does Mimi like?","milk","cake","rice",["🥛","🍰","🍚"]],["Where does Mimi sleep?","on my bed","in a tree","in the car",["🛏️","🌳","🚗"]]]},
     {t:"The Hungry Frog",vi:"Chú ếch đói bụng",icon:"🐸",p:[["🐸","A green frog sits by the pond.","Một chú ếch xanh ngồi bên ao."],["😋","The frog is hungry.","Chú ếch đang đói."],["🐝","He sees a bee.","Chú nhìn thấy một con ong."],["💨","Jump! The bee flies away.","Nhảy! Con ong bay mất."],["🍎","Then he sees a red apple.","Rồi chú thấy một quả táo đỏ."],["😊","He eats the apple. Yum!","Chú ăn quả táo. Ngon quá!"]],
-     q:[["What colour is the frog?","green","red","yellow"],["How is the frog?","hungry","sad","tired"],["What flies away?","the bee","the apple","the frog"],["What does the frog eat?","an apple","a banana","a cake"]]},
+     q:[["What colour is the frog?","green","red","yellow",["#43A047","#E53935","#FDD835"]],["How is the frog?","hungry","sad","tired",["😋","😢","😴"]],["What flies away?","the bee","the apple","the frog",["🐝","🍎","🐸"]],["What does the frog eat?","an apple","a banana","a cake",["🍎","🍌","🍰"]]]},
     {t:"A Day at the Beach",vi:"Một ngày ở bãi biển",icon:"🏖️",p:[["☀️","It is a sunny day.","Hôm nay trời nắng."],["🚗","Anna and Ben go to the beach by car.","Anna và Ben đi biển bằng ô tô."],["🏖️","They play in the sand.","Hai bạn chơi trên cát."],["🌊","They swim in the sea.","Hai bạn bơi ở biển."],["🍦","Mum gives them ice cream.","Mẹ cho hai bạn kem."],["😴","Now they are tired, but happy.","Giờ hai bạn mệt, nhưng rất vui."]],
-     q:[["How is the weather?","sunny","rainy","snowy"],["How do they go to the beach?","by car","by bus","by plane"],["Where do they swim?","in the sea","in the park","in the bath"],["What does Mum give them?","ice cream","apples","books"]]},
+     q:[["How is the weather?","sunny","rainy","snowy",["☀️","🌧️","❄️"]],["How do they go to the beach?","by car","by bus","by plane",["🚗","🚌","✈️"]],["Where do they swim?","in the sea","in the park","in the bath",["🌊","🏞️","🛁"]],["What does Mum give them?","ice cream","apples","books",["🍦","🍎","📚"]]]},
     {t:"Three Little Ducks",vi:"Ba chú vịt con",icon:"🦆",p:[["🦆","Three little ducks go for a walk.","Ba chú vịt con đi dạo."],["🌧️","It starts to rain.","Trời bắt đầu mưa."],["💦","The ducks love the rain. Splash, splash!","Các chú vịt thích mưa. Bì bõm, bì bõm!"],["🐔","A chicken runs to her house.","Một cô gà chạy về nhà."],["🌈","Then the sun comes out. Look, a rainbow!","Rồi mặt trời ló ra. Nhìn kìa, cầu vồng!"],["🏠","The ducks go home to Mummy Duck.","Các chú vịt về nhà với vịt mẹ."]],
-     q:[["How many ducks are there?","three","two","five"],["What do the ducks love?","the rain","the snow","the wind"],["Who runs to her house?","a chicken","a cow","a dog"],["What do they see in the sky?","a rainbow","a plane","a kite"]]},
+     q:[["How many ducks are there?","three","two","five",["3","2","5"]],["What do the ducks love?","the rain","the snow","the wind",["🌧️","❄️","🌬️"]],["Who runs to her house?","a chicken","a cow","a dog",["🐔","🐮","🐶"]],["What do they see in the sky?","a rainbow","a plane","a kite",["🌈","✈️","🪁"]]]},
     {t:"Lily's Birthday",vi:"Sinh nhật của Lily",icon:"🎂",p:[["🎂","Today is Lily's birthday. She is six.","Hôm nay là sinh nhật Lily. Bạn ấy sáu tuổi."],["🎈","There are ten balloons in the room.","Trong phòng có mười quả bóng bay."],["👧","Her friends come to the party.","Các bạn của Lily đến dự tiệc."],["🍰","They eat a big cake.","Các bạn ăn một chiếc bánh to."],["🎁","Lily opens a present. It is a robot!","Lily mở quà. Đó là một chú rô bốt!"],["😄","“Thank you!” says Lily.","“Cảm ơn!” Lily nói."]],
-     q:[["How old is Lily?","six","five","seven"],["How many balloons are there?","ten","two","eight"],["What do they eat?","a cake","a pizza","an egg"],["What is the present?","a robot","a doll","a bike"]]}
+     q:[["How old is Lily?","six","five","seven",["6","5","7"]],["How many balloons are there?","ten","two","eight",["10","2","8"]],["What do they eat?","a cake","a pizza","an egg",["🍰","🍕","🥚"]],["What is the present?","a robot","a doll","a bike",["🤖","🎎","🚲"]]]}
   ];
   var TALES=[
     {t:"Cinderella",vi:"Cô bé Lọ Lem",icon:"👠",p:[["🧹","Cinderella is a kind girl. She works all day.","Lọ Lem là một cô gái tốt bụng. Cô làm việc cả ngày."],["🧚","A fairy helps her. Now she has a beautiful dress.","Một bà tiên giúp cô. Giờ cô có một chiếc váy thật đẹp."],["💃","She goes to the party and dances with the prince.","Cô đến dự tiệc và nhảy với hoàng tử."],["🕛","At twelve o'clock, she runs home.","Đúng mười hai giờ, cô chạy về nhà."],["👠","She loses one shoe on the stairs.","Cô đánh rơi một chiếc giày trên cầu thang."],["🤴","The prince finds her. The shoe is hers!","Hoàng tử tìm thấy cô. Chiếc giày là của cô!"]],
-     q:[["Who helps Cinderella?","a fairy","a cat","a king"],["Who does she dance with?","the prince","the fairy","her sister"],["When does she run home?","at twelve o'clock","at six o'clock","at ten o'clock"],["What does she lose?","a shoe","a hat","a bag"]]},
+     q:[["Who helps Cinderella?","a fairy","a cat","a king",["🧚","🐱","👑"]],["Who does she dance with?","the prince","the fairy","her sister",["🤴","🧚","👧"]],["When does she run home?","at twelve o'clock","at six o'clock","at ten o'clock",["🕛","🕕","🕙"]],["What does she lose?","a shoe","a hat","a bag",["👠","👒","👜"]]]},
     {t:"Snow White",vi:"Nàng Bạch Tuyết",icon:"🍎",p:[["👸","Snow White is a kind princess.","Bạch Tuyết là một nàng công chúa tốt bụng."],["🌲","She runs away into the forest.","Nàng chạy trốn vào rừng."],["🏡","She finds a small house. Seven dwarfs live there.","Nàng tìm thấy một ngôi nhà nhỏ. Bảy chú lùn sống ở đó."],["🍎","The bad queen gives her a red apple.","Bà hoàng hậu độc ác đưa cho nàng một quả táo đỏ."],["😴","Snow White eats the apple and falls asleep.","Bạch Tuyết ăn quả táo và ngủ thiếp đi."],["🤴","A prince comes. She wakes up and smiles.","Một hoàng tử đến. Nàng tỉnh dậy và mỉm cười."]],
-     q:[["Where does Snow White run?","into the forest","to the sea","to school"],["How many dwarfs are there?","seven","three","ten"],["What does the queen give her?","an apple","a cake","a flower"],["Who comes at the end?","a prince","a dog","a queen"]]},
+     q:[["Where does Snow White run?","into the forest","to the sea","to school",["🌲","🌊","🏫"]],["How many dwarfs are there?","seven","three","ten",["7","3","10"]],["What does the queen give her?","an apple","a cake","a flower",["🍎","🍰","🌸"]],["Who comes at the end?","a prince","a dog","a queen",["🤴","🐶","👸"]]]},
     {t:"The Little Mermaid",vi:"Nàng tiên cá",icon:"🌊",p:[["🌊","A little mermaid lives in the sea.","Một nàng tiên cá nhỏ sống dưới biển."],["🐟","She has a tail like a fish.","Nàng có chiếc đuôi như đuôi cá."],["🚢","One day, she sees a prince on a ship.","Một ngày, nàng thấy một hoàng tử trên con tàu."],["⛈️","There is a big storm. She helps the prince.","Có một cơn bão lớn. Nàng cứu hoàng tử."],["🦵","She wants legs. She wants to walk on the land.","Nàng muốn có đôi chân. Nàng muốn đi trên mặt đất."],["💃","Now she has two legs. She can walk and dance!","Giờ nàng có hai chân. Nàng có thể đi và nhảy múa!"]],
-     q:[["Where does the mermaid live?","in the sea","in a tree","in a house"],["Who is on the ship?","a prince","a king","a cat"],["Who helps the prince?","the mermaid","a fish","a bird"],["What does she want?","legs","a hat","a boat"]]},
+     q:[["Where does the mermaid live?","in the sea","in a tree","in a house",["🌊","🌳","🏠"]],["Who is on the ship?","a prince","a king","a cat",["🤴","👑","🐱"]],["Who helps the prince?","the mermaid","a fish","a bird",["🧜","🐟","🐦"]],["What does she want?","legs","a hat","a boat",["🦵","👒","⛵"]]]},
     {t:"Pinocchio",vi:"Cậu bé người gỗ",icon:"🤥",p:[["🔨","An old man makes a boy from wood.","Một ông lão làm ra một cậu bé bằng gỗ."],["👦","His name is Pinocchio. He can walk and talk!","Tên cậu là Pinocchio. Cậu biết đi và biết nói!"],["🏫","He does not go to school. That is bad.","Cậu không đi học. Thế là không ngoan."],["🤥","He tells a lie, and his nose grows long.","Cậu nói dối, và mũi cậu dài ra."],["🐳","A big fish eats him. He finds his father there.","Một con cá lớn nuốt cậu. Cậu tìm thấy cha ở trong đó."],["❤️","He is brave and good. Now he is a real boy.","Cậu dũng cảm và ngoan. Giờ cậu là một cậu bé thật."]],
-     q:[["What is Pinocchio made from?","wood","paper","bread"],["What grows long?","his nose","his ear","his leg"],["Who does he find in the fish?","his father","his dog","a king"],["What is he at the end?","a real boy","a fish","a toy"]]},
+     q:[["What is Pinocchio made from?","wood","paper","bread"],["What grows long?","his nose","his ear","his leg",["👃","👂","🦵"]],["Who does he find in the fish?","his father","his dog","a king",["👴","🐶","👑"]],["What is he at the end?","a real boy","a fish","a toy",["👦","🐟","🧸"]]]},
     {t:"The Three Little Pigs",vi:"Ba chú heo con",icon:"🐷",p:[["🐷","Three little pigs want new houses.","Ba chú heo con muốn có nhà mới."],["🌾","Pig one makes a house of straw.","Heo thứ nhất làm nhà bằng rơm."],["🌳","Pig two makes a house of wood.","Heo thứ hai làm nhà bằng gỗ."],["🧱","Pig three makes a house of bricks.","Heo thứ ba làm nhà bằng gạch."],["🐺","A big bad wolf blows down two houses.","Một con sói to và xấu tính thổi đổ hai ngôi nhà."],["🏠","The brick house is strong. The pigs are safe!","Nhà gạch rất chắc. Ba chú heo được an toàn!"]],
-     q:[["How many pigs are there?","three","two","four"],["What is house one made of?","straw","bricks","wood"],["Who blows down the houses?","a wolf","a bear","a cow"],["Which house is strong?","the brick house","the straw house","the wood house"]]},
+     q:[["How many pigs are there?","three","two","four",["3","2","4"]],["What is house one made of?","straw","bricks","wood",["🌾","🧱","🌳"]],["Who blows down the houses?","a wolf","a bear","a cow",["🐺","🐻","🐮"]],["Which house is strong?","the brick house","the straw house","the wood house",["🧱","🌾","🌳"]]]},
     {t:"Aladdin",vi:"Aladdin và cây đèn thần",icon:"🧞",p:[["👦","Aladdin is a poor boy.","Aladdin là một cậu bé nghèo."],["⛰️","He goes into a dark cave.","Cậu đi vào một cái hang tối."],["💡","He finds an old lamp.","Cậu tìm thấy một cây đèn cũ."],["🧞","He rubs the lamp. A genie comes out!","Cậu chà cây đèn. Một vị thần đèn hiện ra!"],["✨","The genie gives him three wishes.","Thần đèn cho cậu ba điều ước."],["👸","Aladdin meets a princess. They are happy.","Aladdin gặp một nàng công chúa. Họ sống hạnh phúc."]],
-     q:[["Where does Aladdin go?","into a cave","to the beach","to a farm"],["What does he find?","a lamp","a ball","a book"],["What comes out of the lamp?","a genie","a frog","a bird"],["How many wishes are there?","three","one","ten"]]}
+     q:[["Where does Aladdin go?","into a cave","to the beach","to a farm",["⛰️","🏖️","🚜"]],["What does he find?","a lamp","a ball","a book",["💡","⚽","📖"]],["What comes out of the lamp?","a genie","a frog","a bird",["🧞","🐸","🐦"]],["How many wishes are there?","three","one","ten",["3","1","10"]]]}
   ];
   var NEXT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
   function startStory(sty){
@@ -940,6 +971,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     $("#dots").innerHTML=h;
     $("#bubble").textContent=sty.t+" · "+sty.vi;
     $("#stage").innerHTML=big(pg[0])+'<div class="sent">'+pg[1]+'</div><p class="vi">'+pg[2]+"</p>";
+    $("#fb").textContent="";saveRun();
     var box=$("#answers");box.className="answers two";box.innerHTML="";
     [[SPK,"Nghe lại",function(){say(pg[1])}],
      [NEXT,last?"Trả lời câu hỏi":"Trang sau",function(){tone([520,780],.08);if(last)quiz();else{st.page++;page()}}]].forEach(function(x,n){
@@ -948,34 +980,42 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     });
     say(pg[1]);
   }
-  function quiz(){st.reading=false;st.len=st.story.q.length;st.i=0;st.marks=[];ask()}
+  function sq(){var q=st.story.q;return curGrade()===0?q.filter(function(x){return x[4]}):q}
+  function quiz(){st.reading=false;st.len=sq().length;st.i=0;st.marks=[];ask()}
   function storyQ(i){
-    var x=st.story.q[i];
-    return {key:"",text:"Nghe câu hỏi rồi chọn câu trả lời.",word:x[0],sayAns:x[1],speak:true,ans:x[1],wait:2000,layout:"stack",
+    var x=sq()[i],g0=curGrade()===0&&x[4];
+    return {key:"",text:"Nghe câu hỏi rồi chọn câu trả lời.",word:x[0],sayAns:x[1],speak:true,ans:x[1],wait:2000,layout:g0?"":"stack",
       html:'<div class="sent">'+x[0]+'</div><button class="round big say" type="button" aria-label="Nghe lại">'+SPK+"</button>",
-      opts:shuffle(x.slice(1)).map(function(v){return {label:v,value:v,cls:"word"}})};
+      opts:shuffle([1,2,3]).map(function(k,n){return g0?{html:'<span class="optpic">'+pic(x[4][k-1])+"</span>",value:x[k],aria:"Hình "+(n+1)}:{label:x[k],value:x[k],cls:"word"}})};
   }
 
   var EN_TYPES=["w2p","p2w","listen","letter","w2p","p2w"];
   var SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 9a4 4 0 010 6M19.5 6.5a8 8 0 010 11"/></svg>';
-  var enV=null,canSpeak=false;
+  var enV=null,viV=null,canSpeak=false;
   try{canSpeak="speechSynthesis" in window&&typeof SpeechSynthesisUtterance==="function"}catch(e){}
   function loadVoice(){
     try{
       var v=speechSynthesis.getVoices(),us=v.filter(function(x){return /^en[-_]US/i.test(x.lang)});
       enV=us.filter(function(x){return /Samantha|Ava|Allison|Google US English|Jenny|Aria|Zira/i.test(x.name)})[0]||us[0]||v.filter(function(x){return /^en/i.test(x.lang)})[0]||null;
+      viV=v.filter(function(x){return /^vi/i.test(x.lang)})[0]||null;
     }catch(e){}
   }
   loadVoice();try{speechSynthesis.onvoiceschanged=loadVoice}catch(e){}
-  function say(w){
-    if(!save.sound||!canSpeak)return;
+  function speak(parts){
+    if(!save.voice||!canSpeak||!parts||!parts.length)return;
     try{
-      if(!enV)loadVoice();
+      if(!enV&&!viV)loadVoice();
       speechSynthesis.cancel();
-      var u=new SpeechSynthesisUtterance(w);u.lang="en-US";if(enV){u.voice=enV;u.lang=enV.lang}u.rate=.82;
-      speechSynthesis.speak(u);
+      parts.forEach(function(p){
+        var vi=p[1]==="vi";if(vi&&!viV)return;
+        var u=new SpeechSynthesisUtterance(p[0]);
+        if(vi){u.voice=viV;u.lang=viV.lang;u.rate=.95}
+        else{u.lang="en-US";if(enV){u.voice=enV;u.lang=enV.lang}u.rate=.82}
+        speechSynthesis.speak(u);
+      });
     }catch(e){}
   }
+  function say(w){speak([[w,"en"]])}
   function pic(v){return v.charAt(0)==="#"?'<span class="sw" style="background:'+v+'"></span>':/^\d+$/.test(v)?'<span class="dg">'+v+"</span>":"<span>"+v+"</span>"}
   function misspell(w){
     var out=[],tries=0,L="aeiou",a,i,k,v,t;
@@ -998,7 +1038,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     var list=enTopics(),t=topic==="mix"?one(list):EN.filter(function(x){return x.k===topic})[0];
     var pool=shuffle(t.w.slice()),w=pool[0],three=[w,pool[1],pool[2]],i,ch,abc;
     var ABC="abcdefghijklmnopqrstuvwxyz".split("");
-    if((type==="listen"||type==="listen2w")&&(!save.sound||!canSpeak))type=type==="listen"?"w2p":"p2w";
+    if((type==="listen"||type==="listen2w")&&(!save.voice||!canSpeak))type=type==="listen"?"w2p":"p2w";
     var q={word:w[0],key:"en:"+type+":"+w[0],ans:w[0],after:w[0]+" là "+w[2]+"."};
     var sayBtn='<button class="round big say" type="button" aria-label="Nghe lại">'+SPK+"</button>";
     var eqc='<div class="eq'+(w[0].length>8?" sm":"")+'">';
@@ -1053,7 +1093,11 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       box.appendChild(b);
     });
     $("#bubble").textContent=q.text;
-    if(q.speak)say(q.pre||q.word);
+    $("#fb").textContent="";$("#fb").className="fb";
+    q.parts=[];
+    if(curGrade()===0&&q.text&&!q.noVi)q.parts.push([q.text,"vi"]);
+    if(q.speak)q.parts.push([q.pre||q.word,"en"]);
+    speak(q.parts);
   }
   function dots(){
     var h="";
@@ -1063,7 +1107,38 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     }
     $("#dots").innerHTML=h;
   }
-  function show(id){["welcome","who","subject","rewards","home","gifts","play","end"].forEach(function(x){$("#"+x).hidden=x!==id});window.scrollTo(0,0)}
+  function show(id){["welcome","who","subject","rewards","home","gifts","play","end"].forEach(function(x){$("#"+x).hidden=x!==id});if(id!=="play")clearRun();window.scrollTo(0,0)}
+  function saveRun(){
+    try{localStorage.setItem("bvht_run",JSON.stringify({cur:save.cur,ts:Date.now(),subject:st.subject,enView:st.enView,kind:st.kind,mode:st.mode,mtypes:st.mtypes||null,len:st.len,i:st.i,marks:st.marks,plan:st.plan,story:st.story?st.story.t:null,reading:st.reading,page:st.page}))}catch(e){}
+  }
+  function clearRun(){try{localStorage.removeItem("bvht_run")}catch(e){}}
+  function resume(){
+    var r=null;try{r=JSON.parse(localStorage.getItem("bvht_run")||"null")}catch(e){}
+    if(!r||!(Date.now()-r.ts<30*60000)||!kidById(r.cur)||!Array.isArray(r.marks))return false;
+    var sty=null;
+    if(r.story){STORIES.concat(TALES).forEach(function(x){if(x.t===r.story)sty=x});if(!sty)return false}
+    else if(!Array.isArray(r.plan)||!r.plan.length)return false;
+    loadKid(r.cur);
+    st.subject=r.subject==="en"?"en":"math";st.enView=r.enView||"menu";st.kind=r.kind||"vocab";st.mode=r.mode;st.mtypes=r.mtypes;
+    st.len=+r.len||10;st.i=Math.max(0,Math.min(+r.i||0,st.len-1));st.marks=r.marks.slice(0,st.i).map(Boolean);st.plan=r.plan||[];st.used={};
+    st.story=sty;st.reading=!!(sty&&r.reading);st.page=sty?Math.max(0,Math.min(+r.page||0,sty.p.length-1)):0;
+    while(st.marks.length<st.i)st.marks.push(false);
+    paint();show("play");
+    if(st.reading)page();else ask();
+    return true;
+  }
+  function goBack(){
+    if(!$("#setSheet").hidden){$("#setSheet").hidden=true;return}
+    if(!$("#play").hidden||!$("#end").hidden)return;
+    if(!$("#gifts").hidden)rewards();
+    else if(!$("#home").hidden){if(st.subject==="en"&&st.enView!=="menu"){st.enView="menu";home()}else subject()}
+    else if(!$("#rewards").hidden)subject();
+    else if(!$("#welcome").hidden&&save.kids.length)who();
+  }
+  var trapped=false;
+  function trap(){if(trapped)return;trapped=true;try{history.pushState({bv:1},"")}catch(e){}}
+  document.addEventListener("pointerdown",trap);
+  window.addEventListener("popstate",function(){try{history.pushState({bv:1},"")}catch(e){}goBack()});
 
   /* ---------- luồng chơi ---------- */
   function ask(){
@@ -1076,7 +1151,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       if(save.seen.length>80)save.seen.splice(0,save.seen.length-80);
     }
     st.q=q;st.first=true;st.lock=false;
-    dots();draw(q);
+    dots();draw(q);saveRun();
   }
   function startRound(mode){
     var v=st.subject!=="en"?(curGrade()===0?VARIANTS[mode]:st.mtypes):st.kind==="grammar"?(mode==="mix"?GR_BY[enLv()]:[mode]):enTypes(),plan=[];
@@ -1091,13 +1166,14 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
       st.lock=true;btn.classList.add("ok");
       var qm=$("#stage .qm");if(qm)qm.textContent=st.q.ans;
       var p=PRAISE[rand(0,PRAISE.length-1)];
-      $("#bubble").textContent=st.q.after?p+" "+st.q.after:p;tone([660,880,1100],.11);
+      $("#fb").className="fb";$("#fb").textContent=st.q.after?p+" "+st.q.after:p;tone([660,880,1100],.11);
       if(st.q.word)(function(w){setTimeout(function(){say(w)},350)})(st.q.sayAns||st.q.word);
       st.marks.push(st.first);dots();
       setTimeout(function(){st.i++;if(st.i>=st.len)finish();else ask()},st.q.wait||(st.subject==="en"?1900:1300));
     }else{
       st.first=false;btn.classList.add("no");btn.disabled=true;
-      $("#bubble").textContent="Chưa đúng rồi, con thử lại nhé!";tone([240,200],.14);
+      $("#fb").className="fb bad";$("#fb").textContent="Chưa đúng rồi, con thử lại nhé!";tone([240,200],.14);
+      if(curGrade()===0)speak([["Chưa đúng rồi, con thử lại nhé!","vi"]]);
     }
   }
   function finish(){
@@ -1224,9 +1300,9 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   });
 
   function soundIcon(){
-    var on='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor"/></svg>';
-    var off='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12" opacity=".35"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor" opacity=".35"/><circle cx="16.5" cy="16" r="2.5" fill="currentColor" opacity=".35"/><path d="M3 3l18 18" stroke="var(--pink)" stroke-width="3.2"/></svg>';
-    document.querySelectorAll(".snd").forEach(function(b){b.innerHTML=save.sound?on:off;b.setAttribute("aria-pressed",String(save.sound))});
+    var ic='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.6"/><circle cx="8" cy="17" r="2.6"/></svg>';
+    document.querySelectorAll(".snd").forEach(function(b){b.innerHTML=ic});
+    [["setMusic","music"],["setVoice","voice"],["setFx","fx"]].forEach(function(x){$("#"+x[0]).setAttribute("aria-checked",String(!!save[x[1]]))});
   }
   var MATH_TILES=[["count","1 2 3","Đếm số","Có bao nhiêu?"],["add","+","Phép cộng","Thêm vào"],["sub","−","Phép trừ","Bớt đi"],["cmp","&gt; &lt;","So sánh","Lớn hơn, bé hơn"],["miss","1 ? 3","Số còn thiếu","Tìm số bị trốn"],["mix","★","Trộn tất cả","Thử thách"]];
   var GR_TILES=[["an","a/an","a or an","a hay an"],["be","is","am, is, are","Động từ to be"],["have","has","have or has","Có cái gì"],["plural","-s","One and many","Số ít, số nhiều"],["can","can","can or can't","Biết, không biết"],["many","1 2 3","How many?","Có bao nhiêu?"],["there","is","There is, there are","Có một, có nhiều"],["ing","-ing","What are they doing?","Việc đang làm"],["do","Do","Do or Does","Câu hỏi"],["comp","-er","Bigger, faster","So sánh hơn"],["was","was","was or were","Hôm qua"],["past","-ed","Yesterday","Thì quá khứ"],["sup","-est","The biggest","So sánh nhất"],["wh","Wh-","Question words","Từ để hỏi"],["much","How","many or much","Bao nhiêu"],["must","must","must or mustn't","Phải, không được"]];
@@ -1242,7 +1318,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     else if(v==="vocab")list=enTopics().map(function(t){return {i:t.icon,a:t.en,b:t.vi,go:vocab(t.k)}}).concat([{i:"★",a:"All topics",b:"Tất cả chủ đề",wide:1,go:vocab("mix")}]);
     else if(v==="grammar")list=GR_TILES.filter(function(x){return GR_BY[enLv()].indexOf(x[0])>=0}).map(function(x){return {i:x[1],a:x[2],b:x[3],go:gram(x[0])}}).concat([{i:"★",a:"All grammar",b:"Trộn tất cả",wide:1,go:gram("mix")}]);
     else if(v==="stories"||v==="tales")list=(v==="stories"?STORIES:TALES).map(function(x){return {i:x.icon,a:x.t,b:x.vi,go:tale(x)}});
-    else list=[{i:"A B C",a:"Vocabulary",b:"Từ vựng",go:view("vocab")},{i:"is / are",a:"Grammar",b:"Ngữ pháp",go:view("grammar")},{i:"📖",a:"Short stories",b:"Truyện ngắn",go:view("stories")},{i:"🏰",a:"Fairy tales",b:"Truyện cổ tích",go:view("tales")}];
+    else list=[{i:"A B C",a:"Vocabulary",b:"Từ vựng",go:view("vocab")}].concat(curGrade()===0?[]:[{i:"is / are",a:"Grammar",b:"Ngữ pháp",go:view("grammar")}]).concat([{i:"📖",a:"Short stories",b:"Truyện ngắn",go:view("stories")},{i:"🏰",a:"Fairy tales",b:"Truyện cổ tích",go:view("tales")}]);
     box.className="tiles"+(en&&v==="menu"?" subjects":"");
     box.innerHTML="";
     list.forEach(function(x,i){
@@ -1262,11 +1338,19 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
   $("#subjEn").addEventListener("click",function(){tone([520,780],.08);st.subject="en";st.enView="menu";home()});
   $("#subjBack").addEventListener("click",function(){if(st.subject==="en"&&st.enView!=="menu"){st.enView="menu";home()}else subject()});
   document.querySelectorAll("#range button").forEach(function(b){b.addEventListener("click",function(){save.max=+b.dataset.max;persist();home()})});
-  document.querySelectorAll(".snd").forEach(function(b){b.addEventListener("click",function(){
-    save.sound=!save.sound;persist();soundIcon();
-    if(save.sound){startMusic()}else{stopMusic()}
-  })});
+  document.querySelectorAll(".snd").forEach(function(b){b.addEventListener("click",function(){soundIcon();$("#setSheet").hidden=false})});
+  [["setMusic","music"],["setVoice","voice"],["setFx","fx"]].forEach(function(x){
+    $("#"+x[0]).addEventListener("click",function(){
+      save[x[1]]=!save[x[1]];persist(true);soundIcon();
+      if(x[1]==="music"){if(save.music)startMusic();else stopMusic()}
+      if(x[1]==="voice"&&!save.voice){try{speechSynthesis.cancel()}catch(e){}}
+      if(x[1]==="fx")tone([660,880],.08);
+    });
+  });
+  $("#setDone").addEventListener("click",function(){$("#setSheet").hidden=true});
+  $("#setSheet").addEventListener("click",function(ev){if(ev.target===this)this.hidden=true});
   $("#backBtn").addEventListener("click",home);
+  $("#bubble").addEventListener("click",function(){if(st.q&&!st.reading)speak(st.q.parts)});
   $("#againBtn").addEventListener("click",function(){if(st.story)startStory(st.story);else startRound(st.mode)});
   $("#homeBtn").addEventListener("click",home);
   $("#giftBtn").addEventListener("click",rewards);
@@ -1371,6 +1455,7 @@ button.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-w
     show("who");
   }
   function start(){
+    if(resume())return;
     if(!save.kids.length){st.adding=true;welcome()}
     else if(save.kids.length===1){loadKid(save.kids[0].id);subject()}
     else who();
