@@ -79,6 +79,7 @@ export class AudioEngine {
     voiceEnabled: true,
     sfxEnabled: true,
     playingKey: null,
+    loadingKey: null,
   };
 
   constructor(private readonly deps: AudioDeps) {}
@@ -185,7 +186,11 @@ export class AudioEngine {
     const ctx = this.ctx;
     if (source.src && ctx) {
       try {
-        const buffer = await this.loadDecoded(ctx, source.src);
+        this.setState({ loadingKey: key });
+        const buffer = await this.loadDecoded(ctx, source.src).finally(() => {
+          if (this.state.loadingKey === key)
+            this.setState({ loadingKey: null });
+        });
         if (gen !== this.generation) return "interrupted";
         this.setState({ playingKey: key });
         const finished = await this.playBuffer(ctx, buffer);

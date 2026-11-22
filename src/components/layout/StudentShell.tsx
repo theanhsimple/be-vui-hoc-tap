@@ -8,6 +8,8 @@ export interface StudentShellProps {
   children: ReactNode;
   /** `viewport` fills the screen (real routes); `container` fills its parent (previews). */
   fill?: "viewport" | "container";
+  /** Vertical placement of the content. Default "center". */
+  align?: "center" | "start";
   className?: string;
 }
 
@@ -19,6 +21,7 @@ export function StudentShell({
   navigation,
   children,
   fill = "viewport",
+  align = "center",
   className,
 }: StudentShellProps) {
   return (
@@ -37,7 +40,12 @@ export function StudentShell({
         )}
       >
         {navigation}
-        <main className="flex min-h-0 flex-1 flex-col justify-center">
+        <main
+          className={cn(
+            "flex min-h-0 flex-1 flex-col",
+            align === "center" ? "justify-center" : "justify-start",
+          )}
+        >
           {children}
         </main>
       </div>

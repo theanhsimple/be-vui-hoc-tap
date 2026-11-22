@@ -9,7 +9,7 @@ import type { BrandTone } from "@/design-system/tokens";
  * image asset under the same name in registry.ts; no component changes needed.
  */
 
-const TONE_VARS: Record<
+export const TONE_VARS: Record<
   BrandTone,
   { tint: string; base: string; edge: string }
 > = {
@@ -65,11 +65,17 @@ function ClayDefs({ id }: { id: string }) {
 }
 
 /** Round trig-derived coordinates so server and client render identical attributes. */
-const r2 = (n: number) => Math.round(n * 100) / 100;
+export const r2 = (n: number) => Math.round(n * 100) / 100;
 
-type Draw = (fill: (tone: BrandTone) => string) => ReactNode;
+export type Draw = (fill: (tone: BrandTone) => string) => ReactNode;
 
-function Clay({ draw, shadow = true }: { draw: Draw; shadow?: boolean }) {
+export function Clay({
+  draw,
+  shadow = true,
+}: {
+  draw: Draw;
+  shadow?: boolean;
+}) {
   const id = useId().replace(/:/g, "");
   const fill = (tone: BrandTone) => `url(#${id}-${tone})`;
   return (

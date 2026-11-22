@@ -8,7 +8,7 @@ import { useAudio } from "@/lib/audio";
 import { cn } from "@/lib/cn";
 
 import { LittleButton } from "../ui/LittleButton";
-import { LittleIllustration } from "../ui/LittleIllustration";
+import { ItemArt } from "./ItemArt";
 import { AnswerOption } from "./AnswerOption";
 import type { ActivityItem, ActivityStatus, AnswerState } from "./types";
 
@@ -139,7 +139,7 @@ export function MatchingGame({
               feedbackKey={attempt}
               onSelect={locked ? undefined : () => press(side, item.id)}
             >
-              <LittleIllustration name={item.illustration} decorative />
+              <ItemArt item={item} />
             </AnswerOption>
             {idx !== -1 && <Marker index={idx} />}
           </span>

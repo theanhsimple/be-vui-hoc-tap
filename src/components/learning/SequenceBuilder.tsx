@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useAudio } from "@/lib/audio";
 
 import { LittleButton } from "../ui/LittleButton";
-import { LittleIllustration } from "../ui/LittleIllustration";
+import { ItemArt } from "./ItemArt";
 import { AnswerOption } from "./AnswerOption";
 import { SlotTile } from "./SlotTile";
 import type { ActivityItem, ActivityStatus } from "./types";
@@ -109,7 +109,7 @@ export function SequenceBuilder({
                 size="md"
                 onSelect={() => place(item.id)}
               >
-                <LittleIllustration name={item.illustration} decorative />
+                <ItemArt item={item} />
               </AnswerOption>
             ),
           )}

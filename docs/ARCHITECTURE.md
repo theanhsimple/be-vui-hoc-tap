@@ -51,7 +51,7 @@ be-vui-hoc-tap/
 │  ├─ app/
 │  │  ├─ design-system/          # internal showcase (Sprint 02) ✅
 │  │  ├─ (marketing)/ (auth)/    # landing, privacy, login… (later)
-│  │  ├─ play/                   # STUDENT experience (Sprint 03)
+│  │  ├─ student/                # STUDENT experience ✅ Sprint 03 (see LEARNING_ENGINE.md)
 │  │  ├─ parent/                 # PARENT experience (Sprint 05)
 │  │  ├─ admin/                  # ADMIN experience (Sprint 06)
 │  │  └─ api/                    # route handlers only where needed
@@ -64,7 +64,8 @@ be-vui-hoc-tap/
 │  │  └─ admin/                  # CMS building blocks
 │  ├─ design-system/             # ✅ tokens (TS mirror), motion presets, worlds
 │  ├─ illustrations/             # ✅ registry + placeholder art
-│  ├─ features/                  # domain slices: learning, assessment, rewards, family, content (later)
+│  ├─ features/learning/         # ✅ content repo, grading (server action), session, progress, demo store
+│  ├─ data/demo/                 # ✅ demo content (public) + answer keys (server-only)
 │  ├─ lib/
 │  │  ├─ audio/ ✅  parent-gate/ ✅  env.ts ✅  cn.ts ✅
 │  │  ├─ supabase/{server,client,middleware,admin}.ts   (Sprint 04)
@@ -77,7 +78,7 @@ be-vui-hoc-tap/
 
 ### 3.2 Routing strategy
 
-- Three top-level areas map to three layouts with distinct chrome: `/play` (full-screen kid mode, no browser-like navigation), `/parent`, `/admin`.
+- Three top-level areas map to three layouts with distinct chrome: `/student` (implemented Sprint 03; was planned as `/play`) (full-screen kid mode, no browser-like navigation), `/parent`, `/admin`.
 - `middleware.ts` refreshes the Supabase session and redirects unauthenticated users away from `/play/*` (except the welcome demo), `/parent/*`, `/admin/*`.
 - Kid mode is **entered by a signed-in guardian** on the device; the selected child is held in an httpOnly cookie (`little_child`) whose value is validated server-side against the guardian's family on every request.
 - Leaving kid mode (to `/parent`, settings, or any external link) requires the **parent gate** component.

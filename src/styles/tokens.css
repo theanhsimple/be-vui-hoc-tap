@@ -58,6 +58,25 @@
   --disabled: #f1efea;
   --disabled-ink: #868e9c; /* inactive controls are exempt from 4.5:1 (WCAG 1.4.3) */
 
+  /*
+   * Learning-content colours: ONLY for illustrations that teach colours
+   * (red apple, "find red"…). Never used for UI. See DESIGN_SYSTEM.md §3.5.
+   */
+  --content-red: #e5534b;
+  --content-red-edge: #c03c35;
+  --content-blue: #4a8fe7;
+  --content-blue-edge: #3270c2;
+  --content-yellow: #ffcc4d;
+  --content-yellow-edge: #e0a92a;
+  --content-green: #4cb872;
+  --content-green-edge: #35945a;
+  --content-orange: #f7953b;
+  --content-orange-edge: #d77621;
+  --content-purple: #9a6ad6;
+  --content-purple-edge: #7a4fb5;
+  --content-brown: #b07a4f;
+  --content-brown-edge: #8d5d38;
+
   /* Decorative sky for the student world */
   --sky-top: #dcebfb;
 

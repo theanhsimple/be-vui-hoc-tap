@@ -8,7 +8,7 @@ describe("illustration registry", () => {
   it("uses {category}.{kebab-name} keys", () => {
     for (const name of ILLUSTRATION_NAMES) {
       expect(name).toMatch(
-        /^(world|object|shape|reward|avatar|mascot|state)\.[a-z0-9]+(-[a-z0-9]+)*$/,
+        /^(world|object|shape|reward|avatar|mascot|state|animal|food|color|routine|badge)\.[a-z0-9]+(-[a-z0-9]+)*$/,
       );
     }
   });

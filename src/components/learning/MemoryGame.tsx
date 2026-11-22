@@ -1,22 +1,24 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { DURATION, fadeIn } from "@/design-system/motion/presets";
 import type { IllustrationName } from "@/illustrations/registry";
 import { useAudio } from "@/lib/audio";
 import { cn } from "@/lib/cn";
 
-import { LittleIllustration } from "../ui/LittleIllustration";
+import { ItemArt } from "./ItemArt";
 
-export interface MemoryCard {
+export type MemoryCard = {
   id: string;
   /** Cards with the same pairKey match. */
   pairKey: string;
   label: string;
-  illustration: IllustrationName;
-}
+} & (
+  | { illustration: IllustrationName; content?: undefined }
+  | { content: ReactNode; illustration?: undefined }
+);
 
 export interface MemoryGameProps {
   /** Cards in display order (shuffled by the caller). */
@@ -24,6 +26,8 @@ export interface MemoryGameProps {
   columns?: 2 | 3 | 4;
   /** ms a mismatched pair stays visible before turning back. */
   mismatchDelay?: number;
+  /** After this many mismatches, briefly show all cards as a gentle help (no penalty). */
+  peekAfterMismatches?: number;
   onComplete?: (result: { moves: number }) => void;
 }
 
@@ -38,6 +42,7 @@ export function MemoryGame({
   cards,
   columns = 4,
   mismatchDelay = 900,
+  peekAfterMismatches,
   onComplete,
 }: MemoryGameProps) {
   const { playSfx } = useAudio();
@@ -45,6 +50,8 @@ export function MemoryGame({
   const [matched, setMatched] = useState<Set<string>>(() => new Set());
   const [moves, setMoves] = useState(0);
   const [message, setMessage] = useState("");
+  const [mismatches, setMismatches] = useState(0);
+  const [peek, setPeek] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const byId = new Map(cards.map((c) => [c.id, c]));
 
@@ -56,7 +63,7 @@ export function MemoryGame({
   );
 
   const flip = (id: string) => {
-    if (open.length === 2 || open.includes(id)) return;
+    if (peek || open.length === 2 || open.includes(id)) return;
     const card = byId.get(id);
     if (!card || matched.has(card.pairKey)) return;
     playSfx("tap");
@@ -76,7 +83,16 @@ export function MemoryGame({
     } else {
       setMessage("Chưa giống nhau, thử lại nhé.");
       playSfx("tryAgain");
-      timer.current = setTimeout(() => setOpen([]), mismatchDelay);
+      const n = mismatches + 1;
+      setMismatches(n);
+      timer.current = setTimeout(() => {
+        setOpen([]);
+        if (peekAfterMismatches && n % peekAfterMismatches === 0) {
+          setPeek(true);
+          setMessage("Cùng nhìn lại tất cả các thẻ nhé.");
+          timer.current = setTimeout(() => setPeek(false), 1600);
+        }
+      }, mismatchDelay);
     }
   };
 
@@ -85,7 +101,7 @@ export function MemoryGame({
       <div className={cn("grid w-full gap-2 tablet:gap-3", COLS[columns])}>
         {cards.map((card, i) => {
           const isMatched = matched.has(card.pairKey);
-          const faceUp = isMatched || open.includes(card.id);
+          const faceUp = isMatched || peek || open.includes(card.id);
           return (
             <motion.button
               key={card.id}
@@ -122,7 +138,7 @@ export function MemoryGame({
                     exit="exit"
                     className="absolute inset-[14%] grid place-items-center [&>svg]:size-full"
                   >
-                    <LittleIllustration name={card.illustration} decorative />
+                    <ItemArt item={card} />
                   </motion.span>
                 ) : (
                   <motion.span

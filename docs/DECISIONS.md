@@ -87,6 +87,33 @@ Moved from `/dev/design-system`. Still hidden in production unless `ENABLE_DESIG
 ### D-028 · 2026-11-22 · Recorded (Sprint 02) — Audience statement vs. D-013
 The Sprint 02 brief describes children "preparing for Grade 1 and private school entrance assessments". This is recorded as audience context only. D-013 still applies: no admission requirements, readiness claims or school-specific content are designed or implied until requirements are sourced and approved by the product owner and an education reviewer.
 
+### D-029 · 2026-11-22 · Approved (Sprint 03) — Student routes under `/student`
+The brief's `/student/*` routes replace the planned `/play` area (never built), so there is one student route tree. ARCHITECTURE updated.
+
+### D-030 · 2026-11-22 · Approved (Sprint 03) — Six question types
+`single_choice`, `image_choice`, `matching`, `ordering`, `pattern`, `memory` replace the earlier planned enum (tap_choice, listen_choose, count_tap, drag_match, sort_order, odd_one_out). Mapping: tap_choice/listen_choose/odd_one_out → image_choice or single_choice; count_tap → single_choice with a counting stimulus; drag_match → matching (tap-to-match); sort_order → ordering. Config is a typed union per type.
+
+### D-031 · 2026-11-22 · Approved (Sprint 03) — Progression rules
+Within a skill, lessons open in order (difficulty progression). All worlds are open except Challenge Arena (mixed review), which opens after 3 completed lessons. Rules are data/pure functions so they can be tuned.
+
+### D-032 · 2026-11-22 · Approved (Sprint 03) — Effort-based stars and badges
+Stars: 1 for finishing, +1 if at least half were right first time, +1 if all were. Best result kept. Badges reward completion and exploration, never scores. No streaks, no leaderboards, no penalties for missed days.
+
+### D-033 · 2026-11-22 · Approved (Sprint 03) — Grading in a Server Action with server-only demo keys
+Even in the demo, keys live in an `import "server-only"` module and grading runs on the server, so keys never reach the device. Verified on the production build. In Sprint 04 this becomes the `submit_attempt` RPC.
+
+### D-034 · 2026-11-22 · Approved (Sprint 03) — Device-local demo store
+Profiles (demo family) and progress live in `localStorage` (`little.demo.v1`), validated with Zod, clearly labelled demo, never presented as secure or synced. Replaced by Supabase in Sprint 04.
+
+### D-035 · 2026-11-22 · Approved (Sprint 03) — Learning-content colours
+`--content-*` tokens (red, blue, yellow, green, orange, purple, brown) exist only for illustrations that teach colours/objects. They are not UI colours.
+
+### D-036 · 2026-11-22 · Approved (Sprint 03) — One-time background motion on Welcome
+The brief asked for a subtle animated background; to respect D-025 (no constant motion) clouds drift in once and stop. Disabled under reduced motion.
+
+### D-037 · 2026-11-22 · Recorded (Sprint 03) — 404 status under Partial Prerendering
+Unknown world/lesson ids render the student "lost" page with `noindex`, but the HTTP status is 200 because the static shell streams first (Next.js 16 behaviour). Acceptable for a child UI; revisit if SEO/monitoring needs real 404s.
+
 ## Pending decisions
 
 | ID | Question | Owner |

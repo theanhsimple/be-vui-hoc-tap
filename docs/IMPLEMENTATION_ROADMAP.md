@@ -1,6 +1,6 @@
 # little — Implementation Roadmap
 
-> **Status:** Sprints 00–02 complete. Sprints 03–06 planned, not started. Each sprint needs explicit approval before work begins.
+> **Status:** Sprints 00–03 complete (03 = demo, device-local progress). Sprints 04–06 planned, not started. Each sprint needs explicit approval before work begins.
 >
 > **Re-sequenced in Sprint 02:** the product owner inserted a dedicated "Design System & Visual Foundation" sprint as Sprint 02. The former Sprints 02–05 move to 03–06 with unchanged content (Sprint 03 now builds on the Sprint 02 component library).
 
@@ -69,7 +69,25 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 
 ---
 
-## Sprint 03 — Student Learning Experience (static content)
+## Sprint 03 — Student Learning Experience ✅ (implemented as demo, awaiting review)
+
+**Delivered:** all 9 student screens under `/student/*`, reusable activity player with 6 question types, server-side grading with server-only keys, 84-question demo library (7 worlds, 28 lessons), progress/stars/badges/daily plan, device-local demo store with resume after refresh. Details: [`LEARNING_ENGINE.md`](LEARNING_ENGINE.md).
+
+| Definition of done | Status |
+|---|---|
+| Welcome, profiles, home, explore, 7 worlds, module detail, lesson intro | ✅ tested (Playwright, production build) |
+| Activity player, 6 question types, correct/incorrect feedback, retry, hint, exit | ✅ unit + integration + browser tested |
+| Result, rewards, reward calculation | ✅ unit + browser tested |
+| Demo content (84 q) + answer verification | ✅ automated structural + semantic checks |
+| Progress calculation, session persistence, refresh/resume | ✅ |
+| All routes connected (Welcome → … → Rewards → Home) | ✅ full touch flow on iPad-sized viewport |
+| Responsive (1180×820, 820×1180, 1440×900, 390×844) | ✅ in Chromium; physical iPad not tested |
+| TypeScript, lint, tests, build | ✅ |
+| Known limitations documented | ✅ LEARNING_ENGINE.md §10 |
+
+---
+
+## Sprint 03 (original plan, superseded above) — Student Learning Experience (static content)
 
 **Deliverables**
 1. Kid routes: Welcome, Profile selection, Home, Explore World, Module detail, Learning session, Rewards — wired to a **typed local content fixture** (clearly labelled fixture, replaced in Sprint 03; not presented as real backend functionality).

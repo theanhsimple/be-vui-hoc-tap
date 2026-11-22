@@ -1,8 +1,8 @@
 "use client";
 
-import { Volume2 } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   type AudioSource,
@@ -14,6 +14,7 @@ import { cn } from "@/lib/cn";
 
 import { LittleBadge } from "../ui/LittleBadge";
 import { LittleIconButton } from "../ui/LittleIconButton";
+import { LittleSpinner } from "../ui/LittleSpinner";
 
 export interface AudioPlayerProps {
   /** A recorded file, or text for the speech-synthesis fallback — at least one. */
@@ -41,21 +42,28 @@ export function AudioPlayer({
   onOutcome,
   className,
 }: AudioPlayerProps) {
-  const { play, unlocked, playingKey, playSfx } = useAudio();
+  const { play, unlocked, playingKey, loadingKey, playSfx } = useAudio();
   const reduce = useReducedMotion();
   const key = sourceKey(source);
   const playing = playingKey === key;
+  const loading = loadingKey === key;
+  const [unavailableFor, setUnavailableFor] = useState<string | null>(null);
+  const unavailable = unavailableFor === key;
 
-  const latest = useRef({ source, onOutcome });
+  const report = (o: PlayOutcome) => {
+    setUnavailableFor(o === "unavailable" ? key : null);
+    onOutcome?.(o);
+  };
+  const latest = useRef({ source, report });
   useEffect(() => {
-    latest.current = { source, onOutcome };
+    latest.current = { source, report };
   });
 
   const autoPlayedFor = useRef<string | null>(null);
   useEffect(() => {
     if (!autoPlay || !unlocked || autoPlayedFor.current === key) return;
     autoPlayedFor.current = key;
-    void play(latest.current.source).then((o) => latest.current.onOutcome?.(o));
+    void play(latest.current.source).then((o) => latest.current.report(o));
   }, [autoPlay, unlocked, key, play]);
 
   return (
@@ -77,21 +85,36 @@ export function AudioPlayer({
         )}
         <LittleIconButton
           label={demo ? `${label} (âm thanh demo)` : label}
-          icon={<Volume2 />}
+          icon={
+            loading ? (
+              <LittleSpinner />
+            ) : unavailable ? (
+              <VolumeX />
+            ) : (
+              <Volume2 />
+            )
+          }
+          aria-busy={loading || undefined}
           variant="primary"
           size={size}
           aria-pressed={playing}
           data-audio-source={source.src ? "file" : "speech"}
           onClick={() => {
             playSfx("tap");
-            void play(source).then((o) => onOutcome?.(o));
+            void play(source).then(report);
           }}
         />
       </span>
-      {demo && (
-        <LittleBadge tone="warning" size="sm">
-          Âm thanh demo
+      {unavailable ? (
+        <LittleBadge tone="neutral" size="sm">
+          Chưa có âm thanh
         </LittleBadge>
+      ) : (
+        demo && (
+          <LittleBadge tone="warning" size="sm">
+            Âm thanh demo
+          </LittleBadge>
+        )
       )}
     </span>
   );

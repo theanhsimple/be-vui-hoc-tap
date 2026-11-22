@@ -4,7 +4,7 @@
 
 A premium 3D playful learning platform for children aged 5–6 in Vietnam (iPad & desktop), with parent and admin experiences. Product and technical docs live in [`docs/`](docs/).
 
-> Status: **Sprint 02 — Design System & Visual Foundation.** No learning content, accounts or database yet. See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) and [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
+> Status: **Sprint 03 — Student learning experience (demo).** Try it at `/student`. Progress is stored only on the device; no accounts or database yet. See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) and [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
 
 ## Requirements
 
@@ -47,10 +47,12 @@ src/
     parent/ admin/        dashboard and CMS building blocks
   design-system/          tokens (TS mirror), motion presets, learning worlds
   illustrations/          illustration registry + placeholder art
+  features/learning/       content repository, grading (server action), session, progress, demo store
+  data/demo/              demo content (public) + answer keys (server-only)
   lib/                    audio engine, parent-gate logic, env validation
   styles/tokens.css       design tokens (Tailwind v4 theme)
 legacy/prototype.html     original "Bé Vui Học Tập" prototype, kept as reference
-docs/                     PRD, architecture, UX/UI, design system, database plan, roadmap, decisions
+docs/                     PRD, architecture, UX/UI, design system, learning engine, database plan, roadmap, decisions
 ```
 
 ## Legacy prototype

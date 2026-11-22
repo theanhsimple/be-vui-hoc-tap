@@ -29,6 +29,7 @@ const SERVER_STATE: AudioState = {
   voiceEnabled: true,
   sfxEnabled: true,
   playingKey: null,
+  loadingKey: null,
 };
 
 const subscribe = (listener: () => void) =>

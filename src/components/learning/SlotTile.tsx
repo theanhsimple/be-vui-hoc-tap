@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { DURATION, gentleNudge } from "@/design-system/motion/presets";
 import { cn } from "@/lib/cn";
 
-import { LittleIllustration } from "../ui/LittleIllustration";
+import { ItemArt } from "./ItemArt";
 import type { ActivityItem } from "./types";
 
 export type SlotState =
@@ -56,7 +56,7 @@ export function SlotTile({
   );
   const content = item ? (
     <span className="absolute inset-[12%] grid place-items-center [&>svg]:size-full">
-      <LittleIllustration name={item.illustration} decorative />
+      <ItemArt item={item} />
     </span>
   ) : null;
   const name = item ? `Ô ${position}: ${item.label}` : `Ô ${position}: trống`;

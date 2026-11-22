@@ -14,6 +14,10 @@ export interface StudentNavigationProps {
   center?: ReactNode;
   /** Called only after the parent gate is passed. */
   onParentAccess: () => void;
+  /** Replaces the back button (e.g. the child's avatar on the home screen). */
+  start?: ReactNode;
+  /** Extra child actions before the parent lock (e.g. rewards). */
+  end?: ReactNode;
 }
 
 /**
@@ -25,6 +29,8 @@ export function StudentNavigation({
   backLabel = "Quay lại",
   center,
   onParentAccess,
+  start,
+  end,
 }: StudentNavigationProps) {
   const [gateOpen, setGateOpen] = useState(false);
   return (
@@ -32,8 +38,9 @@ export function StudentNavigation({
       aria-label="Điều hướng của bé"
       className="flex min-h-16 w-full items-center justify-between gap-2 tablet:gap-3"
     >
-      <div className="shrink-0 tablet:w-16">
-        {onBack && (
+      <div className="flex shrink-0 items-center gap-2 tablet:min-w-16">
+        {start}
+        {!start && onBack && (
           <LittleIconButton
             label={backLabel}
             icon={<ChevronLeft strokeWidth={3} />}
@@ -43,7 +50,8 @@ export function StudentNavigation({
         )}
       </div>
       <div className="flex min-w-0 flex-1 justify-center">{center}</div>
-      <div className="flex shrink-0 justify-end tablet:w-16">
+      <div className="flex shrink-0 items-center justify-end gap-2 tablet:min-w-16">
+        {end}
         <LittleIconButton
           label="Khu vực phụ huynh"
           icon={<Lock />}

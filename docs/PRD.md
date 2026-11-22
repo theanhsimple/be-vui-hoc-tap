@@ -63,7 +63,9 @@ Business model: **multi-family public platform** — any family can sign up; eac
 
 Priority: **P0** = required for first release, **P1** = soon after, **P2** = later.
 
-### A. Student experience (route area `/play`)
+### A. Student experience (route area `/student`)
+
+> Sprint 03: S1–S9 implemented as a demo (device-local progress, demo voice, placeholder art). S10 break reminder not started. See LEARNING_ENGINE.md.
 
 | ID | Screen | Requirement | Pri |
 |----|--------|-------------|-----|

@@ -18,7 +18,7 @@ Postgres on Supabase. Conventions: `uuid` PKs (`gen_random_uuid()`), `created_at
 staff_role          : 'editor' | 'admin'
 guardian_role       : 'owner' | 'guardian'
 content_status      : 'draft' | 'in_review' | 'published' | 'archived'
-question_type       : 'tap_choice' | 'listen_choose' | 'count_tap' | 'drag_match' | 'sort_order' | 'odd_one_out'
+question_type       : 'single_choice' | 'image_choice' | 'matching' | 'ordering' | 'pattern' | 'memory'   -- updated Sprint 03 (D-030)
 session_kind        : 'lesson' | 'assessment' | 'practice'
 session_status      : 'active' | 'completed' | 'abandoned'
 mastery_band        : 'not_started' | 'exploring' | 'developing' | 'confident'
@@ -87,13 +87,13 @@ reward_kind         : 'star' | 'sticker' | 'badge' | 'real_world'
 | difficulty | smallint 1–5 | |
 | prompt_audio_id | uuid → media_assets | **required to publish** |
 | prompt_text_vi | text | caption / TTS fallback |
-| content | jsonb | type-specific payload validated by Zod (options with opaque `option_id`s, images, counts…) — **contains no correctness info** |
+| content | jsonb | type-specific payload (`LearningQuestion` in `src/features/learning/types.ts`: options/left-right/items/sequence-palette/cards, stimulus, memorize, feedback, maxAttempts) — **contains no correctness info** |
 | status | content_status | |
 
 **`private.question_keys`**
 | question_id | uuid PK → public.questions on delete cascade |
 |---|---|
-| answer | jsonb — e.g. `{"option_id":"o3"}`, `{"order":["o2","o1","o3"]}`, `{"pairs":[["a","x"],…]}` |
+| answer | jsonb — `AnswerKey` in `src/features/learning/grading/keys.ts`: `{type:'choice', optionId, hintEliminate?}`, `{type:'ordering', order}`, `{type:'pattern', fills}`, `{type:'matching', pairs}`, `{type:'memory'}` |
 | hint_audio_id | uuid null |
 
 **`lesson_questions`**: (lesson_id, question_id) PK, position smallint.

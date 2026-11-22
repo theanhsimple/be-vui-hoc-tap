@@ -77,6 +77,10 @@ All pairs are listed in `CONTRAST_REQUIREMENTS` and verified in CI.
 |---|---|
 | Brand base & tint fills, edges, sky, scenery, illustration colours | Text (`ink`, `ink-muted`, `*-strong`), icons, focus ring, control borders, status text |
 
+### 3.5 Learning-content colours (Sprint 03)
+
+`--content-red|blue|yellow|green|orange|purple|brown` (+ `-edge`) exist only inside illustrations that teach colours and objects (a red apple, "find red"). They are not Tailwind classes and must never be used for UI (D-035).
+
 Tailwind's default palette is removed (`--color-*: initial`), so only these tokens exist as classes (`bg-blue`, `text-coral-strong`, `bg-mint-50`…).
 
 ## 4. Typography tokens
@@ -163,7 +167,8 @@ Status: ✅ implemented & tested (unit and/or browser) · 🟡 implemented, part
 | | AudioPlayer, AudioInstruction | `learning/` | 🟡 (no recorded audio yet) |
 | | AnswerOption, ImageChoice, QuestionCard | `learning/` | ✅ |
 | | FeedbackPanel, RewardPanel, LearningProgress | `learning/` | ✅ |
-| | SequenceBuilder, PatternBuilder, MatchingGame, MemoryGame | `learning/` | ✅ |
+| | SequenceBuilder, PatternBuilder, MatchingGame, MemoryGame (Sprint 03: items accept any `content`; MemoryGame `peekAfterMismatches`) | `learning/` | ✅ |
+| | AudioPlayer loading / unavailable states (Sprint 03) | `learning/AudioPlayer.tsx` | ✅ |
 | | DragDropContainer | — | 📄 (see §9.4) |
 | Parent | ParentStatCard, ChildProfileCard, SkillProgressCard, LearningActivityCard, AssessmentSummaryCard | `components/parent/` | 🟡 |
 | Admin | AdminDataTable, AdminFormField, AdminStatusBadge, AdminFilterBar, AdminPageHeader | `components/admin/` | 🟡 (AdminFormField ✅) |

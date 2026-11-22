@@ -10,7 +10,7 @@ import {
   BUTTON_VARIANTS,
   type ButtonVariant,
   DISABLED_CLASSES,
-} from "./LittleButton";
+} from "./buttonStyles";
 
 const SIZES = {
   sm: "size-10 [--edge-depth:2px] [&_svg]:size-5",

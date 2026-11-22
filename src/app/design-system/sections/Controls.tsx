@@ -24,8 +24,8 @@ import {
   BUTTON_VARIANTS,
   type ButtonSize,
   type ButtonVariant,
-  LittleButton,
-} from "@/components/ui/LittleButton";
+} from "@/components/ui/buttonStyles";
+import { LittleButton } from "@/components/ui/LittleButton";
 import { LittleCard, LittleSelectableCard } from "@/components/ui/LittleCard";
 import { LittleDivider } from "@/components/ui/LittleDivider";
 import { LittleIconButton } from "@/components/ui/LittleIconButton";

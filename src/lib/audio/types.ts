@@ -31,6 +31,8 @@ export interface AudioState {
   sfxEnabled: boolean;
   /** Key of the source currently playing (see `sourceKey`), or null. */
   playingKey: string | null;
+  /** Key of the source whose file is downloading/decoding, or null. */
+  loadingKey: string | null;
 }
 
 export function sourceKey(source: AudioSource): string {

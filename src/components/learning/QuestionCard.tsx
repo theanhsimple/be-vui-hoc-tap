@@ -36,7 +36,7 @@ export function QuestionCard({
       {instruction}
       <div
         className={cn(
-          "grid items-center gap-5 tablet:gap-6",
+          "grid grid-cols-1 items-center gap-5 tablet:gap-6",
           layout === "split" &&
             stimulus &&
             "desktop:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]",

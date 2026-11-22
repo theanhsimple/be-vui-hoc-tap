@@ -63,3 +63,13 @@
   padding-left: max(16px, env(safe-area-inset-left));
   padding-right: max(16px, env(safe-area-inset-right));
 }
+
+/* Memorize countdown bar (scaleX keeps it on the compositor). */
+@keyframes little-countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
