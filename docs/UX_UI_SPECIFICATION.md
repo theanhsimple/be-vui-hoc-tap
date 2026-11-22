@@ -1,6 +1,6 @@
 # little — UX / UI Specification
 
-> **Status:** Tokens and core components implemented in Sprint 01 (`src/styles/tokens.css`, `src/components/`). Live gallery: `/dev/design-system`. Mascot art and audio files are still placeholders.
+> **Status:** Screen-level UX spec. **Visual tokens and components are now defined in [`DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) (Sprint 02), which supersedes §2–§3 and §6 below** (palette, type scale, radius, shadows, motion, component names). The remaining sections (principles, layout zones, screen specs, accessibility) still apply. Live showcase: `/design-system`.
 
 ## 1. Design principles
 
@@ -14,7 +14,7 @@
 ## 2. Visual direction — "Premium 3D Playful"
 
 - **Look:** soft clay/vinyl-toy 3D objects, rounded everything, gentle ambient lighting from top-left, soft contact shadows, pastel world with a few saturated accent colours for interactive objects.
-- **World:** "Little Explorer World" — floating islands over a pastel sky; each module is an island (Number Garden, Shape Bay, Pattern Forest, Sound Cave, Weather Hill…). Working names, to be finalised with content.
+- **World:** "Little Explorer World" — seven learning worlds (Alphabet Forest, Number Kingdom, IQ Castle, Memory Garden, English Island, School Town, Challenge Arena); see DESIGN_SYSTEM.md §12.3. Which ship in v1 is pending (DECISIONS P-7).
 - **Mascots:** a small cast of friendly characters (e.g. the guide plus one per island). The prototype's sun mascot *Bạn Nắng* is the reference character to redesign in 3D. Mascots have expressive idle, talk, cheer, think, and encourage states.
 - **3D assets:** pre-rendered (Blender or similar) to transparent WebP/AVIF at 1x/2x, plus short loops (Lottie or WebM/HEVC with alpha) for mascot states. **No realtime 3D in v1.** Assets are not produced in Sprint 00.
 

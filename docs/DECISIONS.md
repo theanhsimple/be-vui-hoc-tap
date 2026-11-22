@@ -48,10 +48,10 @@ Next.js 16.4.6, React 19.3.0, TypeScript **5.9.3**, Tailwind 4.3.3 (Turbopack lo
 ### D-015 · 2026-11-22 · Approved (Sprint 01) — Cache Components + Partial Prefetching on
 Kept the Next 16.4 scaffold defaults (`cacheComponents: true`, `partialPrefetching: true`). Data fetching is dynamic by default; caching is opted into with `use cache` from Sprint 03.
 
-### D-016 · 2026-11-22 · Approved (Sprint 01) — Parent-gate entry button uses the adult size
-The lock button that opens the parent gate is an adult control inside kid mode, sized 52 px (≥ 44 px parent minimum) and placed in a corner, so children are less likely to tap it. All child-facing targets stay ≥ 64 px.
+### D-016 · 2026-11-22 · Approved (Sprint 01, updated Sprint 02) — Parent-gate entry button uses the adult size
+The lock button that opens the parent gate is an adult control inside the student experience, sized 48 px (≥ 44 px parent minimum; was 52 px in Sprint 01) and placed in a corner, so children are less likely to tap it. All child-facing targets stay ≥ 64 px.
 
-### D-017 · 2026-11-22 · Approved (Sprint 01) — Only little's palette exists in Tailwind
+### D-017 · 2026-11-22 · Approved (Sprint 01, palette superseded by D-020) — Only little's palette exists in Tailwind
 `tokens.css` resets Tailwind's default colours (`--color-*: initial`), so components cannot use off-palette colours. Added -400/-600 "top face / edge" pairs for butter, mint, lilac, rose, peach, plus `cream-edge`.
 
 ### D-018 · 2026-11-22 · Approved (Sprint 01) — Sound effects are synthesized
@@ -59,6 +59,33 @@ Tap/correct/try-again/reward sounds are generated with Web Audio oscillators (no
 
 ### D-019 · 2026-11-22 · Approved (Sprint 01) — Parent gate design
 Instruction written as Vietnamese words (e.g. "năm mươi mốt"), never read aloud; six two-digit options including the reversed-digit distractor; a 1.5 s hold is required for every attempt; a wrong hold regenerates the challenge. Keyboard hold supported for desktop parents.
+
+### D-020 · 2026-11-22 · Approved (Sprint 02) — New brand palette with accessibility adjustments
+The Sprint 02 brief's palette (Primary Blue #72A9EC, Sunshine Yellow #FFD16A, Soft Coral #FF927C, Mint #8BD5B0, Lavender #B9A7EA, Warm Cream #FFF8EC) replaces the Sprint 01 palette. Adjustments, all contrast-tested in CI: Text Secondary #748094 → #5F6A7D; added `-strong` variants (≥ 4.5:1 on canvas, surface and own tint) for text/icons/links/focus; `border-strong` #868E9C for control borders; text on fills is always Ink. Details: DESIGN_SYSTEM.md §3.
+
+### D-021 · 2026-11-22 · Approved (Sprint 02) — Token scales replace Sprint 01 values
+Type scale Display 36 → Caption 12 (Display/H1/H2 fluid on small screens); radius 12/16/24/32/pill (was 12/20/28/40); shadows xs/sm/md/lg; breakpoints `tablet` 640 / `desktop` 1024 / `wide` 1440 (Tailwind defaults removed). The 3D edge is kept but shortened to 2–4 px.
+
+### D-022 · 2026-11-22 · Approved (Sprint 02) — Component naming and folders
+Foundation components use the `Little*` prefix (`LittleButton`, `LittleCard`…); folders `components/{ui,navigation,layout,learning,parent,admin}`; tokens/motion in `src/design-system/`, art in `src/illustrations/`. Sprint 01 components were replaced, not duplicated (Button3D → LittleButton, BigChoice → AnswerOption, ProgressPath → LearningProgress, StarBurst → RewardPanel, KidShell → StudentShell, Mascot → LittleMascot, AudioPromptButton → AudioPlayer).
+
+### D-023 · 2026-11-22 · Approved (Sprint 02) — Lucide for functional icons only
+`lucide-react` added. Learning visuals always come from the illustration registry (`LittleIllustration`), never icons or emoji.
+
+### D-024 · 2026-11-22 · Approved (Sprint 02) — Illustration registry with replaceable placeholders
+Art is referenced by name (`{category}.{kebab-name}`); placeholder SVGs are marked `data-placeholder` until real files are registered. Real 3D assets replace them without component changes.
+
+### D-025 · 2026-11-22 · Approved (Sprint 02) — No constant motion
+Mascot idle is still; ray rotation, idle bob and progress pulsing from Sprint 01 were removed. Only state indicators loop (audio-playing ring, loading spinner).
+
+### D-026 · 2026-11-22 · Approved (Sprint 02) — Tap-first activities; drag deferred
+Sequence, pattern, matching and memory activities work by tapping (WCAG 2.5.7). `DragDropContainer` is deferred as an optional enhancement.
+
+### D-027 · 2026-11-22 · Approved (Sprint 02) — Showcase route `/design-system`
+Moved from `/dev/design-system`. Still hidden in production unless `ENABLE_DESIGN_SYSTEM=true` at build time.
+
+### D-028 · 2026-11-22 · Recorded (Sprint 02) — Audience statement vs. D-013
+The Sprint 02 brief describes children "preparing for Grade 1 and private school entrance assessments". This is recorded as audience context only. D-013 still applies: no admission requirements, readiness claims or school-specific content are designed or implied until requirements are sourced and approved by the product owner and an education reviewer.
 
 ## Pending decisions
 
@@ -70,3 +97,6 @@ Instruction written as Vietnamese words (e.g. "năm mươi mốt"), never read a
 | P-4 | Education reviewer for skill taxonomy | Product owner |
 | P-5 | Monetisation timing | Product owner |
 | P-6 | English parent UI in v1 or P1 | Product owner |
+| P-7 | Which of the 7 learning worlds ship in v1 (D-007 limits v1 to age 5–6; English Island was P1) | Product owner + education reviewer |
+| P-8 | Naming review for "IQ Castle" — "IQ" can imply IQ testing to parents; working Vietnamese name "Lâu Đài Tư Duy" | Product owner |
+| P-9 | Scope and sources for "private school entrance assessment" preparation (see D-028) | Product owner + education reviewer |

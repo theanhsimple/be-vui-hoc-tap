@@ -1,6 +1,8 @@
 # little — Implementation Roadmap
 
-> **Status:** Sprint 00 complete. Sprint 01 implemented (awaiting review). Sprints 02–05 planned, not started. Each sprint needs explicit approval before work begins.
+> **Status:** Sprints 00–02 complete. Sprints 03–06 planned, not started. Each sprint needs explicit approval before work begins.
+>
+> **Re-sequenced in Sprint 02:** the product owner inserted a dedicated "Design System & Visual Foundation" sprint as Sprint 02. The former Sprints 02–05 move to 03–06 with unchanged content (Sprint 03 now builds on the Sprint 02 component library).
 
 Sprint length assumption: ~2 weeks each. Order is chosen so the riskiest UX (kid audio-first interaction) is validated early with static data before the backend is built around it.
 
@@ -13,7 +15,7 @@ Sprint length assumption: ~2 weeks each. Order is chosen so the riskiest UX (kid
 
 ---
 
-## Sprint 01 — Foundation & Design System ✅ (implemented, awaiting review)
+## Sprint 01 — Foundation & Design System v0 ✅ (visual layer superseded by Sprint 02)
 
 **Result (2026-11-22)**
 
@@ -51,16 +53,32 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 
 ---
 
-## Sprint 02 — Student Learning Experience (static content)
+## Sprint 02 — Design System & Visual Foundation ✅ (implemented, awaiting review)
+
+**Delivered:** new palette & tokens (contrast-tested), typography, spacing/radius/elevation, breakpoints, motion presets, illustration registry with placeholders, 7-world visual direction, ~45 components (`ui`, `navigation`, `layout`, `learning`, `parent`, `admin`), `/design-system` showcase with a working representative activity, `docs/DESIGN_SYSTEM.md`.
+
+| Definition of done | Status |
+|---|---|
+| Tokens, typography, global styles, components, types, states, motion | ✅ |
+| Responsive behaviour validated | ✅ Chromium at 1180×820, 820×1180, 1440×900, 390×844 (touch emulation); no overflow, clean console. **Physical iPad not tested.** |
+| Accessibility basics | ✅ contrast tests, keyboard/focus/modal-trap checks, reduced motion, labelled controls |
+| Showcase functional | ✅ |
+| Docs updated | ✅ |
+| TypeScript, lint, tests, build | ✅ |
+| Known limitations documented | ✅ DESIGN_SYSTEM.md §15 |
+
+---
+
+## Sprint 03 — Student Learning Experience (static content)
 
 **Deliverables**
 1. Kid routes: Welcome, Profile selection, Home, Explore World, Module detail, Learning session, Rewards — wired to a **typed local content fixture** (clearly labelled fixture, replaced in Sprint 03; not presented as real backend functionality).
-2. Question renderers: `tap_choice`, `listen_choose`, `count_tap`, `drag_match`, `sort_order`, `odd_one_out`, each with idle/selected/correct/try-again/demonstrate states.
+2. Question renderers built on Sprint 02 components: `tap_choice`, `listen_choose`, `count_tap`, `drag_match` (tap-to-match), `sort_order`, `odd_one_out`.
 3. Session flow: 2 tries → demonstration, gentle feedback, celebration, progress path.
 4. Content for one module ("Number Garden") ported from the prototype's grade-0 math games, with placeholder audio.
 5. Playwright e2e on iPad viewport for a full session.
 
-**Dependencies:** Sprint 01 components and audio module.
+**Dependencies:** Sprint 01 audio module and Sprint 02 component library (QuestionCard, ImageChoice, AnswerOption, activities, FeedbackPanel, RewardPanel, StudentShell).
 
 **Acceptance criteria**
 - A child-testing session (or internal proxy) completes a lesson on iPad with no reading required.
@@ -70,7 +88,7 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 
 ---
 
-## Sprint 03 — Backend & Learning Engine
+## Sprint 04 — Backend & Learning Engine
 
 **Deliverables**
 1. Supabase project (dev) + `supabase/` config; migrations for all tables in `DATABASE_SCHEMA.md`; generated types.
@@ -91,7 +109,7 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 
 ---
 
-## Sprint 04 — Parent Dashboard & Assessment
+## Sprint 05 — Parent Dashboard & Assessment
 
 **Deliverables**
 1. Parent auth screens, onboarding wizard (family → consent → child → assessment hand-off).
@@ -101,7 +119,7 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 5. Settings: session limit + break reminder, music, captions, language, data export, account/family deletion; second-guardian invite (P1 if time).
 6. Privacy policy + consent text placeholders flagged **"pending legal review"**.
 
-**Dependencies:** Sprint 03 data and RPCs; education reviewer for skill descriptions; legal reviewer for consent copy.
+**Dependencies:** Sprint 04 data and RPCs; education reviewer for skill descriptions; legal reviewer for consent copy.
 
 **Acceptance criteria**
 - New parent goes from signup to child playing in ≤ 5 minutes (moderated test).
@@ -111,7 +129,7 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 
 ---
 
-## Sprint 05 — Admin CMS & Production QA
+## Sprint 06 — Admin CMS & Production QA
 
 **Deliverables**
 1. Admin shell with staff-role guard; Modules, Skills, Question Bank (typed editors per question type incl. private key entry), Lesson Builder (ordering, preview as child), Assessment Builder, Media Library (upload, tag, search), Staff & roles, audit log.
@@ -120,7 +138,7 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 4. Production hardening: error monitoring, rate limiting on auth, security headers/CSP, backups confirmed, performance budgets.
 5. QA pass: device matrix (iPad 9th gen+, iPad Air/Pro, desktop Chrome/Safari/Edge), accessibility, RLS penetration checklist, content review sign-off.
 
-**Dependencies:** Sprints 03–04; content team availability; production Supabase + hosting accounts.
+**Dependencies:** Sprints 04–05; content team availability; production Supabase + hosting accounts.
 
 **Acceptance criteria**
 - A non-engineer creates, previews and publishes a lesson end-to-end.
@@ -132,8 +150,8 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 ## Cross-sprint dependencies
 
 ```
-S01 tokens/components/audio ─┬─> S02 kid screens ──> S03 wire to DB ─┬─> S04 parent
-                             └──────────────────────> S03 auth ───────┴─> S05 admin + QA
+S01 scaffold/audio ─> S02 design system ─┬─> S03 student screens ──> S04 wire to DB ─┬─> S05 parent
+                                         └──────────────────────────> S04 auth ───────┴─> S06 admin + QA
 ```
 
 External inputs needed: Supabase project(s), hosting account, mascot/3D art direction, Vietnamese voiceover, education reviewer, legal reviewer.

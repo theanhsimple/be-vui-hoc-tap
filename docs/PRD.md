@@ -11,6 +11,10 @@
 
 Because many children in this age group cannot yet read or write fluently, **the child experience is visual-first and audio-first**: every instruction is spoken, every choice is a picture or object, and no child-facing interaction requires reading or typing.
 
+### 1.0 Audience note (Sprint 02)
+
+The Sprint 02 brief describes the audience as children preparing for Grade 1 **and private school entrance assessments**. This is recorded as context only; no admission requirements or readiness claims are designed or implied (DECISIONS D-013, D-028, P-9).
+
 ### 1.1 Relationship to the existing prototype
 
 The repository `be-vui-hoc-tap` already contains a working single-file prototype, **"Bé Vui Học Tập"** (`index.html`, vanilla JS, no build step). It is the validated starting point for little — not something to discard:
@@ -102,6 +106,9 @@ Feedback rules: wrong answers get gentle encouragement and a hint, never a buzze
 | A8 | Staff & roles | Grant/revoke editor/admin roles; audit log. | P1 |
 
 ## 6. Learning content scope (initial)
+
+**Learning worlds (visual framework, Sprint 02):** Alphabet Forest, Number Kingdom, IQ Castle, Memory Garden, English Island, School Town, Challenge Arena. Mapping of skill domains to worlds and the v1 subset are pending (DECISIONS P-7).
+
 
 Initial skill domains (subject to education-expert review — names are working titles):
 

@@ -1,41 +1,40 @@
 import Link from "next/link";
 
-import { Mascot } from "@/components/kid/Mascot";
-import { Card } from "@/components/ui/Card";
 import { Logo } from "@/components/layout/Logo";
+import { LittleMascot } from "@/components/learning/LittleMascot";
+import { LittleCard } from "@/components/ui/LittleCard";
 import { getServerEnv } from "@/lib/env.server";
 
 /**
- * Temporary holding page. The child welcome screen arrives at /play in
- * Sprint 02 and the parent area at /parent in Sprint 04.
+ * Temporary holding page until the student welcome screen (/play) and
+ * the parent area (/parent) are built.
  */
 export default function HomePage() {
   const showDesignSystem =
     process.env.NODE_ENV !== "production" ||
     getServerEnv().ENABLE_DESIGN_SYSTEM;
-
   return (
-    <main className="grid min-h-dvh place-items-center p-6">
-      <Card
+    <main className="grid min-h-dvh place-items-center p-4">
+      <LittleCard
         padding="lg"
         className="flex max-w-xl flex-col items-center gap-4 text-center"
       >
-        <Mascot size={140} />
-        <Logo className="text-[48px]" />
-        <p className="text-[22px] font-bold">A little step. A big discovery.</p>
-        <p className="text-[17px] text-ink-600">
+        <LittleMascot size={128} />
+        <Logo className="text-display" />
+        <p className="text-h3">A little step. A big discovery.</p>
+        <p className="text-body text-ink-muted">
           little đang được xây dựng. Trải nghiệm học tập cho bé 5–6 tuổi sẽ sớm
           có mặt.
         </p>
         {showDesignSystem && (
           <Link
-            href="/dev/design-system"
-            className="mt-2 text-[15px] font-bold text-sky-600 underline underline-offset-4"
+            href="/design-system"
+            className="mt-2 inline-flex min-h-11 items-center text-body font-bold text-blue-strong underline underline-offset-4"
           >
-            Xem design system (dành cho nhóm phát triển)
+            Xem design system (nội bộ)
           </Link>
         )}
-      </Card>
+      </LittleCard>
     </main>
   );
 }

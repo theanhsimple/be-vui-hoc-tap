@@ -5,39 +5,61 @@
   html {
     color-scheme: light;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background: linear-gradient(var(--sky-100), var(--sky-200)) fixed;
-    color: var(--ink-900);
+    background: var(--canvas);
+    color: var(--ink);
     font-family: var(--font-sans);
+    font-size: var(--text-body);
+    font-weight: 500;
     line-height: 1.5;
     /* Removes the double-tap zoom delay on touch devices; pinch zoom still works. */
     touch-action: manipulation;
     overscroll-behavior-y: contain;
   }
 
+  /* Vietnamese diacritics need room: never let headings collapse their line height. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   :focus-visible {
-    outline: 4px solid var(--sky-600);
+    outline: 3px solid var(--focus);
     outline-offset: 3px;
   }
 
-  button {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
     cursor: pointer;
   }
 }
 
-/* 3D extrusion used by Button3D / BigChoice. --edge is set per variant. */
+/*
+ * Soft 3D: a short extruded edge in a darker shade of the fill (--edge),
+ * plus a restrained ambient shadow. Pressed state halves the edge.
+ */
 @utility edge-3d {
   box-shadow:
-    0 6px 0 var(--edge),
-    var(--shadow-soft),
-    var(--shadow-ambient);
+    0 var(--edge-depth, 4px) 0 var(--edge, var(--surface-edge)),
+    var(--shadow-sm);
 }
 
 @utility edge-3d-pressed {
   box-shadow:
-    0 2px 0 var(--edge),
-    var(--shadow-soft),
-    var(--shadow-ambient);
+    0 1px 0 var(--edge, var(--surface-edge)),
+    var(--shadow-xs);
+}
+
+@utility safe-px {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
 }

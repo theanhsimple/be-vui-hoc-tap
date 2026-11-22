@@ -5,16 +5,16 @@ import { cn } from "@/lib/cn";
 export interface SpeechBubbleProps extends HTMLAttributes<HTMLDivElement> {
   /** Which side the tail points to (towards the speaker). */
   tail?: "left" | "bottom" | "none";
-  size?: "kid" | "parent";
+  size?: "child" | "parent";
 }
 
 /**
- * The mascot's speech bubble. In kid mode its text is a caption for adults;
- * the child gets the same message as audio (see AudioPromptButton).
+ * The mascot's speech bubble. In the student experience the text is a caption
+ * for adults; the child receives the same message as audio.
  */
 export function SpeechBubble({
   tail = "left",
-  size = "kid",
+  size = "child",
   className,
   children,
   ...rest
@@ -22,10 +22,8 @@ export function SpeechBubble({
   return (
     <div
       className={cn(
-        "relative min-w-0 rounded-lg bg-white text-ink-900 shadow-soft",
-        size === "kid"
-          ? "px-5 py-4 text-[clamp(20px,2.6vw,28px)] leading-snug font-extrabold"
-          : "px-4 py-3 text-[17px] font-semibold",
+        "relative min-w-0 rounded-lg bg-surface text-ink shadow-sm",
+        size === "child" ? "px-5 py-4 text-h2" : "px-4 py-3 text-body-lg",
         className,
       )}
       {...rest}
@@ -35,10 +33,10 @@ export function SpeechBubble({
         <span
           aria-hidden
           className={cn(
-            "absolute size-5 rotate-45 rounded-[4px] bg-white",
+            "absolute size-4 rotate-45 rounded-[3px] bg-surface",
             tail === "left"
-              ? "top-1/2 -left-2 -translate-y-1/2"
-              : "-bottom-2 left-10",
+              ? "top-1/2 -left-1.5 -translate-y-1/2"
+              : "-bottom-1.5 left-10",
           )}
         />
       )}

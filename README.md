@@ -4,7 +4,7 @@
 
 A premium 3D playful learning platform for children aged 5–6 in Vietnam (iPad & desktop), with parent and admin experiences. Product and technical docs live in [`docs/`](docs/).
 
-> Status: **Sprint 01 — Foundation & Design System.** No learning content, accounts or database yet. See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md).
+> Status: **Sprint 02 — Design System & Visual Foundation.** No learning content, accounts or database yet. See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) and [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
 
 ## Requirements
 
@@ -20,7 +20,7 @@ pnpm dev
 ```
 
 - App: http://localhost:3000
-- Design system gallery: http://localhost:3000/dev/design-system (dev only; set `ENABLE_DESIGN_SYSTEM=true` **at build time** to include it in a production build)
+- Design system showcase: http://localhost:3000/design-system (dev only; set `ENABLE_DESIGN_SYSTEM=true` **at build time** to include it in a production build)
 
 ## Scripts
 
@@ -38,18 +38,19 @@ pnpm dev
 
 ```
 src/
-  app/                    routes (App Router); /dev/design-system is the component gallery
+  app/                    routes (App Router); /design-system is the internal showcase
   components/
-    ui/                   Button3D, IconButton3D, Card, SpeechBubble, icons, tones
-    kid/                  Mascot, BigChoice, AudioPromptButton, ProgressPath, StarBurst, ParentGate
-    layout/               KidShell, ParentShell, AdminShell, Logo
-  lib/
-    audio/                audio engine (unlock, preload, playback, TTS fallback, SFX) + React hook
-    parent-gate/          adult-check challenge logic
-    env.ts, env.server.ts Zod-validated environment
+    ui/                   Little* foundation components and form controls
+    navigation/           student/parent/admin navigation, breadcrumb, parent gate
+    layout/               StudentShell, ParentShell, AdminShell
+    learning/             mascot, audio, answers, question card, feedback, activities
+    parent/ admin/        dashboard and CMS building blocks
+  design-system/          tokens (TS mirror), motion presets, learning worlds
+  illustrations/          illustration registry + placeholder art
+  lib/                    audio engine, parent-gate logic, env validation
   styles/tokens.css       design tokens (Tailwind v4 theme)
 legacy/prototype.html     original "Bé Vui Học Tập" prototype, kept as reference
-docs/                     PRD, architecture, UX/UI, database plan, roadmap, decisions
+docs/                     PRD, architecture, UX/UI, design system, database plan, roadmap, decisions
 ```
 
 ## Legacy prototype
