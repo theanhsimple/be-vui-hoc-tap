@@ -1,20 +1,16 @@
 import { Star } from "lucide-react";
 
-import { starsOnDay, totalStars } from "@/features/learning/progress/calc";
-import type { ChildProgress } from "@/features/learning/progress/model";
-
 import { LittleLinkButton } from "../../ui/LittleLinkButton";
 import { LittleIllustration } from "../../ui/LittleIllustration";
 
 /** Gentle daily encouragement — celebrates what was done, never what was missed. */
 export function DailyRewardCard({
-  progress,
-  today,
+  todayStars,
+  total,
 }: {
-  progress: ChildProgress;
-  today: string;
+  todayStars: number;
+  total: number;
 }) {
-  const todayStars = starsOnDay(progress, today);
   return (
     <section
       aria-labelledby="daily-reward-title"
@@ -31,7 +27,7 @@ export function DailyRewardCard({
         </h2>
         <p className="flex items-center gap-1.5 text-body-sm text-ink-muted">
           <Star aria-hidden className="size-4 fill-yellow text-yellow-strong" />{" "}
-          Tổng cộng {totalStars(progress)} ngôi sao
+          Tổng cộng {total} ngôi sao
         </p>
       </div>
       <LittleLinkButton href="/student/rewards" variant="reward" size="lg">

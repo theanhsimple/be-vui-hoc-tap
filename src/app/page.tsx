@@ -3,12 +3,10 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { LittleMascot } from "@/components/learning/LittleMascot";
 import { LittleCard } from "@/components/ui/LittleCard";
+import { LittleLinkButton } from "@/components/ui/LittleLinkButton";
 import { getServerEnv } from "@/lib/env.server";
 
-/**
- * Temporary holding page until the student welcome screen (/play) and
- * the parent area (/parent) are built.
- */
+/** Minimal public entry until the marketing site exists. */
 export default function HomePage() {
   const showDesignSystem =
     process.env.NODE_ENV !== "production" ||
@@ -23,9 +21,17 @@ export default function HomePage() {
         <Logo className="text-display" />
         <p className="text-h3">A little step. A big discovery.</p>
         <p className="text-body text-ink-muted">
-          little đang được xây dựng. Trải nghiệm học tập cho bé 5–6 tuổi sẽ sớm
-          có mặt.
+          Học mà chơi cho bé 5–6 tuổi. Bản thử nghiệm: nội dung học là nội dung
+          mẫu, đang chờ chuyên gia giáo dục duyệt.
         </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <LittleLinkButton href="/student/welcome" size="lg">
+            Bé vào học
+          </LittleLinkButton>
+          <LittleLinkButton href="/auth/login" size="lg" variant="secondary">
+            Bố mẹ đăng nhập
+          </LittleLinkButton>
+        </div>
         {showDesignSystem && (
           <Link
             href="/design-system"

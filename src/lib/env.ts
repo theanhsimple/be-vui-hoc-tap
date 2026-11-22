@@ -8,7 +8,11 @@ const optional = <T extends z.ZodType>(schema: T) =>
  * Public (browser-safe) environment. Every variable must be referenced
  * explicitly as `process.env.NAME` so Next.js can inline it at build time.
  *
- * Supabase variables are optional until Sprint 03, when they become required.
+ * Supabase variables are optional at build time so the app can be built
+ * without a backend; every backend boundary calls `getSupabaseConfig()`,
+ * which reports a clear "not configured" state instead of crashing.
+ * The publishable (formerly "anon") key is safe in the browser by design:
+ * all data access is enforced by Row Level Security.
  */
 export const clientEnvSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.preprocess(
@@ -16,7 +20,7 @@ export const clientEnvSchema = z.object({
     z.url(),
   ),
   NEXT_PUBLIC_SUPABASE_URL: optional(z.url()),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: optional(z.string().min(1)),
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: optional(z.string().min(1)),
 });
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;
@@ -36,5 +40,6 @@ export function parseClientEnv(
 export const clientEnv: ClientEnv = parseClientEnv({
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
 });

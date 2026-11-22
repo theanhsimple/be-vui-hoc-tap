@@ -1,11 +1,10 @@
 "use client";
 
 import { ArrowRight, Clock, Puzzle, RotateCcw } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 
-import { lessonState } from "@/features/learning/progress/calc";
-import { demoStore } from "@/features/learning/store/demoStore";
-import { useStudent } from "@/features/learning/store/hooks";
+import { startLessonAction } from "@/features/learning/backend/actions";
+import { useStudent } from "@/features/learning/student-context";
 import type { LessonSummary, World } from "@/features/learning/types";
 
 import { AudioInstruction } from "../../learning/AudioInstruction";
@@ -24,22 +23,23 @@ export function LessonIntroScreen({
   lesson: LessonSummary;
   world: World;
 }) {
-  const ctx = useStudent();
-  const router = useRouter();
+  const { progress, lessonStates } = useStudent();
+  const [pending, startTransition] = useTransition();
+  const [failed, setFailed] = useState(false);
   const back = `/student/worlds/${world.id}`;
-  if (!ctx)
-    return (
-      <StudentScreen loading backHref={back}>
-        {null}
-      </StudentScreen>
-    );
 
-  const state = lessonState(world, lesson.id, ctx.progress);
+  const state = lessonStates[lesson.id] ?? "locked";
   const resume =
-    ctx.progress.inProgress?.lessonId === lesson.id
-      ? ctx.progress.inProgress
+    progress.inProgress?.lessonId === lesson.id
+      ? progress.inProgress
       : undefined;
-  const play = `/student/lessons/${lesson.id}/play`;
+  // Starting creates/resumes the session on the server, then opens the player.
+  const start = (restart: boolean) =>
+    startTransition(async () => {
+      setFailed(false);
+      const result = await startLessonAction({ lessonId: lesson.id, restart });
+      if (!result.ok) setFailed(true);
+    });
 
   if (state === "locked") {
     return (
@@ -90,27 +90,34 @@ export function LessonIntroScreen({
             )}
           </div>
           <div className="flex flex-wrap gap-3">
-            <LittleLinkButton
-              href={play}
+            <LittleButton
               size="xl"
               iconEnd={<ArrowRight strokeWidth={3} />}
+              loading={pending}
+              onClick={() => start(false)}
             >
               {resume ? "Học tiếp nhé!" : "Cùng học nhé!"}
-            </LittleLinkButton>
+            </LittleButton>
             {resume && (
               <LittleButton
                 size="lg"
                 variant="secondary"
                 iconStart={<RotateCcw />}
-                onClick={() => {
-                  demoStore.saveInProgress(ctx.child.id, undefined);
-                  router.push(play);
-                }}
+                disabled={pending}
+                onClick={() => start(true)}
               >
                 Học lại từ đầu
               </LittleButton>
             )}
           </div>
+          {failed && (
+            <p
+              role="alert"
+              className="rounded-md bg-warning-50 p-3 text-body font-semibold text-warning-strong"
+            >
+              Chưa mở được bài học. Con thử lại nhé.
+            </p>
+          )}
         </div>
       </div>
     </StudentScreen>

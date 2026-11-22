@@ -1,7 +1,7 @@
 import { ArrowRight, Clock, Puzzle } from "lucide-react";
 
-import { allLessons, findWorld } from "@/features/learning/content/repository";
-import { dateKey } from "@/features/learning/progress/calc";
+import { allLessons, findWorld } from "@/features/learning/content/catalog";
+import { dateKeyIn } from "@/features/learning/progress/calc";
 import type { ChildProgress } from "@/features/learning/progress/model";
 import type { Catalog } from "@/features/learning/types";
 
@@ -29,7 +29,7 @@ export function DailyLearningCard({
     .filter((l) => l !== undefined);
   const doneToday = (id: string) => {
     const r = progress.lessons[id];
-    return !!r && dateKey(new Date(r.lastCompletedAt)) === today;
+    return !!r && dateKeyIn(new Date(r.lastCompletedAt)) === today;
   };
   const completed = plan.filter((l) => doneToday(l.id)).length;
   const next = plan.find((l) => !doneToday(l.id));

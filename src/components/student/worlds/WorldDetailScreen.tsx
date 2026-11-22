@@ -2,12 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import {
-  lessonState,
-  worldProgress,
-  worldState,
-} from "@/features/learning/progress/calc";
-import { useStudent } from "@/features/learning/store/hooks";
+import { useStudent } from "@/features/learning/student-context";
 import type { World } from "@/features/learning/types";
 import { cn } from "@/lib/cn";
 
@@ -36,16 +31,12 @@ const BAR = {
 
 /** Screen 05 — the learning journey inside one world. */
 export function WorldDetailScreen({ world }: { world: World }) {
-  const ctx = useStudent();
+  const { progress, worldStates, lessonStates } = useStudent();
   const router = useRouter();
-  if (!ctx)
-    return (
-      <StudentScreen loading backHref="/student/explore">
-        {null}
-      </StudentScreen>
-    );
-  const state = worldState(world, ctx.progress);
-  const { completed, total } = worldProgress(world, ctx.progress);
+  const ws = worldStates[world.id];
+  const state = ws?.state ?? "locked";
+  const completed = ws?.completed ?? 0;
+  const total = ws?.total ?? 0;
 
   return (
     <StudentScreen backHref="/student/explore" backLabel="Về các thế giới">
@@ -110,8 +101,8 @@ export function WorldDetailScreen({ world }: { world: World }) {
                 tone={world.tone}
                 lessons={skill.lessons.map((l) => ({
                   lesson: l,
-                  state: lessonState(world, l.id, ctx.progress),
-                  stars: ctx.progress.lessons[l.id]?.bestStars ?? 0,
+                  state: lessonStates[l.id] ?? "locked",
+                  stars: progress.lessons[l.id]?.bestStars ?? 0,
                 }))}
                 onOpen={(id) => router.push(`/student/lessons/${id}`)}
               />

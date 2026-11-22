@@ -3,8 +3,8 @@
 import { ArrowRight, House, Trophy } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-import { rewardById } from "@/features/learning/progress/rewards";
-import { useStudent } from "@/features/learning/store/hooks";
+import type { RewardId } from "@/features/learning/progress/model";
+import { REWARDS } from "@/features/learning/progress/rewards";
 import type { LessonSummary, World } from "@/features/learning/types";
 import { useAudio } from "@/lib/audio";
 
@@ -15,23 +15,39 @@ import { LittleStatePanel } from "../../ui/LittleStatePanel";
 import { BadgeTile } from "../rewards/BadgeTile";
 import { StudentScreen } from "../StudentScreen";
 
-/** Screen 08 — celebrate effort; no ranking, no "smart/weak" labels. */
+export interface LessonOutcome {
+  stars: number;
+  total: number;
+  correct: number;
+  firstTry: number;
+  newRewards: string[];
+  completedAt: string;
+}
+
+/**
+ * Screen 08 — celebrate effort; no ranking, no "smart/weak" labels.
+ * `result` is the authoritative session result from the server.
+ */
 export function LessonResultScreen({
   lesson,
   world,
+  result: record,
 }: {
   lesson: LessonSummary;
   world: World;
+  result: LessonOutcome | null;
 }) {
-  const ctx = useStudent();
   const { play, playSfx, unlocked } = useAudio();
   const celebrated = useRef(false);
-  const record = ctx?.progress.lessons[lesson.id];
   const message = record
-    ? record.last.firstTry === record.last.total
+    ? record.firstTry === record.total
       ? "Con đã hoàn thành hành trình hôm nay!"
       : "Con đã rất cố gắng. Cùng khám phá thêm nhé!"
     : "";
+  const badges = (record?.newRewards ?? []).flatMap((id) => {
+    const reward = REWARDS.find((r) => r.id === (id as RewardId));
+    return reward ? [reward] : [];
+  });
 
   useEffect(() => {
     if (!record || celebrated.current || !unlocked) return;
@@ -40,7 +56,6 @@ export function LessonResultScreen({
     void play({ text: message, lang: "vi-VN" });
   }, [record, unlocked, message, play, playSfx]);
 
-  if (!ctx) return <StudentScreen loading>{null}</StudentScreen>;
   if (!record) {
     return (
       <StudentScreen backHref={`/student/worlds/${world.id}`}>
@@ -58,7 +73,7 @@ export function LessonResultScreen({
     );
   }
 
-  const { last } = record;
+  const last = record;
   return (
     <StudentScreen align="center">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
@@ -77,7 +92,7 @@ export function LessonResultScreen({
           </p>
         </div>
 
-        {last.newRewards.length > 0 && (
+        {badges.length > 0 && (
           <section
             aria-labelledby="new-badges"
             className="flex flex-col items-center gap-3"
@@ -86,11 +101,11 @@ export function LessonResultScreen({
               Con nhận được huy hiệu mới!
             </h2>
             <ul className="flex flex-wrap justify-center gap-3">
-              {last.newRewards.map((id) => (
-                <li key={id} className="w-44">
+              {badges.map((reward) => (
+                <li key={reward.id} className="w-44">
                   <BadgeTile
-                    reward={rewardById(id)}
-                    earnedAt={record.lastCompletedAt}
+                    reward={reward}
+                    earnedAt={record.completedAt}
                     isNew
                   />
                 </li>

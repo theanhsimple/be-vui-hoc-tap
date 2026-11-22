@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { contentRepository } from "../content/repository";
+import { demoContentRepository as contentRepository } from "@/data/demo/repository";
 import {
   createPlayerReducer,
   initPlayer,

@@ -1,186 +1,109 @@
-# little — Database Schema (planned)
+# little — Database Schema (implemented, Sprint 04)
 
-> **Status:** Plan only. No migrations exist and none have been run. All migrations will be **additive**, reviewed, and applied to a dev project first. No destructive migrations.
+> **Status:** implemented as versioned migrations in `supabase/migrations/` and **applied to a local Supabase stack only** (Postgres 17). Not applied to any hosted project. Source of truth: the SQL files; this document explains them. Security model: SECURITY_AND_RLS.md.
 
-Postgres on Supabase. Conventions: `uuid` PKs (`gen_random_uuid()`), `created_at`/`updated_at timestamptz` on every table (trigger-maintained), `snake_case`, enums as Postgres enums, soft-delete via `archived_at` for family data.
+Conventions: `uuid` PKs (`gen_random_uuid()`); content also has a unique **slug** (stable id used by the app and the seed); `timestamptz` (UTC) with defaults; `updated_at` maintained by trigger; `snake_case`; enums for closed sets; family data is **archived**, not deleted.
 
 ## 1. Schemas
 
-| Schema | Exposed via API? | Contents |
-|--------|------------------|----------|
-| `public` | Yes | All app tables, protected by RLS |
-| `private` | **No** | Answer keys, grading rules, internal helpers |
-| `auth`, `storage` | Supabase-managed | — |
+| Schema | Exposed via API | Contents |
+|---|---|---|
+| `public` | yes (RLS on every table) | app tables, RPCs |
+| `private` | **no** | `question_answer_keys`, `mastery_config`, helper & internal functions |
+| `auth`, `storage` | Supabase-managed | users; buckets/objects |
 
 ## 2. Enums
 
-```sql
-staff_role          : 'editor' | 'admin'
-guardian_role       : 'owner' | 'guardian'
-content_status      : 'draft' | 'in_review' | 'published' | 'archived'
-question_type       : 'single_choice' | 'image_choice' | 'matching' | 'ordering' | 'pattern' | 'memory'   -- updated Sprint 03 (D-030)
-session_kind        : 'lesson' | 'assessment' | 'practice'
-session_status      : 'active' | 'completed' | 'abandoned'
-mastery_band        : 'not_started' | 'exploring' | 'developing' | 'confident'
-reward_kind         : 'star' | 'sticker' | 'badge' | 'real_world'
+```
+family_role        owner | guardian
+membership_status  active | invited | removed
+staff_role         content_editor | content_reviewer | publisher | admin
+content_status     draft | in_review | published | archived
+question_type      single_choice | image_choice | matching | ordering | pattern | memory
+child_status       active | archived
+session_status     in_progress | completed | abandoned
+mastery_state      not_started | learning | practicing | mastered | review
+reward_kind        badge | sticker | real_world
 ```
 
-## 3. Tables
+## 3. Relationships
 
-### 3.1 Identity & family
+```
+auth.users 1─1 profiles 1─* family_members *─1 families 1─* children
+profiles 1─* staff_roles                     families 1─* guardian_consents
+modules 1─* skills 1─* lessons *─* questions (lesson_questions, ordered)
+questions 1─1 private.question_answer_keys          skills 1─* questions
+children 1─* learning_sessions 1─* question_attempts (→ questions, skills)
+children 1─* child_lesson_progress (→ lessons)      children 1─* skill_mastery (→ skills)
+children 1─* child_rewards (→ rewards, learning_sessions)   children 1─* child_daily_plans
+assessments 1─* assessment_items (→ questions)      children 1─* assessment_attempts
+```
 
-**`profiles`** — 1:1 with `auth.users` (guardians and staff)
-| column | type | notes |
-|---|---|---|
-| id | uuid PK → auth.users.id | on delete cascade |
-| display_name | text | |
-| locale | text default 'vi' | 'vi' \| 'en' |
+## 4. Tables
 
-**`families`**
-| id | uuid PK |
+### Identity & family
+| Table | Key columns & constraints |
 |---|---|
-| name | text |
-| settings | jsonb — session time limit, music on/off, captions; Zod-validated |
-| created_by | uuid → profiles |
+| `profiles` | `id` PK → `auth.users` (cascade); `display_name` ≤ 60; `locale` vi/en. Row created by trigger on sign-up. |
+| `families` | `display_name` 1–60 (trimmed); `created_by` → profiles (set null); `archived_at` |
+| `family_members` | PK (`family_id`, `user_id`); `role`; `status`; `invited_by`; **unique active owner per family** (partial index) |
+| `guardian_consents` | `family_id`, `user_id`, `consent_version` (`^[a-z0-9.-]{1,32}$`), `consented_at`, `withdrawn_at` |
+| `children` | `family_id` → families (cascade); `nickname` 1–20; `avatar_key` from a fixed catalogue; `birth_year` optional (no full DOB, no photo, no email); `preferences` jsonb object ≤ 2 KB (`{voice, sounds}`, Zod-validated); `status` + `archived_at` (consistent by CHECK); `rewards_seen_at` |
+| `staff_roles` | PK (`user_id`, `role`); `granted_by`, `granted_at` |
 
-**`family_members`** (= Guardians)
-| family_id | uuid → families |
+### Content
+| Table | Key columns & constraints |
 |---|---|
-| profile_id | uuid → profiles |
-| role | guardian_role |
-| PK | (family_id, profile_id) |
+| `modules` | `slug` unique; `title_vi/en`, `category`, `description`, `tone`, `illustration`, `sort_order`; `unlock_min_completed_lessons` (D-031); `status`, `published_at` |
+| `skills` | `module_id` → modules (restrict); `slug`; `title_vi`; `sort_order`; `status` |
+| `lessons` | `skill_id` → skills (restrict); `slug`; `title_vi`, `objective_vi`, `minutes` 1–30, `cover` jsonb; `sort_order`; `status` |
+| `questions` | `slug`; `skill_id`; `type`; `difficulty` 1–4 (L1–L4); `prompt_vi`; `instruction_audio_url` (https or relative); `stimulus`, `memorize`, `feedback` jsonb; **`config` jsonb — public options/items/cards, no correctness**; `max_attempts` 1–5 (default 2); `status` |
+| `private.question_answer_keys` | PK `question_id` → questions (cascade); `answer` jsonb (`{type:'choice',optionId}` · `{type:'matching',pairs}` · `{type:'ordering',order}` · `{type:'pattern',fills}` · `{type:'memory',pairs}`); `hint_eliminate` (a wrong option) |
+| `lesson_questions` | PK (`lesson_id`, `position`); unique (`lesson_id`, `question_id`) |
+| `rewards` | `key` unique; `kind`; titles; `criteria_vi`; `illustration`; **`rule` jsonb** evaluated by the server: `{kind:'lessons_completed',count}` · `{kind:'modules_explored',count}` · `{kind:'module_lessons_completed',module,count}`; `status` |
 
-**`guardian_consents`** — auditable consent records
-| id, family_id, profile_id, consent_version text, consented_at timestamptz, withdrawn_at timestamptz null |
-
-**`children`**
-| column | type | notes |
-|---|---|---|
-| id | uuid PK | |
-| family_id | uuid → families | |
-| nickname | text (1–20 chars) | no surname required |
-| birth_year / birth_month | smallint | no full DOB (minimisation) |
-| avatar_key | text | from a fixed catalogue; no photos |
-| archived_at | timestamptz null | |
-
-**`staff_roles`**
-| profile_id uuid → profiles, role staff_role, granted_by uuid, granted_at | PK (profile_id, role) |
-
-### 3.2 Content (CMS)
-
-**`media_assets`**: id, bucket, path, kind ('image'|'audio'|'animation'|'video'), alt_text_vi, transcript_vi (for audio), width, height, duration_ms, tags text[], status content_status, uploaded_by.
-
-**`modules`** (islands): id, slug unique, title_vi, title_en, description_vi, theme_color, cover_asset_id, title_audio_id, sort_order, unlock_rule jsonb, status.
-
-**`skills`**: id, code unique (e.g. `NUM.COUNT.10`), domain text, title_vi, parent_description_vi, home_activity_vi, sort_order, status.
-
-**`module_skills`**: (module_id, skill_id) PK.
-
-**`lessons`**: id, module_id, slug, title_vi, icon_asset_id, sort_order, target_minutes smallint, status, published_at.
-
-**`questions`** (safe-to-ship part)
-| column | type | notes |
-|---|---|---|
-| id | uuid PK | |
-| type | question_type | |
-| skill_id | uuid → skills | primary skill |
-| difficulty | smallint 1–5 | |
-| prompt_audio_id | uuid → media_assets | **required to publish** |
-| prompt_text_vi | text | caption / TTS fallback |
-| content | jsonb | type-specific payload (`LearningQuestion` in `src/features/learning/types.ts`: options/left-right/items/sequence-palette/cards, stimulus, memorize, feedback, maxAttempts) — **contains no correctness info** |
-| status | content_status | |
-
-**`private.question_keys`**
-| question_id | uuid PK → public.questions on delete cascade |
+### Learning activity (written only by RPCs)
+| Table | Key columns & constraints |
 |---|---|
-| answer | jsonb — `AnswerKey` in `src/features/learning/grading/keys.ts`: `{type:'choice', optionId, hintEliminate?}`, `{type:'ordering', order}`, `{type:'pattern', fills}`, `{type:'matching', pairs}`, `{type:'memory'}` |
-| hint_audio_id | uuid null |
+| `learning_sessions` | `child_id` (cascade), `lesson_id` (restrict), `status`, `current_index` (0-based, ≤ total), `total_questions`, `correct_count`, `incorrect_count`, `first_try_count`, `score`, `max_score`, `stars` 0–3, `started_by`, `started_at`, `completed_at`, `abandoned_at`, generated `duration_seconds`; CHECKs tie status to timestamps; **unique open session per (child, lesson)** |
+| `question_attempts` | `session_id` (cascade), `child_id`, `question_id`, `skill_id`, `attempt_no` 1–10, `response` jsonb ≤ 4 KB, `is_correct`, `score`, `max_score`, `is_final`, `feedback_text`, `idempotency_key`; **unique (session, question, attempt_no)** and **unique (session, idempotency_key)** |
+| `child_lesson_progress` | PK (`child_id`, `lesson_id`); `best_stars`; `completions`; `last_session_id`; first/last completed |
+| `skill_mastery` | PK (`child_id`, `skill_id`); `state`; `accuracy`; `evidence_count`; `distinct_questions`; `session_count`; `mastered_at`; `last_practiced_at` |
+| `child_rewards` | unique (`child_id`, `reward_id`); `session_id`; **`reason`** text; `granted_at` |
+| `child_daily_plans` | PK (`child_id`, `plan_date`); `lesson_ids uuid[]` (1–5) |
+| `child_module_progress` | **view** (`security_invoker`): completed lessons, stars, last activity per child × module |
+| `private.mastery_config` | single row: `min_accuracy 0.8`, `min_evidence 10`, `min_sessions 2`, `min_distinct_questions 4`, `window_days 60`, `learning_max_evidence 4`, `learning_max_accuracy 0.5` |
 
-**`lesson_questions`**: (lesson_id, question_id) PK, position smallint.
+### Assessment (prepared, no experience yet)
+`assessments` (slug, title, purpose placement/checkpoint, status) · `assessment_items` (ordered questions) · `assessment_attempts` (child, question, response, is_correct, idempotency key unique per assessment+child). Staff-only reads; no RPCs yet.
 
-**`assessments`**: id, slug, title_vi, purpose ('placement'), status.
-**`assessment_items`**: (assessment_id, question_id) PK, position, skill_id.
+### Audit
+`audit_logs` (actor, action, entity, entity_id, meta, created_at) — written by definer functions (`family.create`, `child.create`, `child.archive`, `staff_role.grant/revoke`, `content.status`); admin-readable. `content_publication_history` (entity, id, from → to, actor) — staff-readable.
 
-**`rewards`** (catalogue): id, kind reward_kind, key, title_vi, asset_id, rule jsonb (e.g. "complete 3 lessons in Number Garden"), status.
+## 5. Deletion & archiving
 
-### 3.3 Learning activity (child data)
+- Children: `archive_child` (status + `archived_at`, open sessions abandoned). History is kept. Hard deletion only through a future guardian-initiated deletion flow (not implemented).
+- Content: `restrict` FKs prevent deleting content that has learning history; content is archived via `set_content_status`.
+- Deleting an auth user cascades to `profiles`, memberships and consents; families and children are **not** deleted automatically (family owner deletion flow: future work).
 
-**`learning_sessions`**
-| id | uuid PK |
+## 6. Not created (and why)
+
+| Requested | Decision |
 |---|---|
-| child_id | uuid → children |
-| kind | session_kind |
-| lesson_id / assessment_id | uuid null (one set) |
-| status | session_status |
-| started_at, ended_at | timestamptz |
-| stars_earned | smallint |
-| started_by | uuid → profiles (guardian session that hosted it) |
+| `question_options` | Options are part of each question's typed public `config` (choice options, matching sides, ordering items, pattern palette, memory cards). A separate table would split one rendered unit across rows without a query that needs it (D-047). |
+| `learning_paths` | The path is the ordering module → skill → lesson (`sort_order`), plus unlock rules; no per-child path data exists yet (D-047). |
+| `child_module_progress` table | Derived → a view, so it can never disagree with lesson progress (D-047). |
 
-**`question_attempts`**
-| id | uuid PK |
-|---|---|
-| session_id | uuid → learning_sessions |
-| question_id | uuid → questions |
-| attempt_no | smallint (1..3) |
-| response | jsonb |
-| is_correct | boolean (computed server-side) |
-| latency_ms | int |
-| created_at | timestamptz |
-| UNIQUE | (session_id, question_id, attempt_no) — idempotency |
+## 7. Mastery rule (v1, configurable)
 
-**`skill_mastery`**
-| child_id, skill_id | PK |
-|---|---|
-| score | numeric(4,3) 0–1 (exponentially weighted accuracy, first-try weighted) |
-| band | mastery_band |
-| evidence_count | int |
-| last_practiced_at | timestamptz |
+Evidence = **first attempts** on a skill's questions in the last `window_days` (retries don't count). Then:
 
-**`assessment_results`**: id, session_id, child_id, assessment_id, summary jsonb (per-skill observations), created_at.
+- `mastered`: accuracy ≥ 0.8 **and** evidence ≥ 10 **and** sessions ≥ 2 **and** distinct questions ≥ 4.
+- `review`: was mastered before, no longer meets the rule.
+- `not_started`: no evidence. `learning`: evidence ≤ 4 or accuracy < 0.5. Otherwise `practicing`.
 
-**`child_rewards`**: id, child_id, reward_id, session_id null, earned_at, redeemed_at null (for parent-confirmed real-world rewards carried over from the prototype's "Phiếu bé ngoan").
+Recomputed in `submit_attempt` on every first attempt. Parameters live in `private.mastery_config` (DECISIONS D-042). This replaces the EWMA sketch of the original plan.
 
-**`audit_log`**: id, actor_id, action, entity, entity_id, meta jsonb, created_at (staff actions, publish, role changes, data exports/deletions).
+## 8. Indexes
 
-## 4. Key functions (RPC)
-
-| Function | Security | Purpose |
-|----------|----------|---------|
-| `is_family_member(family_id)` | definer, stable | RLS helper |
-| `can_access_child(child_id)` | definer, stable | RLS helper |
-| `is_staff()`, `has_staff_role(role)` | definer, stable | RLS helper |
-| `create_family(name, consent_version)` | definer | Creates family + owner membership + consent row atomically |
-| `start_session(child_id, lesson_id \| assessment_id)` | definer | Checks access, returns session + ordered question payloads (shuffled options, no keys) |
-| `submit_attempt(session_id, question_id, attempt_no, response, latency_ms)` | definer | Grades against `private.question_keys`, inserts attempt, updates `skill_mastery`, returns feedback |
-| `finish_session(session_id)` | definer | Computes stars, awards rewards, closes session |
-| `publish_content(entity, id)` | definer, staff | Validates completeness (audio, alt text, key present), sets status, audits |
-| `delete_family_data(family_id)` | definer, owner | Guardian-initiated deletion |
-
-All definer functions: `set search_path = ''`, fully-qualified names, explicit access checks at the top.
-
-## 5. RLS plan
-
-| Table | select | insert / update / delete |
-|-------|--------|--------------------------|
-| profiles | own row | own row (update) |
-| families | `is_family_member(id)` | via `create_family`; update by owner |
-| family_members | members of same family | owner only |
-| guardian_consents | members of family | via RPC only |
-| children | `is_family_member(family_id)` | family members |
-| staff_roles | self or admin | admin only |
-| modules / skills / lessons / questions / assessments / rewards / media_assets / join tables | authenticated: `status = 'published'`; staff: all | staff (editor+), publish via RPC |
-| `private.*` | no API exposure | definer functions / service role only |
-| learning_sessions, question_attempts, skill_mastery, assessment_results, child_rewards | `can_access_child(child_id)` | **none directly** — RPCs only (except `child_rewards.redeemed_at` update by guardian) |
-| audit_log | admin | insert via definer functions only |
-
-Storage policies: `content-public` public read, staff write; `content-drafts` staff only; `family-exports` object path prefixed by `family_id`, readable by family members.
-
-**Tests:** pgTAP suite per table: anon denied; guardian A cannot see family B; staff cannot read child data; `questions` select never joins keys; `submit_attempt` rejects foreign `session_id`.
-
-## 6. Indexes (initial)
-
-`children(family_id)`, `family_members(profile_id)`, `lessons(module_id, sort_order)`, `questions(skill_id, status)`, `lesson_questions(lesson_id, position)`, `learning_sessions(child_id, started_at desc)`, `question_attempts(session_id)`, `skill_mastery(child_id)`, `child_rewards(child_id)`.
-
-## 7. Mastery model (v1, intentionally simple)
-
-`score ← score + α·(signal − score)`, α = 0.3, signal = 1.0 first-try correct, 0.6 second-try, 0 otherwise. Bands: < 0.4 exploring, < 0.75 developing, ≥ 0.75 confident **and** evidence_count ≥ 6. Parameters live in one SQL function so they can be tuned; a richer model (e.g. BKT) is a later decision (see DECISIONS D-009).
+`family_members(user_id) where active` · `children(family_id)` · `skills(module_id, sort_order)` · `lessons(skill_id, sort_order)` · `questions(skill_id, status)` · `lesson_questions(question_id)` · `learning_sessions(child_id, started_at desc)` + partial unique open-session index · `question_attempts(session_id)` · `question_attempts(child_id, skill_id, created_at desc)` · `child_rewards(session_id)` · `assessment_attempts(child_id, created_at desc)` · `audit_logs(created_at desc)` · `content_publication_history(entity, entity_id)` · plus all PK/unique indexes.

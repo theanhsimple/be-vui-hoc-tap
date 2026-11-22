@@ -1,14 +1,14 @@
-# little — Student Experience & Learning Engine (Sprint 03)
+# little — Student Experience & Learning Engine (Sprints 03–04)
 
-> **Status:** Implemented in Sprint 03 as a **demo**. Content and answer grading run on the Next.js server from local files; progress is stored **only on the device** (`localStorage`). Nothing is stored in a database yet. See §8 for the Supabase migration path.
+> **Status (Sprint 04):** the student experience runs on **Supabase**: content from PostgreSQL, grading inside a Postgres RPC with private keys, sessions/attempts/progress/rewards/mastery persisted per child, behind parent sign-in. Verified on a local Supabase stack; not deployed to a hosted project. The Sprint 03 device-local demo store has been removed. Backend details: BACKEND_ARCHITECTURE.md, API_CONTRACT.md, SECURITY_AND_RLS.md.
 
 ## 1. Routes
 
 | Route | Screen | Notes |
 |---|---|---|
 | `/student` | → redirects to `/student/welcome` | |
-| `/student/welcome` | Welcome | No login on the child's screen |
-| `/student/profiles` | Profile selection | This family's children only (demo family) |
+| `/student/welcome` | Welcome | Public; the child never types a password |
+| `/student/profiles` | Profile selection | The signed-in guardian's family's active children (RLS) |
 | `/student/home` | Student home | Greeting, daily plan, continue, daily reward, 7 worlds |
 | `/student/explore` | Explore | 7 world cards, locked/available/completed |
 | `/student/worlds/[moduleId]` | World (module) detail | Learning path per skill |
@@ -17,38 +17,34 @@
 | `/student/lessons/[lessonId]/result` | Lesson result | Effort-based message, stars, new badges |
 | `/student/rewards` | Rewards | Stars, badges, history |
 
-All world and lesson pages are prerendered (`generateStaticParams`). Unknown ids show a friendly "lost" page (`app/student/not-found.tsx`); with Partial Prerendering the HTTP status stays 200 + `noindex` because the static shell has already streamed (documented Next.js behaviour).
+All `/student` pages except Welcome require a signed-in guardian (proxy + server checks); all but Profiles also need a selected child. Each page renders a static shell and streams child data inside `<Suspense>`. Unknown ids show a friendly "lost" page (`app/student/not-found.tsx`); with Partial Prerendering the HTTP status stays 200 + `noindex` (D-037). Load failures show `app/student/error.tsx` with a retry.
 
-Every exit to adult functions goes through the parent gate (lock icon) → `ParentDemoPanel` (switch child, reset demo data). The real parent area is Sprint 05.
+Every exit to adult functions goes through the parent gate (lock icon) → `ParentPanel` (parent area, switch child, sign out). The parent area (`/parent`) manages the family and child profiles; the full dashboard is Sprint 05.
 
 ## 2. Code layout
 
 ```
 src/
-  app/student/…                     route files (server): load public content, render client screens
+  app/student/…                     routes: server components load data inside <Suspense>
   components/student/
-    StudentScreen.tsx               shell + child navigation + gated parent panel + loading state
-    VisualView.tsx                  renders a content Visual (illustration / letter-number tile / counting group)
-    WelcomeScreen, ProfilesScreen
-    home/                           HomeScreen, DailyLearningCard, ContinueCard, DailyRewardCard
-    worlds/                         ExploreScreen, WorldCard, WorldDetailScreen, LessonPath
-    lessons/                        LessonIntroScreen, LessonPlayer, MemorizeStage, LessonResultScreen
-    activities/                     ActivityRenderer (type registry), ChoiceActivity, Matching/Ordering/Pattern/Memory
-    rewards/                        RewardsScreen, BadgeTile
+    StudentScreen.tsx               shell + child navigation + gated ParentPanel + loading state
+    StudentLoading.tsx              Suspense fallback
+    VisualView.tsx, WelcomeScreen, ProfilesScreen
+    home/ worlds/ lessons/ activities/ rewards/   (screens; read the server-built view via useStudent())
   features/learning/
-    types.ts                        public content model + response/grade types
-    content/repository.ts           ContentRepository interface + demo implementation
-    grading/grade.ts                pure grading (shared with the future backend)
-    grading/actions.ts              Server Actions submitAnswer / requestHint (Zod-validated)
-    grading/keys.ts                 AnswerKey type
-    session/reducer.ts              lesson player state machine
-    progress/{model,calc,rewards}   progress model, stars, unlock rules, daily plan, badges
-    store/{demoStore,hooks}         device-local demo store + React hooks
-  data/demo/
-    worlds/*.ts                     PUBLIC demo content (7 worlds, 28 lessons, 84 questions)
-    answer-keys.ts                  PRIVATE answer keys — `import "server-only"`
-    helpers.ts, index.ts
-  illustrations/placeholders-content.tsx   placeholder art for the content
+    types.ts                        public content model + response types
+    backend/content.ts              published catalogue & lessons from Postgres ('use cache')
+    backend/student.ts              selected child, overview RPC → StudentView, sessions, results
+    backend/overview.ts             Zod schemas for RPC JSON + mapping (unit-tested)
+    backend/actions.ts              startLesson / submitAnswer / requestHint / markRewardsSeen
+    student-context.tsx             StudentProvider/useStudent (client) + sound preferences
+    session/reducer.ts              player UI state machine (no authority)
+    progress/{model,calc,rewards}   view-model types, display helpers (time zone, daily plan), badge labels
+    content/catalog.ts              pure catalogue helpers
+    grading/keys.ts                 AnswerKey type (seed source)
+  data/demo/                        SEED SOURCE + test fixtures only (never imported by app code)
+    worlds/*.ts, answer-keys.ts (server-only), seed-sql.ts → supabase/seed.sql
+supabase/migrations/…_learning_engine.sql   grading, sessions, progression, stars, rewards, mastery
 ```
 
 ## 3. Question data contract
@@ -72,43 +68,43 @@ Types: `single_choice` (optional confirm step), `image_choice` (tap = answer), `
 ## 4. Grading — answer keys never reach the device
 
 ```
-LessonPlayer (client) ──submitAnswer({lessonId, questionId, attempt, response})──► Server Action
-                                                                                    ├─ Zod-validate input (public endpoint)
-                                                                                    ├─ load question (repository) + key (server-only module)
-                                                                                    ├─ check the response matches the question's options
-                                                                                    └─ gradeResponse() → { correct, final, reveal?, message }
+LessonPlayer ──submitAnswerAction({sessionId, questionId, response, idempotencyKey})──► Server Function
+   Zod · signed-in guardian · session belongs to the SELECTED child
+        └──► rpc submit_attempt (SECURITY DEFINER, one transaction)
+               lock session · replay idempotency key · question must be the current one
+               attempt_no counted server-side · validate response vs public config
+               grade vs private.question_answer_keys · insert attempt · mastery
+               advance / finish session · stars · lesson progress · rewards
+        ◄── { isCorrect, score, maxScore, feedback, canRetry, nextAction, reveal? }
 ```
 
-- The correct answer (`reveal`) is returned **only** when the question is finished (correct, or the last allowed try).
-- Hints (`requestHint`) return encouragement text and, for choice questions, one *wrong* option to fade out.
-- Option ids are opaque (`a`, `b`, `l1`, `r2`…) and never encode correctness.
-- **Verified:** after `next build`, no client chunk contains the keys module marker or key data, and prerendered play pages contain questions but no keys (QA script, Sprint 03). A unit test also fails if any non-server file imports the keys.
-- **By-design exceptions** (inherent to the activity): memory cards carry `pairKey`; "remember" questions show the items before asking. Both are visible to the child anyway.
-- **Demo limitation:** the attempt number is sent by the client and nothing is stored server-side. In Sprint 04 `submit_attempt` (Postgres RPC) counts attempts in `question_attempts`, checks the guardian session and child access, and updates `skill_mastery`; `gradeResponse` logic moves into / mirrors that function.
+- **Per type** (`private.grade_response`): choice = option id; matching = each correct pair scores 1 (partial credit reported, correct only when all pairs right); ordering = positions in place (full permutation required); pattern = blanks filled correctly; memory = the finished board's pairs checked against the **private** pairs (a client claiming success with wrong pairs is marked incorrect).
+- `reveal` (the answer to that one question) only when the question is finished and wrong (D-040). Hints return encouragement and, for choice questions, one **wrong** option to fade.
+- Option ids are opaque and never encode correctness. By-design exceptions: memory cards carry `pairKey`; "remember" questions show items before asking.
+- **Verified:** DB tests grade all 84 questions (all six types) correct with the key and reject wrong/malformed/out-of-order/forged answers; browser scan shows no key data in any response; build output contains no keys.
 
 ## 5. Session behaviour
 
-`session/reducer.ts`: `memorize? → answering ⇄ grading → feedback → next | complete`
+- **Start** (`start_session`): from the lesson intro ("Cùng học nhé!" / "Học tiếp nhé!" / "Học lại từ đầu" → `restart`). Checks child access, publication and unlock rules; returns the open session if one exists (idempotent). The `/play` URL only reads the open session — opening it never creates data; without a session it redirects to the intro.
+- **Answer**: see §4. Wrong & not final → try again (server attempt +1), no Continue button. Final → feedback + "Tiếp tục" / "Xem kết quả".
+- **Duplicates**: one idempotency key per try, reused on network retry → recorded once (tested with 6 concurrent duplicates).
+- **Resume**: the session's `currentIndex` and next `attempt` come from the server, so refresh, another tab or another device continues on the same question with the same try count.
+- **Complete**: the last final answer completes the session in the same transaction (stars, best result, rewards). `complete_session` is an idempotent read/repair.
+- **Abandon**: restart abandons the old session (attempts kept); archiving a child abandons open sessions.
+- **Stale UI** (e.g. a second tab moved on): the server answers `question_mismatch` and the player reloads the intro.
 
-- Submit is ignored unless answering (no double submits, also guarded by an in-flight ref).
-- Wrong & not final → try again (attempt + 1), the wrong pick stays marked until the child chooses another; no "Continue" is shown.
-- Final (correct or last try) → feedback panel + "Tiếp tục" / "Xem kết quả".
-- Grading/network failure → gentle message, back to answering.
-- Progress is saved after every finished question **and every try**, so a refresh or exit resumes on the same question with the same try count.
-- Exit asks for confirmation (spoken), progress is kept.
+## 6. Progress, stars, rewards, mastery
 
-## 6. Progress, stars, rewards
-
-| Rule | Implementation |
+| Rule | Where |
 |---|---|
-| Stars per lesson (D-032) | 1 for finishing + 1 if ≥ half right first time + 1 if all right first time. Best result kept; replays never reduce stars |
-| Lesson unlock (D-031) | First lesson of each skill open; next lesson opens after the previous one in the same skill (L1 → L2 progression) |
-| World unlock (D-031) | All worlds open except Challenge Arena (mixed review), which opens after 3 completed lessons anywhere |
-| Daily plan | 3 open lessons from different worlds (≈ 15 min), rotating by date, saved for the day; review when everything is done. No streaks, nothing lost for missed days |
-| Badges | Explorer Star (1st lesson), Curious Mind (3 worlds), Little Reader / Number Finder / Memory Master (2 lessons in that world), Brave Challenger (1 arena lesson) — all completion/effort based |
+| Stars per lesson (D-032) | `private.stars_for`: 1 + (≥ half first-try) + (all first-try). Best kept in `child_lesson_progress` |
+| Lesson & world unlocking (D-031) | `private.child_lesson_states` — the **single** source used by both `start_session` (enforcement) and the overview (display) |
+| Rewards | `private.evaluate_rewards` with data-driven `rewards.rule`; unique per child; reason recorded |
+| Mastery | `private.recompute_skill_mastery`, configurable thresholds (DATABASE_SCHEMA §7, D-042) |
+| Daily plan | proposed by `buildDailyPlan` from the server's lesson states, stored once per day by `ensure_daily_plan`; "today" = Asia/Ho_Chi_Minh (D-045) |
 | Result copy | "Con đã hoàn thành hành trình hôm nay!" (all first try) or "Con đã rất cố gắng. Cùng khám phá thêm nhé!" — never "smart/weak", no ranking |
 
-All rules are pure functions in `progress/calc.ts` with unit tests.
+The result page shows the authoritative `get_session_result` for the session just played (pinned to the selected child), else the child's latest result for that lesson.
 
 ## 7. Demo content library
 
@@ -131,18 +127,18 @@ Difficulty: L1 39 · L2 38 · L3 7 · L4 0 (L4 content not authored yet).
 
 Content is demo material written for this sprint. It is **not** official curriculum and **not** entrance-exam material (no Newton, Pascal, Đoàn Thị Điểm or other school is referenced). It needs education-reviewer sign-off (DECISIONS P-4).
 
-## 8. Migration path to Supabase (Sprint 04)
+## 8. Migration to Supabase — done in Sprint 04
 
-| Today (demo) | Sprint 04 |
+| Sprint 03 (demo) | Sprint 04 (implemented) |
 |---|---|
-| `demoContentRepository` (local files) | `SupabaseContentRepository`: published modules/skills/lessons/questions under RLS; same `ContentRepository` interface |
-| `data/demo/answer-keys.ts` (server-only) | `private.question_keys`; grading inside `submit_attempt` (security definer) |
-| `submitAnswer` Server Action | thin action calling the RPC as the signed-in guardian |
-| `demoStore` (localStorage) — demo family, selected child | `children` via RLS for the guardian's family; selected child in an httpOnly cookie validated server-side (ARCHITECTURE §3.2) |
-| progress in localStorage | `learning_sessions`, `question_attempts`, `skill_mastery`, `child_rewards`; a `ProgressRepository` replaces the store's progress API, `progress/calc.ts` keeps the pure rules |
-| client-counted attempts | server-counted attempts (idempotent on session, question, attempt_no) |
+| `demoContentRepository` (local files) | `backend/content.ts` — published rows from Postgres, cached |
+| `data/demo/answer-keys.ts` | `private.question_answer_keys` (seeded from the same file) |
+| `submitAnswer` Server Action + TS grader | `submitAnswerAction` → `submit_attempt` RPC (TS grader removed) |
+| `demoStore` (localStorage) profiles & selection | `children` under RLS + httpOnly `little_child` cookie re-validated per request |
+| progress in localStorage | `learning_sessions`, `question_attempts`, `child_lesson_progress`, `skill_mastery`, `child_rewards`, `child_daily_plans` |
+| client-counted attempts | server-counted, idempotent attempts |
 
-The demo store and demo content must not be imported by production code paths once Supabase is live; they stay available behind the demo repository for local development.
+The 84 demo questions are the **development seed** (`supabase/seed.sql`, generated and checked by `seed.test.ts`).
 
 ## 9. Audio
 
@@ -153,11 +149,11 @@ The demo store and demo content must not be imported by production code paths on
 
 ## 10. Known limitations
 
-- Demo progress is per device and per browser, unencrypted, and not a backend (no multi-device sync).
-- Placeholder art (SVG) for mascot, worlds, objects and badges.
-- No recorded voice-over; speech synthesis depends on the device.
-- Attempts are counted by the client (see §4).
+- Runs against a local Supabase stack; no hosted project yet (DECISIONS P-1).
+- Placeholder art (SVG); no recorded voice-over (speech synthesis, labelled "Âm thanh demo"; "Chưa có âm thanh" when the device has no Vietnamese voice).
+- No offline answer queue: a failed request shows a retry message; the retry is safe (idempotent).
 - `notFound()` on unknown ids returns status 200 (+ noindex) under Partial Prerendering.
-- No L4 questions; English Island uses only picture choice.
-- Memorize steps auto-advance after 3–5 s (the child can also tap "Con nhớ rồi"); there's no replay yet.
+- No L4 questions; English Island uses only picture choice; content awaits education review (P-4).
+- Memorize steps auto-advance after 3–5 s (or "Con nhớ rồi"); no replay.
+- Hints are not recorded and do not affect mastery.
 - Not tested on a physical iPad / Safari.

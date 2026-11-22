@@ -28,7 +28,11 @@ export interface MemoryGameProps {
   mismatchDelay?: number;
   /** After this many mismatches, briefly show all cards as a gentle help (no penalty). */
   peekAfterMismatches?: number;
-  onComplete?: (result: { moves: number }) => void;
+  /** `pairs` lists the matched card ids, for server-side validation. */
+  onComplete?: (result: {
+    moves: number;
+    pairs: Array<[string, string]>;
+  }) => void;
 }
 
 const COLS = {
@@ -48,6 +52,7 @@ export function MemoryGame({
   const { playSfx } = useAudio();
   const [open, setOpen] = useState<string[]>([]);
   const [matched, setMatched] = useState<Set<string>>(() => new Set());
+  const [pairs, setPairs] = useState<Array<[string, string]>>([]);
   const [moves, setMoves] = useState(0);
   const [message, setMessage] = useState("");
   const [mismatches, setMismatches] = useState(0);
@@ -75,11 +80,14 @@ export function MemoryGame({
     const [a, b] = next.map((x) => byId.get(x)!);
     if (a!.pairKey === b!.pairKey) {
       const done = new Set(matched).add(a!.pairKey);
+      const found: Array<[string, string]> = [...pairs, [a!.id, b!.id]];
       setMatched(done);
+      setPairs(found);
       setOpen([]);
       setMessage(`Đúng rồi: ${a!.label}!`);
       playSfx("correct");
-      if (done.size * 2 >= cards.length) onComplete?.({ moves: moves + 1 });
+      if (done.size * 2 >= cards.length)
+        onComplete?.({ moves: moves + 1, pairs: found });
     } else {
       setMessage("Chưa giống nhau, thử lại nhé.");
       playSfx("tryAgain");

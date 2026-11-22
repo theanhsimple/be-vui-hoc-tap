@@ -11,17 +11,16 @@ import {
   useState,
 } from "react";
 
-import { requestHint, submitAnswer } from "@/features/learning/grading/actions";
-import { recordLessonCompletion } from "@/features/learning/progress/calc";
-import type { QuestionResult } from "@/features/learning/progress/model";
+import {
+  requestHintAction,
+  submitAnswerAction,
+} from "@/features/learning/backend/actions";
+import type { SessionState } from "@/features/learning/backend/overview";
 import {
   createPlayerReducer,
   initPlayer,
 } from "@/features/learning/session/reducer";
-import { demoStore } from "@/features/learning/store/demoStore";
-import { useStudent } from "@/features/learning/store/hooks";
 import type {
-  Catalog,
   Lesson,
   QuestionResponse,
   World,
@@ -42,130 +41,104 @@ import { VisualView } from "../VisualView";
 import { MemorizeStage } from "./MemorizeStage";
 
 export interface LessonPlayerProps {
-  catalog: Catalog;
   lesson: Lesson;
   world: World;
+  /** The open server session (started on the lesson intro screen). */
+  session: SessionState;
 }
 
-/** Screen 07 — reusable activity player for every question type. */
-export function LessonPlayer(props: LessonPlayerProps) {
-  const ctx = useStudent();
-  const backHref = `/student/worlds/${props.world.id}`;
-  if (!ctx)
-    return (
-      <StudentScreen loading backHref={backHref}>
-        {null}
-      </StudentScreen>
-    );
-  const saved = ctx.progress.inProgress;
-  const resume =
-    saved?.lessonId === props.lesson.id
-      ? {
-          index: saved.questionIndex,
-          results: saved.results,
-          attempt: saved.attempt,
-        }
-      : undefined;
-  return (
-    <PlayerSession
-      key={props.lesson.id}
-      {...props}
-      childId={ctx.child.id}
-      resume={resume}
-      startedAt={saved?.startedAt}
-    />
-  );
-}
+/** Errors after which the page must reload its session from the server. */
+const STALE = new Set(["question_mismatch", "session_not_active", "forbidden"]);
 
-function PlayerSession({
-  catalog,
-  lesson,
-  world,
-  childId,
-  resume,
-  startedAt,
-}: LessonPlayerProps & {
-  childId: string;
-  resume?: { index: number; results: QuestionResult[]; attempt?: number };
-  startedAt?: string;
-}) {
+/**
+ * Screen 07 — reusable activity player for every question type.
+ * Every answer is graded and recorded by the server; the player only keeps
+ * UI state. Progress therefore survives refreshes and other devices.
+ */
+export function LessonPlayer({ lesson, world, session }: LessonPlayerProps) {
   const router = useRouter();
   const { play, playSfx } = useAudio();
   const reducer = useMemo(
     () => createPlayerReducer(lesson.questions),
     [lesson.questions],
   );
-  const [state, dispatch] = useReducer(reducer, resume, (r) =>
-    initPlayer(lesson.questions, r),
+  const [state, dispatch] = useReducer(
+    reducer,
+    {
+      index: session.currentIndex,
+      results: session.results,
+      attempt: session.attempt,
+    },
+    (r) => initPlayer(lesson.questions, r),
   );
   const [exitOpen, setExitOpen] = useState(false);
   const inFlight = useRef(false);
-  const finished = useRef(false);
-  const sessionStart = useRef(startedAt ?? new Date().toISOString());
+  // One idempotency key per try: a retried request (e.g. flaky network)
+  // reuses it, so the server records the answer at most once.
+  const pendingKey = useRef<string | null>(null);
   const question = lesson.questions[state.index];
 
-  // Save progress after every finished question and every try, so a refresh
-  // or exit resumes on the same question with the same try count.
+  // Lesson finished: the server has already completed the session.
   useEffect(() => {
-    if (
-      state.phase === "complete" ||
-      (state.results.length === 0 && state.attempt === 1)
-    )
-      return;
-    const onCurrent = state.phase === "answering" || state.phase === "grading";
-    demoStore.saveInProgress(childId, {
-      lessonId: lesson.id,
-      questionIndex: state.results.length,
-      results: state.results,
-      attempt: onCurrent ? state.attempt : undefined,
-      startedAt: sessionStart.current,
-    });
-  }, [childId, lesson.id, state.results, state.phase, state.attempt]);
-
-  // Lesson finished: record stars and rewards, then show the result.
-  useEffect(() => {
-    if (state.phase !== "complete" || finished.current) return;
-    finished.current = true;
-    const now = new Date();
-    demoStore.updateProgress(
-      childId,
-      (p) =>
-        recordLessonCompletion(catalog, p, lesson, state.results, now).progress,
+    if (state.phase !== "complete") return;
+    router.replace(
+      `/student/lessons/${lesson.id}/result?session=${session.sessionId}`,
     );
-    router.replace(`/student/lessons/${lesson.id}/result`);
-  }, [state.phase, state.results, catalog, childId, lesson, router]);
+  }, [state.phase, lesson.id, session.sessionId, router]);
 
   const submit = useCallback(
     async (response: QuestionResponse) => {
       if (!question || state.phase !== "answering" || inFlight.current) return;
       inFlight.current = true;
+      pendingKey.current ??= crypto.randomUUID();
       dispatch({ type: "SUBMIT" });
       try {
-        const result = await submitAnswer({
-          lessonId: lesson.id,
+        const result = await submitAnswerAction({
+          sessionId: session.sessionId,
           questionId: question.id,
-          attempt: state.attempt,
           response,
+          idempotencyKey: pendingKey.current,
         });
+        if (!result.ok) {
+          if (STALE.has(result.code)) {
+            router.replace(`/student/lessons/${lesson.id}`);
+            return;
+          }
+          // Invalid answers are a client bug: drop the key and let the child retry.
+          if (result.code === "invalid_response") pendingKey.current = null;
+          dispatch({ type: "GRADE_FAILED" });
+          return;
+        }
+        pendingKey.current = null;
         dispatch({ type: "GRADED", result });
         playSfx(result.correct ? "correct" : "tryAgain");
         void play({ text: result.message, lang: "vi-VN" });
       } catch {
+        // Network failure: keep the key so a retry cannot double-record.
         dispatch({ type: "GRADE_FAILED" });
       } finally {
         inFlight.current = false;
       }
     },
-    [question, state.phase, state.attempt, lesson.id, play, playSfx],
+    [
+      question,
+      state.phase,
+      session.sessionId,
+      lesson.id,
+      router,
+      play,
+      playSfx,
+    ],
   );
 
   const hint = async () => {
     if (!question || state.hintUsed) return;
     try {
-      const h = await requestHint({
-        lessonId: lesson.id,
+      const h = await requestHintAction({
+        sessionId: session.sessionId,
         questionId: question.id,
       });
+      if (!h.ok) return;
       dispatch({
         type: "HINT",
         text: h.text,

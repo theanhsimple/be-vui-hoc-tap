@@ -90,7 +90,8 @@ export type QuestionResponse =
   | { type: "matching"; pairs: Array<[string, string]> }
   | { type: "ordering"; order: string[] }
   | { type: "pattern"; fills: string[] }
-  | { type: "memory"; moves: number };
+  /** The finished board: matched card-id pairs (validated by the server). */
+  | { type: "memory"; moves: number; pairs: Array<[string, string]> };
 
 /** The correct answer, returned only once a question is finished (last try or correct). */
 export type Reveal =

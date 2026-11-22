@@ -106,24 +106,26 @@ Not done in Sprint 01 by design: no real audio files (none exist yet), no final 
 
 ---
 
-## Sprint 04 — Backend & Learning Engine
+## Sprint 04 — Backend Integration & Learning Engine ✅ (implemented on a local stack, awaiting review)
 
-**Deliverables**
-1. Supabase project (dev) + `supabase/` config; migrations for all tables in `DATABASE_SCHEMA.md`; generated types.
-2. RLS policies + helper functions; `private.question_keys`.
-3. RPCs: `create_family`, `start_session`, `submit_attempt`, `finish_session`; mastery update.
-4. Supabase Auth (email+password, magic link) with `@supabase/ssr`, middleware, guards.
-5. Storage buckets + policies; Number Garden content seeded into DB (dev seed only).
-6. Kid experience switched from fixture to DB; offline attempt queue + idempotent submit.
-7. pgTAP RLS test suite in CI.
+**Delivered:** Supabase schema (4 migrations), RLS on every table, server-side grading and learning engine RPCs, parent auth (register, confirm, login, logout, reset), family + child management, student routes on real data, dev seed with all 84 questions, 41 DB security/engine tests, browser end-to-end flow. Details: [`BACKEND_ARCHITECTURE.md`](BACKEND_ARCHITECTURE.md), [`SECURITY_AND_RLS.md`](SECURITY_AND_RLS.md), [`API_CONTRACT.md`](API_CONTRACT.md), [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md).
 
-**Dependencies:** Supabase project credentials (provided by owner via environment secrets, never committed); Sprint 02 renderers.
+| Definition of done | Status |
+|---|---|
+| Supabase integration configured | ✅ local stack; hosted project ❌ (no credentials, P-1) |
+| Parent auth, session management | ✅ tested in browser (register → email confirm → login → logout → reset) |
+| Family creation & membership, child management | ✅ tested (DB + browser); guardian invitations not implemented |
+| Migrations created / applied | ✅ created · ✅ applied locally · ❌ not applied remotely |
+| Seed data migrated | ✅ 7 modules, 14 skills, 28 lessons, 84 questions, 84 keys, 6 rewards (verified counts) |
+| RLS + multi-family isolation tests | ✅ 41/41 pass on the local stack |
+| Private keys protected, server-side grading | ✅ DB tests + browser network scan + build scan |
+| Sessions persist, duplicates prevented | ✅ |
+| Skill mastery, rewards persisted | ✅ |
+| Student routes use backend data; error/loading states | ✅ |
+| Env documentation; typecheck, lint, build | ✅ |
+| Security limitations documented | ✅ SECURITY_AND_RLS §9 |
 
-**Acceptance criteria**
-- All pgTAP tests pass: cross-family isolation, no anon access, staff cannot read child data, keys unreachable via PostgREST.
-- Network inspection of a full session shows **no answer keys** in any response before submission.
-- Attempts, sessions, mastery persisted and correct after network drop/reconnect.
-- Migrations apply cleanly to an empty database; no destructive statements.
+Deferred from the original Sprint 04 plan: offline attempt queue, magic-link sign-in, pgTAP (replaced by API-level tests as real users), CI pipeline for DB tests.
 
 ---
 

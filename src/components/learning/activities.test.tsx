@@ -160,7 +160,13 @@ describe("MemoryGame", () => {
     expect(screen.getAllByRole("button", { name: /đã ghép/ })).toHaveLength(2);
     tap("Thẻ úp số 2");
     tap("Thẻ úp số 4");
-    expect(onComplete).toHaveBeenCalledWith({ moves: 3 });
+    expect(onComplete).toHaveBeenCalledWith({
+      moves: 3,
+      pairs: [
+        [cards[0]!.id, cards[2]!.id],
+        [cards[1]!.id, cards[3]!.id],
+      ],
+    });
     vi.useRealTimers();
   });
 });

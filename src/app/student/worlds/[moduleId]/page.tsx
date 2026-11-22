@@ -1,25 +1,37 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
+import { StudentLoading } from "@/components/student/StudentLoading";
 import { WorldDetailScreen } from "@/components/student/worlds/WorldDetailScreen";
-import { contentRepository } from "@/features/learning/content/repository";
+import { findWorld } from "@/features/learning/content/catalog";
+import { getCatalog } from "@/features/learning/backend/content";
+import { loadStudentView } from "@/features/learning/backend/student";
+import { StudentProvider } from "@/features/learning/student-context";
 
-export function generateStaticParams() {
-  return contentRepository.getCatalog().worlds.map((w) => ({ moduleId: w.id }));
-}
+export const metadata: Metadata = { title: "Thế giới" };
 
-export async function generateMetadata({
-  params,
-}: PageProps<"/student/worlds/[moduleId]">): Promise<Metadata> {
-  const { moduleId } = await params;
-  return { title: contentRepository.getWorld(moduleId)?.nameVi ?? "Thế giới" };
-}
-
-export default async function WorldPage({
+export default function WorldPage({
   params,
 }: PageProps<"/student/worlds/[moduleId]">) {
+  return (
+    <Suspense fallback={<StudentLoading />}>
+      <WorldData params={params} />
+    </Suspense>
+  );
+}
+
+async function WorldData({
+  params,
+}: Pick<PageProps<"/student/worlds/[moduleId]">, "params">) {
   const { moduleId } = await params;
-  const world = contentRepository.getWorld(moduleId);
+  const catalog = await getCatalog();
+  const world = findWorld(catalog, moduleId);
   if (!world) notFound();
-  return <WorldDetailScreen world={world} />;
+  const view = await loadStudentView(`/student/worlds/${moduleId}`);
+  return (
+    <StudentProvider view={view}>
+      <WorldDetailScreen world={world} />
+    </StudentProvider>
+  );
 }

@@ -6,7 +6,7 @@ import { type ReactNode, useState } from "react";
 import { StudentShell } from "../layout/StudentShell";
 import { StudentNavigation } from "../navigation/StudentNavigation";
 import { LittleStatePanel } from "../ui/LittleStatePanel";
-import { ParentDemoPanel } from "./ParentDemoPanel";
+import { ParentPanel } from "./ParentPanel";
 
 export interface StudentScreenProps {
   children: ReactNode;
@@ -16,7 +16,7 @@ export interface StudentScreenProps {
   center?: ReactNode;
   start?: ReactNode;
   end?: ReactNode;
-  /** True while the device store is loading — shows a calm loading state. */
+  /** True while data is loading — shows a calm loading state. */
   loading?: boolean;
   align?: "center" | "start";
 }
@@ -53,7 +53,7 @@ export function StudentScreen({
       ) : (
         children
       )}
-      <ParentDemoPanel open={parentOpen} onClose={() => setParentOpen(false)} />
+      <ParentPanel open={parentOpen} onClose={() => setParentOpen(false)} />
     </StudentShell>
   );
 }

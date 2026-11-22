@@ -1,13 +1,19 @@
-import { DEMO_WORLD_SOURCES } from "@/data/demo";
-import type { WorldSource } from "@/data/demo/helpers";
 import { LEARNING_WORLDS } from "@/design-system/worlds";
+import type {
+  Catalog,
+  Lesson,
+  LessonSummary,
+  World,
+} from "@/features/learning/types";
 
-import type { Catalog, Lesson, LessonSummary, World } from "../types";
+import type { WorldSource } from "./helpers";
+import { DEMO_WORLD_SOURCES } from "./index";
 
 /**
- * Content access for the student experience. Today backed by local demo
- * files; in Sprint 04 a Supabase implementation (published content only,
- * RLS-protected) replaces it behind the same interface.
+ * TEST / SEED USE ONLY. The demo library as an in-memory catalog, used by
+ * unit tests and to check the seed. The app reads content from PostgreSQL
+ * (src/features/learning/backend/content.ts); production code must not
+ * import this module.
  */
 export interface ContentRepository {
   getCatalog(): Catalog;
@@ -65,26 +71,3 @@ export const demoContentRepository: ContentRepository = {
   getLesson: (id) => demo.lessons.get(id),
   listLessonIds: () => [...demo.lessons.keys()],
 };
-
-/** The repository the app uses. Swap here when the Supabase implementation lands. */
-export const contentRepository: ContentRepository = demoContentRepository;
-
-// ── Catalog helpers (pure, client-safe) ─────────────────────────────────
-
-export function allLessons(catalog: Catalog): LessonSummary[] {
-  return catalog.worlds.flatMap((w) => w.skills.flatMap((s) => s.lessons));
-}
-
-export function findLesson(
-  catalog: Catalog,
-  lessonId: string,
-): LessonSummary | undefined {
-  return allLessons(catalog).find((l) => l.id === lessonId);
-}
-
-export function findWorld(
-  catalog: Catalog,
-  worldId: string,
-): World | undefined {
-  return catalog.worlds.find((w) => w.id === worldId);
-}

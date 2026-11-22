@@ -97,8 +97,8 @@ export function MemoryActivity({
       )}
       columns={question.config.columns}
       peekAfterMismatches={question.config.peekAfterMismatches}
-      onComplete={({ moves }) => {
-        if (!locked) onSubmit({ type: "memory", moves });
+      onComplete={({ moves, pairs }) => {
+        if (!locked) onSubmit({ type: "memory", moves, pairs });
       }}
     />
   );

@@ -2,22 +2,10 @@
 
 import { Star } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo } from "react";
 
-import { allLessons, findWorld } from "@/features/learning/content/repository";
-import {
-  buildDailyPlan,
-  dateKey,
-  greeting,
-  totalStars,
-  worldProgress,
-  worldState,
-} from "@/features/learning/progress/calc";
-import { demoStore } from "@/features/learning/store/demoStore";
-import {
-  type StudentContext,
-  useStudent,
-} from "@/features/learning/store/hooks";
+import { allLessons, findWorld } from "@/features/learning/content/catalog";
+import { greeting, totalStars } from "@/features/learning/progress/calc";
+import { useStudent } from "@/features/learning/student-context";
 import type { Catalog } from "@/features/learning/types";
 
 import { AudioPlayer } from "../../learning/AudioPlayer";
@@ -32,42 +20,11 @@ export function lockedHintFor(min: number, done: number) {
   return `Học thêm ${Math.max(min - done, 0)} bài ở các thế giới khác để mở nhé.`;
 }
 
-/** Screen 03 — Student home. */
+/** Screen 03 — Student home. Data and the day's plan come from the server. */
 export function HomeScreen({ catalog }: { catalog: Catalog }) {
-  const ctx = useStudent();
-  // The date is read only on the device (never during prerender).
-  if (!ctx) return <StudentScreen loading>{null}</StudentScreen>;
-  return <HomeContent catalog={catalog} ctx={ctx} />;
-}
-
-function HomeContent({
-  catalog,
-  ctx,
-}: {
-  catalog: Catalog;
-  ctx: StudentContext;
-}) {
-  const today = dateKey(new Date());
-  const { child, progress } = ctx;
-  const saved = progress.dailyPlan;
-  const plan = useMemo(
-    () =>
-      saved?.date === today
-        ? saved.lessonIds
-        : buildDailyPlan(catalog, progress, today),
-    [saved, catalog, progress, today],
-  );
-
-  // Persist today's plan so it stays stable while lessons get completed.
-  useEffect(() => {
-    if (saved?.date === today || plan.length === 0) return;
-    demoStore.updateProgress(child.id, (p) => ({
-      ...p,
-      dailyPlan: { date: today, lessonIds: plan },
-    }));
-  }, [child.id, saved, plan, today]);
-
-  const hello = `${greeting(new Date().getHours())}, ${child.nickname}!`;
+  const { child, progress, worldStates, today, starsToday } = useStudent();
+  const plan = progress.dailyPlan?.lessonIds ?? [];
+  const hello = `${greeting(today.hour)}, ${child.nickname}!`;
   const lessons = allLessons(catalog);
   const done = Object.keys(progress.lessons).length;
   const inProgressLesson =
@@ -123,7 +80,7 @@ function HomeContent({
             catalog={catalog}
             progress={progress}
             planIds={plan}
-            today={today}
+            today={today.date}
           />
           <div className="flex flex-col gap-5">
             {inProgressLesson && progress.inProgress && (
@@ -135,7 +92,10 @@ function HomeContent({
                 answered={progress.inProgress.questionIndex}
               />
             )}
-            <DailyRewardCard progress={progress} today={today} />
+            <DailyRewardCard
+              todayStars={starsToday}
+              total={totalStars(progress)}
+            />
           </div>
         </div>
 
@@ -153,15 +113,19 @@ function HomeContent({
           </div>
           <ul className="grid grid-cols-2 gap-3 tablet:grid-cols-4 desktop:grid-cols-7">
             {catalog.worlds.map((w) => {
-              const { completed, total } = worldProgress(w, progress);
+              const ws = worldStates[w.id] ?? {
+                state: "locked" as const,
+                completed: 0,
+                total: 0,
+              };
               return (
                 <li key={w.id}>
                   <WorldCard
                     world={w}
                     variant="tile"
-                    state={worldState(w, progress)}
-                    completed={completed}
-                    total={total}
+                    state={ws.state}
+                    completed={ws.completed}
+                    total={ws.total}
                     lockedHint={
                       w.unlock
                         ? lockedHintFor(w.unlock.minCompletedLessons, done)

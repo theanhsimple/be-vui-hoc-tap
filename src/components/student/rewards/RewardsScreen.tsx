@@ -5,11 +5,11 @@ import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
 import { rewardItem, rewardReveal } from "@/design-system/motion/presets";
-import { allLessons } from "@/features/learning/content/repository";
-import { totalStars } from "@/features/learning/progress/calc";
+import { allLessons } from "@/features/learning/content/catalog";
+import { markRewardsSeenAction } from "@/features/learning/backend/actions";
+import { APP_TIME_ZONE, totalStars } from "@/features/learning/progress/calc";
 import { REWARDS, rewardById } from "@/features/learning/progress/rewards";
-import { demoStore } from "@/features/learning/store/demoStore";
-import { useStudent } from "@/features/learning/store/hooks";
+import { useStudent } from "@/features/learning/student-context";
 import type { Catalog } from "@/features/learning/types";
 import { useAudio } from "@/lib/audio";
 
@@ -21,11 +21,12 @@ const formatDay = (iso: string) =>
   new Date(iso).toLocaleDateString("vi-VN", {
     day: "numeric",
     month: "numeric",
+    timeZone: APP_TIME_ZONE,
   });
 
 /** Screen 09 — stars, badges and history. No streaks, no leaderboards. */
 export function RewardsScreen({ catalog }: { catalog: Catalog }) {
-  const ctx = useStudent();
+  const { progress } = useStudent();
   const { playSfx, unlocked } = useAudio();
   const lessonTitles = useMemo(
     () => new Map(allLessons(catalog).map((l) => [l.id, l.title])),
@@ -33,45 +34,25 @@ export function RewardsScreen({ catalog }: { catalog: Catalog }) {
   );
 
   // Badges earned since the last visit are celebrated once. "Last seen" is
-  // captured when the screen opens, before it is updated below.
-  const [seenAt] = useState<string | undefined>(() => {
-    if (typeof window === "undefined") return undefined;
-    const s = demoStore.getSnapshot();
-    return s.selectedChildId
-      ? (s.progress[s.selectedChildId]?.rewardsSeenAt ?? "")
-      : undefined;
-  });
+  // captured when the screen opens (server value), then updated server-side.
+  const [seenAt] = useState(() => progress.rewardsSeenAt);
   const fresh = useMemo(
     () =>
       new Set(
-        (ctx?.progress.rewards ?? [])
-          .filter(
-            (r) => seenAt !== undefined && (!seenAt || r.earnedAt > seenAt),
-          )
+        progress.rewards
+          .filter((r) => !seenAt || Date.parse(r.earnedAt) > Date.parse(seenAt))
           .map((r) => r.id),
       ),
-    [ctx?.progress.rewards, seenAt],
+    [progress.rewards, seenAt],
   );
-  const childId = ctx?.child.id;
   useEffect(() => {
-    if (!childId) return;
-    demoStore.updateProgress(childId, (p) => ({
-      ...p,
-      rewardsSeenAt: new Date().toISOString(),
-    }));
-  }, [childId]);
+    void markRewardsSeenAction();
+  }, []);
   const hasFresh = fresh.size > 0;
   useEffect(() => {
     if (unlocked && hasFresh) playSfx("reward");
   }, [unlocked, hasFresh, playSfx]);
 
-  if (!ctx)
-    return (
-      <StudentScreen loading backHref="/student/home">
-        {null}
-      </StudentScreen>
-    );
-  const { progress } = ctx;
   const earned = new Map(progress.rewards.map((r) => [r.id, r.earnedAt]));
   const history = [...progress.history].reverse().slice(0, 12);
 

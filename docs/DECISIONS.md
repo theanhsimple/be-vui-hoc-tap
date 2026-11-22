@@ -114,11 +114,47 @@ The brief asked for a subtle animated background; to respect D-025 (no constant 
 ### D-037 · 2026-11-22 · Recorded (Sprint 03) — 404 status under Partial Prerendering
 Unknown world/lesson ids render the student "lost" page with `noindex`, but the HTTP status is 200 because the static shell streams first (Next.js 16 behaviour). Acceptable for a child UI; revisit if SEO/monitoring needs real 404s.
 
+### D-038 · 2026-11-22 · Approved (Sprint 04) — Business rules in Postgres RPCs; thin Server Functions; no service-role key in the app
+Grading, attempts, idempotency, progression, stars, rewards and mastery are SECURITY DEFINER RPCs (one transaction per answer). Next.js Server Functions only validate, re-check the user/selected child and call RPCs as the signed-in guardian. No Edge Functions; no Route Handlers except `/auth/callback`. The web runtime has no service-role key.
+
+### D-039 · 2026-11-22 · Approved (Sprint 04) — Parent auth: email + password with confirmation, httpOnly cookie sessions
+Supabase Auth via `@supabase/ssr`; cookies are httpOnly because no browser Supabase client exists; `src/proxy.ts` refreshes sessions with `getClaims()`. Password ≥ 8 with letters and digits. Magic links are not offered in Sprint 04 (one sign-in method to support). Children never have credentials.
+
+### D-040 · 2026-11-22 · Approved (Sprint 04) — Reveal after the last try
+When a question closes wrong, the response includes the correct answer for that question only (the Sprint 03 learning design: show, then move on). Nothing is revealed before the question is closed.
+
+### D-041 · 2026-11-22 · Approved (Sprint 04) — Scoring and memory validation
+Each answer reports `score/maxScore` (pairs, positions or blanks right); it counts as correct only when complete. Memory submits the finished board's pairs, validated against private pairs; `pairKey` stays on the device because the cards' faces reveal it anyway.
+
+### D-042 · 2026-11-22 · Approved (Sprint 04) — Mastery v1
+States not_started / learning / practicing / mastered / review. Mastered needs ≥ 80 % first-try accuracy, ≥ 10 first attempts, ≥ 2 sessions, ≥ 4 distinct questions within 60 days; losing it moves a skill to review. Thresholds in `private.mastery_config`. Replaces the earlier EWMA sketch (D-009 still allows a richer model later).
+
+### D-043 · 2026-11-22 · Approved (Sprint 04) — Family rules
+One owned family per account; consent recorded on creation (`guardian_consents`, version `2026-11`); up to 6 active children per family; children are archived, not deleted. Guardian invitations: schema ready (`membership_status = invited`), flow not implemented.
+
+### D-044 · 2026-11-22 · Approved (Sprint 04) — Published content is public and cached
+Published modules/lessons/questions/rewards are readable with the publishable key (they contain no keys), read with a session-less client and cached (`'use cache'`, minutes). Drafts are staff-only.
+
+### D-045 · 2026-11-22 · Approved (Sprint 04) — "Today" uses Asia/Ho_Chi_Minh
+Daily plan, stars-today and greetings use Vietnam time computed on the server (avoids hydration mismatches and server-UTC drift). Revisit with per-family time zones if the product leaves Vietnam.
+
+### D-046 · 2026-11-22 · Approved (Sprint 04) — Demo store removed; demo content becomes the dev seed
+The device-local demo (D-034) is retired: no demo mode in the app. The Sprint 03 library is the development seed, generated from the TypeScript source (`supabase/seed.sql`, checked by a test). App code must not import `src/data/demo` (tested).
+
+### D-047 · 2026-11-22 · Approved (Sprint 04) — Tables not created
+No `question_options` (options belong to each question's typed public config), no `learning_paths` (path = module → skill → lesson order + unlock rules), `child_module_progress` is a view. Revisit when a feature needs per-option analytics or personalised paths.
+
+### D-048 · 2026-11-22 · Approved (Sprint 04) — Staff roles separate from family roles
+`staff_roles` (content_editor, content_reviewer, publisher, admin) vs family roles (owner = parent, guardian). Admin implies all staff permissions; first admin bootstrapped by SQL. Staff cannot read child data.
+
+### D-049 · 2026-11-22 · Approved (Sprint 04) — Selected child in an httpOnly cookie
+`little_child` names the active child; it is re-validated under RLS on every request and learning actions pin sessions to it. Changing the cookie to another family's child id has no effect (tested).
+
 ## Pending decisions
 
 | ID | Question | Owner |
 |----|----------|-------|
-| P-1 | Supabase region & hosting provider confirmation | Product owner |
+| P-1 | Supabase region & hosting provider confirmation; hosted project + SMTP provider for auth emails (blocks remote migration) | Product owner |
 | P-2 | Voiceover source (voice actor vs. AI voice with licence) | Product owner |
 | P-3 | Mascot cast & art vendor | Product / Design |
 | P-4 | Education reviewer for skill taxonomy | Product owner |

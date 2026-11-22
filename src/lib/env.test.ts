@@ -8,11 +8,11 @@ describe("parseClientEnv", () => {
     const env = parseClientEnv({
       NEXT_PUBLIC_SITE_URL: "",
       NEXT_PUBLIC_SUPABASE_URL: "",
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: "",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "",
     });
     expect(env.NEXT_PUBLIC_SITE_URL).toBe("http://localhost:3000");
     expect(env.NEXT_PUBLIC_SUPABASE_URL).toBeUndefined();
-    expect(env.NEXT_PUBLIC_SUPABASE_ANON_KEY).toBeUndefined();
+    expect(env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).toBeUndefined();
   });
 
   it("fails fast on malformed URLs", () => {

@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { contentRepository } from "@/features/learning/content/repository";
+import { demoContentRepository as contentRepository } from "@/data/demo/repository";
 import type { AnswerKey } from "@/features/learning/grading/keys";
 import type {
   LearningQuestion,
@@ -409,15 +409,30 @@ describe("answer keys stay on the server", () => {
         e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)],
       );
     const offenders = walk(join(process.cwd(), "src"))
-      .filter((f) => /\.tsx?$/.test(f) && !f.endsWith(".test.ts"))
+      .filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f))
       .filter((f) => {
         const src = readFileSync(f, "utf8");
         return (
           src.includes("answer-keys") &&
-          !f.endsWith("grading/actions.ts") &&
+          // The seed generator (server-only, run by tests/CLI) is the only user.
+          !f.endsWith("data/demo/seed-sql.ts") &&
           !f.endsWith("answer-keys.ts")
         );
       });
+    expect(offenders).toEqual([]);
+  });
+
+  it("app code never imports demo data (content comes from the database)", () => {
+    const walk = (d: string): string[] =>
+      readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)],
+      );
+    const offenders = ["src/app", "src/components", "src/features", "src/lib"]
+      .flatMap((d) => walk(join(process.cwd(), d)))
+      .filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f))
+      .filter((f) =>
+        /@\/data\/demo|data\/demo\//.test(readFileSync(f, "utf8")),
+      );
     expect(offenders).toEqual([]);
   });
 });

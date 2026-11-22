@@ -5,12 +5,11 @@ import { z } from "zod";
 /**
  * Server-only environment. Importing this module from a Client Component
  * fails the build, which keeps secrets out of the browser bundle.
+ *
+ * The web app needs NO service-role key: every database call runs as the
+ * signed-in guardian under RLS / checked RPCs (docs/SECURITY_AND_RLS.md).
  */
 export const serverEnvSchema = z.object({
-  SUPABASE_SERVICE_ROLE_KEY: z.preprocess(
-    (v) => (v === "" ? undefined : v),
-    z.string().min(1).optional(),
-  ),
   ENABLE_DESIGN_SYSTEM: z
     .enum(["true", "false", ""])
     .optional()
@@ -33,7 +32,6 @@ export function parseServerEnv(
 
 export function getServerEnv(): ServerEnv {
   return parseServerEnv({
-    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     ENABLE_DESIGN_SYSTEM: process.env.ENABLE_DESIGN_SYSTEM,
   });
 }

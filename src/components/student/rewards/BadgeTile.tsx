@@ -1,3 +1,4 @@
+import { APP_TIME_ZONE } from "@/features/learning/progress/calc";
 import { Lock } from "lucide-react";
 
 import type { RewardDefinition } from "@/features/learning/progress/rewards";
@@ -14,6 +15,7 @@ export interface BadgeTileProps {
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("vi-VN", {
+    timeZone: APP_TIME_ZONE,
     day: "numeric",
     month: "numeric",
   });
