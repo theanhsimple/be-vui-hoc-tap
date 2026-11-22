@@ -1,6 +1,6 @@
 # little — UX / UI Specification
 
-> **Status:** Design foundations (Sprint 00). Values are the starting design tokens to implement in Sprint 01; they are not implemented yet.
+> **Status:** Tokens and core components implemented in Sprint 01 (`src/styles/tokens.css`, `src/components/`). Live gallery: `/dev/design-system`. Mascot art and audio files are still placeholders.
 
 ## 1. Design principles
 
@@ -38,6 +38,8 @@
 | `--sky-600` | `#2F8EE0` | primary action edge / pressed |
 | `--coral-400` | `#FF8A7A` | attention (used sparingly, never for "wrong") |
 
+Implemented additional 3D pairs (top `-400` / edge `-600`): butter `#FFD45C/#E0A91F`, mint `#6FD6A8/#35A97A`, lilac `#A992FF/#7A5FE0`, rose `#FF8FAE/#E0567E`, peach `#FFAE80/#E57F4A`, and `cream-edge #D9CDB8`.
+
 Rules: interactive objects use the saturated `-400/-600` pairs (top face / extruded edge) to read as tappable 3D. Text contrast on parent/admin screens meets WCAG AA (≥ 4.5:1). Dark mode: parent/admin only (P1); kid mode is a single "daylight" theme with an optional "night world" skin later.
 
 ### 3.2 Typography — Nunito Sans
@@ -69,6 +71,7 @@ Vietnamese diacritics need extra line height; never set `line-height < 1.1` on V
 
 - Kid mode: **minimum 64×64 px**, answer choices typically 140–220 px; ≥ 16 px gap between targets.
 - Parent/admin: minimum 44×44 px.
+- Exception: the parent-gate entry button inside kid mode is an adult control (52 px, corner placement) — see DECISIONS D-016.
 - No hover-dependent behaviour anywhere; no double-tap; long-press only for parent gate.
 
 ### 3.5 Motion

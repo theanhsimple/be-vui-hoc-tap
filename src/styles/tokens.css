@@ -1,0 +1,89 @@
+/*
+ * little — design tokens (source: docs/UX_UI_SPECIFICATION.md §3).
+ * Components consume these only through Tailwind theme classes or var(--…),
+ * never raw hex values.
+ */
+:root {
+  /* Surfaces */
+  --sky-100: #eaf6ff;
+  --sky-200: #d3ecff;
+  --cream-50: #fffbf4;
+  --white: #ffffff;
+
+  /* Ink */
+  --ink-900: #1e2a55;
+  --ink-600: #56608a;
+
+  /* Pastels (surfaces, accents) */
+  --peach-300: #ffc9a8;
+  --mint-300: #a8e6cf;
+  --lilac-300: #cdbdff;
+  --butter-300: #ffe38a;
+  --rose-300: #ffb3c7;
+
+  /* Interactive pairs: -400 = top face, -600 = extruded edge */
+  --sky-400: #7cc4ff;
+  --sky-600: #2f8ee0;
+  --butter-400: #ffd45c;
+  --butter-600: #e0a91f;
+  --mint-400: #6fd6a8;
+  --mint-600: #35a97a;
+  --lilac-400: #a992ff;
+  --lilac-600: #7a5fe0;
+  --rose-400: #ff8fae;
+  --rose-600: #e0567e;
+  --peach-400: #ffae80;
+  --peach-600: #e57f4a;
+  --cream-edge: #d9cdb8;
+
+  /* Attention — used sparingly, never to mean "wrong" */
+  --coral-400: #ff8a7a;
+
+  /* Kid touch target floor (px). Mirrored in src/components/kid/sizes.ts */
+  --kid-target-min: 64px;
+}
+
+@theme inline {
+  /* Only little's palette is available — default Tailwind colours are removed. */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: var(--white);
+  --color-sky-100: var(--sky-100);
+  --color-sky-200: var(--sky-200);
+  --color-sky-400: var(--sky-400);
+  --color-sky-600: var(--sky-600);
+  --color-cream-50: var(--cream-50);
+  --color-cream-edge: var(--cream-edge);
+  --color-ink-900: var(--ink-900);
+  --color-ink-600: var(--ink-600);
+  --color-peach-300: var(--peach-300);
+  --color-peach-400: var(--peach-400);
+  --color-peach-600: var(--peach-600);
+  --color-mint-300: var(--mint-300);
+  --color-mint-400: var(--mint-400);
+  --color-mint-600: var(--mint-600);
+  --color-lilac-300: var(--lilac-300);
+  --color-lilac-400: var(--lilac-400);
+  --color-lilac-600: var(--lilac-600);
+  --color-butter-300: var(--butter-300);
+  --color-butter-400: var(--butter-400);
+  --color-butter-600: var(--butter-600);
+  --color-rose-300: var(--rose-300);
+  --color-rose-400: var(--rose-400);
+  --color-rose-600: var(--rose-600);
+  --color-coral-400: var(--coral-400);
+
+  --font-sans: var(--font-nunito-sans), ui-rounded, system-ui, sans-serif;
+
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 40px;
+
+  --shadow-soft: 0 12px 32px -8px rgb(30 42 85 / 0.18);
+  --shadow-lift: 0 18px 40px -10px rgb(30 42 85 / 0.24);
+  --shadow-ambient: inset 0 2px 0 rgb(255 255 255 / 0.6);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}

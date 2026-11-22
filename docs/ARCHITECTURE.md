@@ -178,7 +178,7 @@ Committed: `.env.example` with names only. Ignored: `.env*.local`. CI secrets li
 | R3 | iOS Safari audio autoplay restrictions. | First prompt silent | Unlock audio context on the first "Play" tap; preload per session. |
 | R4 | "3D" visuals hurting iPad performance / bundle size. | Jank, slow LCP | Pre-rendered 3D stills/short loops (WebP/AVIF, Lottie or video), no realtime WebGL in v1 (D-005). |
 | R5 | RLS mistakes leaking family data across families. | Severe | pgTAP tests per table in CI; helper functions; no direct child-data writes. |
-| R6 | Version drift: latest TypeScript major may not be supported by Next.js tooling yet. | Build breakage | Pin versions verified together at Sprint 01 install; Renovate later. |
+| R6 | Version drift: latest TypeScript major may not be supported by Next.js tooling yet. | Build breakage | **Resolved in Sprint 01:** versions pinned together (D-014); Renovate later. |
 | R7 | Local Supabase needs Docker; unavailable in this cloud container. | Can't run DB locally here | Use a hosted dev Supabase project, or run locally on a developer machine; migrations reviewed before apply. |
 | R8 | Content volume & education quality (only 2 modules targeted for v1). | Thin product | Admin CMS early enough (Sprint 05) + content seeded from prototype generators. |
 | R9 | Children's data compliance (Vietnam PDP rules). | Legal | Data minimisation, consent records, deletion flow; legal review before launch. |

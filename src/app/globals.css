@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: linear-gradient(var(--sky-100), var(--sky-200)) fixed;
+    color: var(--ink-900);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    /* Removes the double-tap zoom delay on touch devices; pinch zoom still works. */
+    touch-action: manipulation;
+    overscroll-behavior-y: contain;
+  }
+
+  :focus-visible {
+    outline: 4px solid var(--sky-600);
+    outline-offset: 3px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+/* 3D extrusion used by Button3D / BigChoice. --edge is set per variant. */
+@utility edge-3d {
+  box-shadow:
+    0 6px 0 var(--edge),
+    var(--shadow-soft),
+    var(--shadow-ambient);
+}
+
+@utility edge-3d-pressed {
+  box-shadow:
+    0 2px 0 var(--edge),
+    var(--shadow-soft),
+    var(--shadow-ambient);
+}

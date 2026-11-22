@@ -42,6 +42,24 @@ Prototype uses Baloo 2 + Be Vietnam Pro; brief specifies Nunito Sans (must load 
 ### D-013 · 2026-11-22 · Proposed — No school-admission claims
 Parent-facing copy reports observations only. Any curriculum-alignment statement requires named education-expert review recorded here.
 
+### D-014 · 2026-11-22 · Approved (Sprint 01) — Pinned versions
+Next.js 16.4.6, React 19.3.0, TypeScript **5.9.3**, Tailwind 4.3.3 (Turbopack loader, as scaffolded by create-next-app 16.4.6), Motion 14.14.0, Zod 4.6.7, ESLint 9, Vitest 5.1.1, pnpm 10.28. TypeScript 7 (the native port) was not adopted because Next's type checking and editor plugin depend on the JS compiler API; revisit when Next documents support. Resolves risk R6.
+
+### D-015 · 2026-11-22 · Approved (Sprint 01) — Cache Components + Partial Prefetching on
+Kept the Next 16.4 scaffold defaults (`cacheComponents: true`, `partialPrefetching: true`). Data fetching is dynamic by default; caching is opted into with `use cache` from Sprint 03.
+
+### D-016 · 2026-11-22 · Approved (Sprint 01) — Parent-gate entry button uses the adult size
+The lock button that opens the parent gate is an adult control inside kid mode, sized 52 px (≥ 44 px parent minimum) and placed in a corner, so children are less likely to tap it. All child-facing targets stay ≥ 64 px.
+
+### D-017 · 2026-11-22 · Approved (Sprint 01) — Only little's palette exists in Tailwind
+`tokens.css` resets Tailwind's default colours (`--color-*: initial`), so components cannot use off-palette colours. Added -400/-600 "top face / edge" pairs for butter, mint, lilac, rose, peach, plus `cream-edge`.
+
+### D-018 · 2026-11-22 · Approved (Sprint 01) — Sound effects are synthesized
+Tap/correct/try-again/reward sounds are generated with Web Audio oscillators (no asset files, tiny, instantly available). "Try again" is a soft descending pair, never a buzzer. Can be swapped for recorded SFX later without API changes.
+
+### D-019 · 2026-11-22 · Approved (Sprint 01) — Parent gate design
+Instruction written as Vietnamese words (e.g. "năm mươi mốt"), never read aloud; six two-digit options including the reversed-digit distractor; a 1.5 s hold is required for every attempt; a wrong hold regenerates the challenge. Keyboard hold supported for desktop parents.
+
 ## Pending decisions
 
 | ID | Question | Owner |

@@ -1,6 +1,6 @@
 # little — Implementation Roadmap
 
-> **Status:** Sprint 00 (Project Foundation) complete — documentation only. Sprints 01–05 are planned, not started. Each sprint needs explicit approval before work begins.
+> **Status:** Sprint 00 complete. Sprint 01 implemented (awaiting review). Sprints 02–05 planned, not started. Each sprint needs explicit approval before work begins.
 
 Sprint length assumption: ~2 weeks each. Order is chosen so the riskiest UX (kid audio-first interaction) is validated early with static data before the backend is built around it.
 
@@ -13,7 +13,21 @@ Sprint length assumption: ~2 weeks each. Order is chosen so the riskiest UX (kid
 
 ---
 
-## Sprint 01 — Foundation & Design System
+## Sprint 01 — Foundation & Design System ✅ (implemented, awaiting review)
+
+**Result (2026-11-22)**
+
+| Acceptance criterion | Status |
+|---|---|
+| `pnpm build` passes, zero TS errors (strict), lint clean | ✅ |
+| Design-system page renders at iPad landscape/portrait and desktop | ✅ in Chromium with iPad Pro 11 emulation (Playwright); **real iPad Safari not yet tested** |
+| Kid components ≥ 64 px | ✅ unit tests for BigChoice sizes + Playwright measurement of 29 kid targets. The parent-gate entry button (52 px) is deliberately an adult control (D-016) |
+| Reduced motion disables movement | ✅ verified with Playwright `reducedMotion: 'reduce'` (mascot transform static) |
+| Audio plays after first tap on iPad Safari; replay works | ⚠️ Engine unit-tested (unlock, preload, interrupt, TTS fallback, mute, SFX) and unlock verified in Chromium. **Needs a manual check on a real iPad** — not possible from the dev container |
+| Legacy prototype still opens | ✅ moved to `legacy/prototype.html`, unchanged |
+
+Not done in Sprint 01 by design: no real audio files (none exist yet), no final mascot art, no Supabase code.
+
 
 **Deliverables**
 1. Move prototype `index.html` → `legacy/prototype.html` (kept runnable).
