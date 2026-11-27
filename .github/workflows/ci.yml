@@ -24,6 +24,8 @@ jobs:
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm format:check
-      - run: pnpm build
+      # The Supabase server edition prerenders content from the database, so
+      # it is built locally against `pnpm db:start` (docs/SUPABASE_SETUP.md),
+      # not here. Type checks, lint and tests above cover both editions.
       - name: Build the device edition (GitHub Pages)
         run: pnpm build:device
