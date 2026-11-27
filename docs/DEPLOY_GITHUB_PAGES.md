@@ -41,7 +41,9 @@ Bản cũ vẫn nằm trong lịch sử git (commit `e93031a`).
   ảnh hưởng với việc bé tự học; nhưng không dùng bản này cho thi cử hay nhiều gia
   đình dùng chung.
 - Khu vực bố mẹ được bảo vệ bằng "cổng người lớn", không phải mật khẩu.
-- Cần mạng để mở lần đầu; chưa có chế độ ngoại tuyến hoàn toàn.
+- Cần mạng để mở **lần đầu**. Sau đó app tự lưu sẵn toàn bộ bài học (khoảng
+  13MB, tải trong nền) và **học được khi không có mạng**. Khi có mạng, app tự
+  lấy bản mới nhất.
 
 ## 5. Cho người phát triển
 

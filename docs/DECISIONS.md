@@ -171,6 +171,12 @@ Like lessons (D-044): `assessments`/`assessment_items` with status published are
 ### D-056 · 2026-11-27 · Approved (product owner: "chưa dùng Supabase, tận dụng GitHub") — Device edition for GitHub Pages
 Until a hosted backend exists, the product ships as a **static device edition** on GitHub Pages, built from the same codebase (`LITTLE_EDITION=device`, `pageExtensions: device.tsx`, `output: export`). Screens are shared through a `LearningRuntime` context; the device runtime runs a TypeScript port of the PostgreSQL rules (grading, progression, stars, rewards, mastery, placement, report) and stores one validated JSON document in localStorage, with backup/restore files. Consequences, accepted for a family's own device: answer keys ship in the bundle (Sprint 04 rule 1 applies to the server edition only — a test forbids the server edition from importing keys or device code); the parent area is protected by the parent gate, not an account; data is per device. The server edition (Supabase) is unchanged and remains the path for multi-family use.
 
+### D-057 · 2026-11-27 · Approved (product owner: "ít bài học quá, nâng cấp thêm") — Content release 2
+Two more lessons per skill (56 lessons, 222 questions; new lessons have 5 questions, 4 for memory boards): Vietnamese letters with diacritics, more initial sounds, counting to 10 with next/previous number, comparisons, 3-step and two-blank patterns, category odd-one-out, longer memory/recall, more English words, daily routines and multi-step instructions, mixed challenges. Built from specs in `src/data/demo/expansion.ts` with answer keys DERIVED from the same spec; content.test.ts re-checks meaning independently (new checks for neighbour numbers, odd-one-out, initial letters, category picks, colour–fruit). Still draft content pending education review (P-4). Existing lesson ids unchanged, so saved progress stays valid.
+
+### D-058 · 2026-11-27 · Approved — Offline support in the device edition
+`scripts/build-sw.mjs` writes a versioned service worker that precaches every page, asset and RSC payload (~13 MB, ~1000 files); pages are network-first (fresh when online), static assets cache-first; old caches are removed on activation. Server edition unaffected.
+
 ## Pending decisions
 
 | ID | Question | Owner |

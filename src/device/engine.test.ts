@@ -50,9 +50,9 @@ function play(s: DeviceState, child: string, lessonId: string, right = true) {
 }
 
 describe("device engine — grading (same rules as PostgreSQL)", () => {
-  it("grades all 84 questions correct with the key and wrong otherwise", () => {
+  it("grades all 222 questions correct with the key and wrong otherwise", () => {
     const qs = LESSONS.flatMap((l) => l.questions);
-    expect(qs).toHaveLength(84);
+    expect(qs).toHaveLength(222);
     for (const q of qs) {
       const key = DEMO_ANSWER_KEYS[q.id]!;
       const ok = E.gradeResponse(q, key, correctResponse(q));

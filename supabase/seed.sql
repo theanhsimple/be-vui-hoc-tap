@@ -72,6 +72,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'af-l2'), (select id from public.questions where slug = 'af-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'af-s1'), 'af-l5', 'Chữ D, Đ, E', 'Con sẽ nhận ra chữ D, Đ và E.', 6, '{"kind":"glyph","text":"Đ","tone":"lavender"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l5-q1', (select id from public.skills where slug = 'af-s1'), 'image_choice', 1, 'Đâu là chữ D?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ O","visual":{"kind":"glyph","text":"O","tone":"lavender"}},{"id":"b","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"c","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l5-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l5'), (select id from public.questions where slug = 'af-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l5-q2', (select id from public.skills where slug = 'af-s1'), 'image_choice', 2, 'Đâu là chữ Đ?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"b","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}},{"id":"c","label":"Chữ Đ","visual":{"kind":"glyph","text":"Đ","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l5-q2'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l5'), (select id from public.questions where slug = 'af-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l5-q3', (select id from public.skills where slug = 'af-s1'), 'image_choice', 1, 'Đâu là chữ E?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ E","visual":{"kind":"glyph","text":"E","tone":"lavender"}},{"id":"b","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}},{"id":"c","label":"Chữ O","visual":{"kind":"glyph","text":"O","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l5-q3'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l5'), (select id from public.questions where slug = 'af-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l5-q4', (select id from public.skills where slug = 'af-s1'), 'matching', 2, 'Nối chữ in hoa với chữ thường giống nó.', null, null, null, null, '{"left":[{"id":"l1","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"l2","label":"Chữ Đ","visual":{"kind":"glyph","text":"Đ","tone":"lavender"}},{"id":"l3","label":"Chữ E","visual":{"kind":"glyph","text":"E","tone":"lavender"}}],"right":[{"id":"r1","label":"Chữ e","visual":{"kind":"glyph","text":"e","tone":"mint"}},{"id":"r2","label":"Chữ d","visual":{"kind":"glyph","text":"d","tone":"mint"}},{"id":"r3","label":"Chữ đ","visual":{"kind":"glyph","text":"đ","tone":"mint"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l5-q4'), '{"type":"matching","pairs":[["l1","r2"],["l2","r3"],["l3","r1"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l5'), (select id from public.questions where slug = 'af-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l5-q5', (select id from public.skills where slug = 'af-s1'), 'memory', 2, 'Tìm hai chữ giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"m3","pairKey":"k1","label":"Chữ Đ","visual":{"kind":"glyph","text":"Đ","tone":"lavender"}},{"id":"m5","pairKey":"k2","label":"Chữ E","visual":{"kind":"glyph","text":"E","tone":"lavender"}},{"id":"m2","pairKey":"k0","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"m6","pairKey":"k2","label":"Chữ E","visual":{"kind":"glyph","text":"E","tone":"lavender"}},{"id":"m4","pairKey":"k1","label":"Chữ Đ","visual":{"kind":"glyph","text":"Đ","tone":"lavender"}}],"columns":3,"peekAfterMismatches":4}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l5-q5'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l5'), (select id from public.questions where slug = 'af-l5-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'af-s1'), 'af-l6', 'Chữ có mũ, có râu', 'Con sẽ nhận ra Ă, Â, Ô, Ơ, Ư.', 6, '{"kind":"glyph","text":"Ơ","tone":"lavender"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l6-q1', (select id from public.skills where slug = 'af-s1'), 'image_choice', 2, 'Đâu là chữ Ă?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ A","visual":{"kind":"glyph","text":"A","tone":"lavender"}},{"id":"b","label":"Chữ Â","visual":{"kind":"glyph","text":"Â","tone":"lavender"}},{"id":"c","label":"Chữ Ă","visual":{"kind":"glyph","text":"Ă","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l6-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l6'), (select id from public.questions where slug = 'af-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l6-q2', (select id from public.skills where slug = 'af-s1'), 'image_choice', 2, 'Đâu là chữ Â?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ Â","visual":{"kind":"glyph","text":"Â","tone":"lavender"}},{"id":"b","label":"Chữ Ă","visual":{"kind":"glyph","text":"Ă","tone":"lavender"}},{"id":"c","label":"Chữ A","visual":{"kind":"glyph","text":"A","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l6-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l6'), (select id from public.questions where slug = 'af-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l6-q3', (select id from public.skills where slug = 'af-s1'), 'image_choice', 2, 'Đâu là chữ Ô?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ O","visual":{"kind":"glyph","text":"O","tone":"lavender"}},{"id":"b","label":"Chữ Ô","visual":{"kind":"glyph","text":"Ô","tone":"lavender"}},{"id":"c","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l6-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l6'), (select id from public.questions where slug = 'af-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l6-q4', (select id from public.skills where slug = 'af-s1'), 'image_choice', 2, 'Đâu là chữ Ư?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ U","visual":{"kind":"glyph","text":"U","tone":"lavender"}},{"id":"b","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}},{"id":"c","label":"Chữ Ư","visual":{"kind":"glyph","text":"Ư","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l6-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l6'), (select id from public.questions where slug = 'af-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l6-q5', (select id from public.skills where slug = 'af-s1'), 'matching', 3, 'Nối chữ in hoa với chữ thường giống nó.', null, null, null, null, '{"left":[{"id":"l1","label":"Chữ Ô","visual":{"kind":"glyph","text":"Ô","tone":"lavender"}},{"id":"l2","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}},{"id":"l3","label":"Chữ Ư","visual":{"kind":"glyph","text":"Ư","tone":"lavender"}}],"right":[{"id":"r1","label":"Chữ ơ","visual":{"kind":"glyph","text":"ơ","tone":"mint"}},{"id":"r2","label":"Chữ ư","visual":{"kind":"glyph","text":"ư","tone":"mint"}},{"id":"r3","label":"Chữ ô","visual":{"kind":"glyph","text":"ô","tone":"mint"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l6-q5'), '{"type":"matching","pairs":[["l1","r3"],["l2","r1"],["l3","r2"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l6'), (select id from public.questions where slug = 'af-l6-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'alphabet-forest'), 'af-s2', 'Âm đầu', 20, 'Nghe và nhận ra âm đầu của một tiếng.', 'Chơi “tiếng gì bắt đầu bằng…”: bố mẹ nói một âm, bé kể tên đồ vật trong nhà có âm đó.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -134,6 +230,102 @@ values ((select id from public.questions where slug = 'af-l4-q3'), '{"type":"cho
 on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'af-l4'), (select id from public.questions where slug = 'af-l4-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'af-s2'), 'af-l7', 'Âm đầu B, S, N', 'Con sẽ nghe âm đầu và tìm tiếng đúng.', 6, '{"kind":"illustration","name":"object.ball"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l7-q1', (select id from public.skills where slug = 'af-s2'), 'image_choice', 2, 'Tiếng nào bắt đầu bằng chữ B?', null, '{"kind":"glyph","text":"B","tone":"lavender"}'::jsonb, null, '{"hint":"Nghe kỹ nhé: bờ… bóng."}'::jsonb, '{"options":[{"id":"a","label":"bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"b","label":"mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"c","label":"cá","visual":{"kind":"illustration","name":"animal.fish"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l7-q1'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l7'), (select id from public.questions where slug = 'af-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l7-q2', (select id from public.skills where slug = 'af-s2'), 'image_choice', 2, 'Tiếng nào bắt đầu bằng chữ S?', null, '{"kind":"glyph","text":"S","tone":"lavender"}'::jsonb, null, '{"hint":"Nghe kỹ nhé: sờ… sách."}'::jsonb, '{"options":[{"id":"a","label":"gà","visual":{"kind":"illustration","name":"animal.chicken"}},{"id":"b","label":"sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"c","label":"nho","visual":{"kind":"illustration","name":"food.grapes"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l7-q2'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l7'), (select id from public.questions where slug = 'af-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l7-q3', (select id from public.skills where slug = 'af-s2'), 'image_choice', 2, 'Tiếng nào bắt đầu bằng chữ N?', null, '{"kind":"glyph","text":"N","tone":"lavender"}'::jsonb, null, '{"hint":"Nghe kỹ nhé: nờ… nho."}'::jsonb, '{"options":[{"id":"a","label":"táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"b","label":"chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"c","label":"nho","visual":{"kind":"illustration","name":"food.grapes"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l7-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l7'), (select id from public.questions where slug = 'af-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l7-q4', (select id from public.skills where slug = 'af-s2'), 'image_choice', 2, 'Tiếng nào bắt đầu bằng chữ T?', null, '{"kind":"glyph","text":"T","tone":"lavender"}'::jsonb, null, '{"hint":"Nghe kỹ nhé: tờ… táo."}'::jsonb, '{"options":[{"id":"a","label":"táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"b","label":"bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"c","label":"gà","visual":{"kind":"illustration","name":"animal.chicken"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l7-q4'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l7'), (select id from public.questions where slug = 'af-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l7-q5', (select id from public.skills where slug = 'af-s2'), 'matching', 3, 'Nối chữ với hình có âm đầu giống nhau.', null, null, null, null, '{"left":[{"id":"l1","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}},{"id":"l2","label":"Chữ S","visual":{"kind":"glyph","text":"S","tone":"lavender"}},{"id":"l3","label":"Chữ G","visual":{"kind":"glyph","text":"G","tone":"lavender"}}],"right":[{"id":"r1","label":"gà","visual":{"kind":"illustration","name":"animal.chicken"}},{"id":"r2","label":"bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"r3","label":"sách","visual":{"kind":"illustration","name":"object.book"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l7-q5'), '{"type":"matching","pairs":[["l1","r2"],["l2","r3"],["l3","r1"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l7'), (select id from public.questions where slug = 'af-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'af-s2'), 'af-l8', 'Tiếng này bắt đầu bằng chữ gì?', 'Con sẽ tìm chữ cái đứng đầu một tiếng.', 6, '{"kind":"illustration","name":"animal.cat"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l8-q1', (select id from public.skills where slug = 'af-s2'), 'single_choice', 3, 'Tiếng “mèo” bắt đầu bằng chữ nào?', null, '{"kind":"illustration","name":"animal.cat"}'::jsonb, null, '{"hint":"mèo… nghe âm đầu tiên nhé."}'::jsonb, '{"options":[{"id":"a","label":"Chữ M","visual":{"kind":"glyph","text":"M","tone":"lavender"}},{"id":"b","label":"Chữ N","visual":{"kind":"glyph","text":"N","tone":"lavender"}},{"id":"c","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l8-q1'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l8'), (select id from public.questions where slug = 'af-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l8-q2', (select id from public.skills where slug = 'af-s2'), 'single_choice', 3, 'Tiếng “bóng” bắt đầu bằng chữ nào?', null, '{"kind":"illustration","name":"object.ball"}'::jsonb, null, '{"hint":"bóng… nghe âm đầu tiên nhé."}'::jsonb, '{"options":[{"id":"a","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"b","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}},{"id":"c","label":"Chữ G","visual":{"kind":"glyph","text":"G","tone":"lavender"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l8-q2'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l8'), (select id from public.questions where slug = 'af-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l8-q3', (select id from public.skills where slug = 'af-s2'), 'single_choice', 3, 'Tiếng “gà” bắt đầu bằng chữ nào?', null, '{"kind":"illustration","name":"animal.chicken"}'::jsonb, null, '{"hint":"gà… nghe âm đầu tiên nhé."}'::jsonb, '{"options":[{"id":"a","label":"Chữ C","visual":{"kind":"glyph","text":"C","tone":"lavender"}},{"id":"b","label":"Chữ T","visual":{"kind":"glyph","text":"T","tone":"lavender"}},{"id":"c","label":"Chữ G","visual":{"kind":"glyph","text":"G","tone":"lavender"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l8-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l8'), (select id from public.questions where slug = 'af-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l8-q4', (select id from public.skills where slug = 'af-s2'), 'single_choice', 3, 'Tiếng “táo” bắt đầu bằng chữ nào?', null, '{"kind":"illustration","name":"food.apple"}'::jsonb, null, '{"hint":"táo… nghe âm đầu tiên nhé."}'::jsonb, '{"options":[{"id":"a","label":"Chữ T","visual":{"kind":"glyph","text":"T","tone":"lavender"}},{"id":"b","label":"Chữ Đ","visual":{"kind":"glyph","text":"Đ","tone":"lavender"}},{"id":"c","label":"Chữ N","visual":{"kind":"glyph","text":"N","tone":"lavender"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l8-q4'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l8'), (select id from public.questions where slug = 'af-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('af-l8-q5', (select id from public.skills where slug = 'af-s2'), 'image_choice', 2, 'Tiếng nào bắt đầu bằng chữ Đ?', null, '{"kind":"glyph","text":"Đ","tone":"lavender"}'::jsonb, null, '{"hint":"Nghe kỹ nhé: đờ… đỏ."}'::jsonb, '{"options":[{"id":"a","label":"vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"b","label":"đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"c","label":"tím","visual":{"kind":"illustration","name":"color.purple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'af-l8-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'af-l8'), (select id from public.questions where slug = 'af-l8-q5'), 5)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- Number Kingdom
@@ -203,6 +395,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'nk-l2'), (select id from public.questions where slug = 'nk-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'nk-s1'), 'nk-l5', 'Số liền sau', 'Con sẽ đếm đến 10 và tìm số đứng ngay sau.', 6, '{"kind":"group","name":"food.grapes","count":3}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l5-q1', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 2, 'Có bao nhiêu chùm nho?', null, '{"kind":"group","name":"food.grapes","count":6}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"b","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"c","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l5-q1'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l5'), (select id from public.questions where slug = 'nk-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l5-q2', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 2, 'Có bao nhiêu con cá?', null, '{"kind":"group","name":"animal.fish","count":8}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"b","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}},{"id":"c","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l5-q2'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l5'), (select id from public.questions where slug = 'nk-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l5-q3', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 2, 'Số nào đứng ngay sau số 4?', null, '{"kind":"glyph","text":"4","tone":"blue"}'::jsonb, null, '{"hint":"Đếm tiếp từ 4 nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}},{"id":"b","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}},{"id":"c","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l5-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l5'), (select id from public.questions where slug = 'nk-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l5-q4', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 2, 'Số nào đứng ngay sau số 7?', null, '{"kind":"glyph","text":"7","tone":"blue"}'::jsonb, null, '{"hint":"Đếm tiếp từ 7 nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}},{"id":"b","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"c","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l5-q4'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l5'), (select id from public.questions where slug = 'nk-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l5-q5', (select id from public.skills where slug = 'nk-s1'), 'ordering', 2, 'Xếp các số từ bé đến lớn.', null, null, null, '{"hint":"Số nào đếm trước tiên?"}'::jsonb, '{"items":[{"id":"i1","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}},{"id":"i2","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"i3","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}},{"id":"i4","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l5-q5'), '{"type":"ordering","order":["i2","i4","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l5'), (select id from public.questions where slug = 'nk-l5-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'nk-s1'), 'nk-l6', 'Số liền trước', 'Con sẽ đếm lùi và tìm số đứng ngay trước.', 6, '{"kind":"group","name":"food.orange","count":4}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l6-q1', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 2, 'Có bao nhiêu quả cam?', null, '{"kind":"group","name":"food.orange","count":9}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 10","visual":{"kind":"glyph","text":"10","tone":"blue"}},{"id":"b","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}},{"id":"c","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l6-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l6'), (select id from public.questions where slug = 'nk-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l6-q2', (select id from public.skills where slug = 'nk-s1'), 'image_choice', 2, 'Nhóm nào có 6 ngôi sao?', null, null, null, '{"hint":"Đếm từng nhóm nhé."}'::jsonb, '{"options":[{"id":"a","label":"5 ngôi sao","visual":{"kind":"group","name":"shape.star","count":5}},{"id":"b","label":"6 ngôi sao","visual":{"kind":"group","name":"shape.star","count":6}},{"id":"c","label":"7 ngôi sao","visual":{"kind":"group","name":"shape.star","count":7}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l6-q2'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l6'), (select id from public.questions where slug = 'nk-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l6-q3', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 2, 'Số nào đứng ngay trước số 5?', null, '{"kind":"glyph","text":"5","tone":"blue"}'::jsonb, null, '{"hint":"Đếm lùi từ 5 nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}},{"id":"b","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"c","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l6-q3'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l6'), (select id from public.questions where slug = 'nk-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l6-q4', (select id from public.skills where slug = 'nk-s1'), 'single_choice', 3, 'Số nào đứng ngay trước số 10?', null, '{"kind":"glyph","text":"10","tone":"blue"}'::jsonb, null, '{"hint":"Đếm lùi từ 10 nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}},{"id":"b","label":"Số 10","visual":{"kind":"glyph","text":"10","tone":"blue"}},{"id":"c","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l6-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l6'), (select id from public.questions where slug = 'nk-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l6-q5', (select id from public.skills where slug = 'nk-s1'), 'matching', 2, 'Nối mỗi nhóm với số đúng.', null, null, null, '{"hint":"Đếm từng nhóm trước nhé."}'::jsonb, '{"left":[{"id":"l1","label":"4 quả bóng","visual":{"kind":"group","name":"object.ball","count":4}},{"id":"l2","label":"6 quả bóng","visual":{"kind":"group","name":"object.ball","count":6}},{"id":"l3","label":"5 quả bóng","visual":{"kind":"group","name":"object.ball","count":5}}],"right":[{"id":"r1","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"r2","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}},{"id":"r3","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l6-q5'), '{"type":"matching","pairs":[["l1","r3"],["l2","r1"],["l3","r2"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l6'), (select id from public.questions where slug = 'nk-l6-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'number-kingdom'), 'nk-s2', 'Hình dạng & so sánh', 20, 'Nhận biết hình dạng và so sánh nhiều hơn, ít hơn.', 'Tìm đồ vật hình tròn, hình vuông trong nhà; chia kẹo thành hai đĩa và hỏi đĩa nào nhiều hơn.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -265,6 +553,102 @@ values ((select id from public.questions where slug = 'nk-l4-q3'), '{"type":"cho
 on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'nk-l4'), (select id from public.questions where slug = 'nk-l4-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'nk-s2'), 'nk-l7', 'Hình vuông và ngôi sao', 'Con sẽ nhận ra và đếm các hình.', 6, '{"kind":"illustration","name":"shape.square"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l7-q1', (select id from public.skills where slug = 'nk-s2'), 'image_choice', 1, 'Đâu là hình vuông?', null, null, null, '{"hint":"Hình vuông có bốn cạnh bằng nhau."}'::jsonb, '{"options":[{"id":"a","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"b","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"c","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l7-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l7'), (select id from public.questions where slug = 'nk-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l7-q2', (select id from public.skills where slug = 'nk-s2'), 'single_choice', 1, 'Có bao nhiêu hình tròn?', null, '{"kind":"group","name":"shape.circle","count":4}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}},{"id":"b","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}},{"id":"c","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}}],"confirm":false}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l7-q2'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l7'), (select id from public.questions where slug = 'nk-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l7-q3', (select id from public.skills where slug = 'nk-s2'), 'image_choice', 1, 'Hình nào khác các hình còn lại?', null, null, null, null, '{"options":[{"id":"a","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"b","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"c","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l7-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l7'), (select id from public.questions where slug = 'nk-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l7-q4', (select id from public.skills where slug = 'nk-s2'), 'pattern', 2, 'Chọn hình tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"s2","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"s3","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"s4","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},null],"palette":[{"id":"p1","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"p2","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"p3","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l7-q4'), '{"type":"pattern","fills":["p3"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l7'), (select id from public.questions where slug = 'nk-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l7-q5', (select id from public.skills where slug = 'nk-s2'), 'single_choice', 2, 'Có bao nhiêu ngôi sao?', null, '{"kind":"group","name":"shape.star","count":7}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"b","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"c","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l7-q5'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l7'), (select id from public.questions where slug = 'nk-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'nk-s2'), 'nk-l8', 'So sánh nhiều – ít', 'Con sẽ so sánh các nhóm và các số.', 6, '{"kind":"group","name":"food.banana","count":3}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l8-q1', (select id from public.skills where slug = 'nk-s2'), 'image_choice', 1, 'Nhóm nào có ít quả chuối hơn?', null, null, null, null, '{"options":[{"id":"a","label":"6 quả chuối","visual":{"kind":"group","name":"food.banana","count":6}},{"id":"b","label":"3 quả chuối","visual":{"kind":"group","name":"food.banana","count":3}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l8-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l8'), (select id from public.questions where slug = 'nk-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l8-q2', (select id from public.skills where slug = 'nk-s2'), 'image_choice', 1, 'Nhóm nào có nhiều con mèo hơn?', null, null, null, null, '{"options":[{"id":"a","label":"2 con mèo","visual":{"kind":"group","name":"animal.cat","count":2}},{"id":"b","label":"4 con mèo","visual":{"kind":"group","name":"animal.cat","count":4}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l8-q2'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l8'), (select id from public.questions where slug = 'nk-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l8-q3', (select id from public.skills where slug = 'nk-s2'), 'single_choice', 2, 'Số nào bé nhất?', null, null, null, null, '{"options":[{"id":"a","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"b","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}},{"id":"c","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l8-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l8'), (select id from public.questions where slug = 'nk-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l8-q4', (select id from public.skills where slug = 'nk-s2'), 'single_choice', 2, 'Số nào lớn nhất?', null, null, null, null, '{"options":[{"id":"a","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"b","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}},{"id":"c","label":"Số 10","visual":{"kind":"glyph","text":"10","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l8-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l8'), (select id from public.questions where slug = 'nk-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('nk-l8-q5', (select id from public.skills where slug = 'nk-s2'), 'ordering', 2, 'Xếp từ ít đến nhiều.', null, null, null, null, '{"items":[{"id":"i1","label":"5 quả táo","visual":{"kind":"group","name":"food.apple","count":5}},{"id":"i2","label":"2 quả táo","visual":{"kind":"group","name":"food.apple","count":2}},{"id":"i3","label":"4 quả táo","visual":{"kind":"group","name":"food.apple","count":4}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'nk-l8-q5'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'nk-l8'), (select id from public.questions where slug = 'nk-l8-q5'), 5)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- IQ Castle
@@ -334,6 +718,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'iq-l2'), (select id from public.questions where slug = 'iq-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'iq-s1'), 'iq-l5', 'Quy luật ba bước', 'Con sẽ tìm quy luật lặp lại ba hình.', 6, '{"kind":"illustration","name":"color.purple"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l5-q1', (select id from public.skills where slug = 'iq-s1'), 'pattern', 2, 'Chọn màu tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"s2","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"s3","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"s4","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"s5","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},null],"palette":[{"id":"p1","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"p2","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"p3","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l5-q1'), '{"type":"pattern","fills":["p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l5'), (select id from public.questions where slug = 'iq-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l5-q2', (select id from public.skills where slug = 'iq-s1'), 'pattern', 2, 'Chọn hình tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"s2","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"s3","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"s4","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"s5","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},null],"palette":[{"id":"p1","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"p2","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"p3","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l5-q2'), '{"type":"pattern","fills":["p2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l5'), (select id from public.questions where slug = 'iq-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l5-q3', (select id from public.skills where slug = 'iq-s1'), 'pattern', 2, 'Chọn quả tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"s2","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"s3","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"s4","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"s5","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},null],"palette":[{"id":"p1","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"p2","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"p3","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l5-q3'), '{"type":"pattern","fills":["p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l5'), (select id from public.questions where slug = 'iq-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l5-q4', (select id from public.skills where slug = 'iq-s1'), 'pattern', 1, 'Chọn màu tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"s2","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"s3","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"s4","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"s5","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},null],"palette":[{"id":"p1","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"p2","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"p3","label":"Màu cam","visual":{"kind":"illustration","name":"color.orange"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l5-q4'), '{"type":"pattern","fills":["p2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l5'), (select id from public.questions where slug = 'iq-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l5-q5', (select id from public.skills where slug = 'iq-s1'), 'pattern', 3, 'Chọn con vật tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"s2","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"s3","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"s4","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"s5","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"s6","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},null],"palette":[{"id":"p1","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"p2","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"p3","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l5-q5'), '{"type":"pattern","fills":["p3"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l5'), (select id from public.questions where slug = 'iq-l5-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'iq-s1'), 'iq-l6', 'Điền hai chỗ trống', 'Con sẽ hoàn thành dãy còn thiếu hai hình.', 6, '{"kind":"illustration","name":"shape.star"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l6-q1', (select id from public.skills where slug = 'iq-s1'), 'pattern', 2, 'Chọn hai hình còn thiếu.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"s2","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"s3","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"s4","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},null,null],"palette":[{"id":"p1","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"p2","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"p3","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l6-q1'), '{"type":"pattern","fills":["p2","p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l6'), (select id from public.questions where slug = 'iq-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l6-q2', (select id from public.skills where slug = 'iq-s1'), 'pattern', 3, 'Chọn hai màu còn thiếu.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"s2","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"s3","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"s4","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},null,null],"palette":[{"id":"p1","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"p2","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"p3","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l6-q2'), '{"type":"pattern","fills":["p3","p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l6'), (select id from public.questions where slug = 'iq-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l6-q3', (select id from public.skills where slug = 'iq-s1'), 'pattern', 2, 'Chọn hai quả còn thiếu.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}},{"id":"s2","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"s3","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}},{"id":"s4","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},null,null],"palette":[{"id":"p1","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"p2","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"p3","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l6-q3'), '{"type":"pattern","fills":["p3","p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l6'), (select id from public.questions where slug = 'iq-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l6-q4', (select id from public.skills where slug = 'iq-s1'), 'pattern', 3, 'Chọn hai hình còn thiếu.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"s2","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"s3","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"s4","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},null,null],"palette":[{"id":"p1","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"p2","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"p3","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l6-q4'), '{"type":"pattern","fills":["p3","p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l6'), (select id from public.questions where slug = 'iq-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l6-q5', (select id from public.skills where slug = 'iq-s1'), 'ordering', 2, 'Xếp từ ít đến nhiều.', null, null, null, null, '{"items":[{"id":"i1","label":"3 ngôi sao","visual":{"kind":"group","name":"shape.star","count":3}},{"id":"i2","label":"1 ngôi sao","visual":{"kind":"group","name":"shape.star","count":1}},{"id":"i3","label":"2 ngôi sao","visual":{"kind":"group","name":"shape.star","count":2}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l6-q5'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l6'), (select id from public.questions where slug = 'iq-l6-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'iq-castle'), 'iq-s2', 'Phân loại', 20, 'Phân loại đồ vật và tìm điểm khác biệt.', 'Cùng bé xếp quần áo theo màu hoặc theo người dùng, rồi hỏi vì sao bé xếp như vậy.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -396,6 +876,102 @@ values ((select id from public.questions where slug = 'iq-l4-q3'), '{"type":"cho
 on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'iq-l4'), (select id from public.questions where slug = 'iq-l4-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'iq-s2'), 'iq-l7', 'Cái nào không cùng nhóm?', 'Con sẽ tìm thứ không cùng nhóm với các thứ khác.', 6, '{"kind":"illustration","name":"food.banana"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l7-q1', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 1, 'Cái nào không phải là quả?', null, null, null, '{"hint":"Hai thứ ăn được, một con vật."}'::jsonb, '{"options":[{"id":"a","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"b","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"c","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l7-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l7'), (select id from public.questions where slug = 'iq-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l7-q2', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 1, 'Cái nào không phải là con vật?', null, null, null, null, '{"options":[{"id":"a","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"b","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"c","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l7-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l7'), (select id from public.questions where slug = 'iq-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l7-q3', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 2, 'Cái nào không phải là hình?', null, null, null, null, '{"options":[{"id":"a","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"b","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"c","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l7-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l7'), (select id from public.questions where slug = 'iq-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l7-q4', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 2, 'Cái nào không phải là con vật?', null, null, null, null, '{"options":[{"id":"a","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"b","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}},{"id":"c","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l7-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l7'), (select id from public.questions where slug = 'iq-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l7-q5', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 1, 'Hình nào khác các hình còn lại?', null, null, null, null, '{"options":[{"id":"a","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"b","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"c","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l7-q5'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l7'), (select id from public.questions where slug = 'iq-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'iq-s2'), 'iq-l8', 'Xếp vào đúng nhóm', 'Con sẽ nhận ra con vật, quả và đồ dùng học tập.', 6, '{"kind":"illustration","name":"animal.dog"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l8-q1', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 1, 'Đâu là con vật?', null, null, null, null, '{"options":[{"id":"a","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"b","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}},{"id":"c","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l8-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l8'), (select id from public.questions where slug = 'iq-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l8-q2', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 1, 'Đâu là quả?', null, null, null, null, '{"options":[{"id":"a","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"b","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"c","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l8-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l8'), (select id from public.questions where slug = 'iq-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l8-q3', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 1, 'Đâu là đồ dùng học tập?', null, null, null, null, '{"options":[{"id":"a","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"b","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"c","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l8-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l8'), (select id from public.questions where slug = 'iq-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l8-q4', (select id from public.skills where slug = 'iq-s2'), 'matching', 2, 'Nối màu với quả có màu đó.', null, null, null, null, '{"left":[{"id":"l1","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"l2","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"l3","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}}],"right":[{"id":"r1","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"r2","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"r3","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l8-q4'), '{"type":"matching","pairs":[["l1","r3"],["l2","r1"],["l3","r2"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l8'), (select id from public.questions where slug = 'iq-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('iq-l8-q5', (select id from public.skills where slug = 'iq-s2'), 'image_choice', 2, 'Cái nào không phải đồ dùng học tập?', null, null, null, null, '{"options":[{"id":"a","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"b","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"c","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'iq-l8-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'iq-l8'), (select id from public.questions where slug = 'iq-l8-q5'), 5)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- Memory Garden
@@ -465,6 +1041,84 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'mg-l2'), (select id from public.questions where slug = 'mg-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'mg-s1'), 'mg-l5', 'Ghép cặp con vật và quả', 'Con sẽ nhớ vị trí để tìm các cặp giống nhau.', 6, '{"kind":"illustration","name":"animal.bird"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l5-q1', (select id from public.skills where slug = 'mg-s1'), 'memory', 1, 'Tìm hai con vật giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"m3","pairKey":"k1","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}},{"id":"m5","pairKey":"k2","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"m2","pairKey":"k0","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"m6","pairKey":"k2","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"m4","pairKey":"k1","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}}],"columns":3,"peekAfterMismatches":4}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l5-q1'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l5'), (select id from public.questions where slug = 'mg-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l5-q2', (select id from public.skills where slug = 'mg-s1'), 'memory', 2, 'Tìm hai quả giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"m3","pairKey":"k1","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"m5","pairKey":"k2","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}},{"id":"m7","pairKey":"k3","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"m4","pairKey":"k1","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"m2","pairKey":"k0","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"m8","pairKey":"k3","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"m6","pairKey":"k2","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}}],"columns":4,"peekAfterMismatches":5}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l5-q2'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"],["m7","m8"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l5'), (select id from public.questions where slug = 'mg-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l5-q3', (select id from public.skills where slug = 'mg-s1'), 'memory', 2, 'Tìm hai màu giống nhau.', null, null, null, null, '{"cards":[{"id":"m3","pairKey":"k1","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"m1","pairKey":"k0","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"m5","pairKey":"k2","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"m2","pairKey":"k0","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"m6","pairKey":"k2","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"m4","pairKey":"k1","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}}],"columns":3,"peekAfterMismatches":4}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l5-q3'), '{"type":"memory","pairs":[["m3","m4"],["m1","m2"],["m5","m6"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l5'), (select id from public.questions where slug = 'mg-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l5-q4', (select id from public.skills where slug = 'mg-s1'), 'memory', 2, 'Tìm hai chữ giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Chữ A","visual":{"kind":"glyph","text":"A","tone":"lavender"}},{"id":"m3","pairKey":"k1","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}},{"id":"m5","pairKey":"k2","label":"Chữ C","visual":{"kind":"glyph","text":"C","tone":"lavender"}},{"id":"m7","pairKey":"k3","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"m2","pairKey":"k0","label":"Chữ A","visual":{"kind":"glyph","text":"A","tone":"lavender"}},{"id":"m4","pairKey":"k1","label":"Chữ B","visual":{"kind":"glyph","text":"B","tone":"lavender"}},{"id":"m8","pairKey":"k3","label":"Chữ D","visual":{"kind":"glyph","text":"D","tone":"lavender"}},{"id":"m6","pairKey":"k2","label":"Chữ C","visual":{"kind":"glyph","text":"C","tone":"lavender"}}],"columns":4,"peekAfterMismatches":5}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l5-q4'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"],["m7","m8"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l5'), (select id from public.questions where slug = 'mg-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'mg-s1'), 'mg-l6', 'Ghép cặp thật nhiều', 'Con sẽ tìm sáu cặp thẻ giống nhau.', 6, '{"kind":"illustration","name":"animal.fish"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l6-q1', (select id from public.skills where slug = 'mg-s1'), 'memory', 2, 'Tìm hai con vật giống nhau.', null, null, null, null, '{"cards":[{"id":"m7","pairKey":"k3","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"m1","pairKey":"k0","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"m3","pairKey":"k1","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"m5","pairKey":"k2","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"m2","pairKey":"k0","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"m8","pairKey":"k3","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"m4","pairKey":"k1","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"m6","pairKey":"k2","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}}],"columns":4,"peekAfterMismatches":5}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l6-q1'), '{"type":"memory","pairs":[["m7","m8"],["m1","m2"],["m3","m4"],["m5","m6"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l6'), (select id from public.questions where slug = 'mg-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l6-q2', (select id from public.skills where slug = 'mg-s1'), 'memory', 3, 'Tìm hai hình giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"m3","pairKey":"k1","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"m5","pairKey":"k2","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"m7","pairKey":"k3","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"m9","pairKey":"k4","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"m11","pairKey":"k5","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"m2","pairKey":"k0","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"m4","pairKey":"k1","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"m12","pairKey":"k5","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"m6","pairKey":"k2","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"m8","pairKey":"k3","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"m10","pairKey":"k4","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}}],"columns":4,"peekAfterMismatches":7}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l6-q2'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"],["m7","m8"],["m9","m10"],["m11","m12"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l6'), (select id from public.questions where slug = 'mg-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l6-q3', (select id from public.skills where slug = 'mg-s1'), 'memory', 3, 'Tìm hai đồ vật giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"m3","pairKey":"k1","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"m5","pairKey":"k2","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"m7","pairKey":"k3","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"m4","pairKey":"k1","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"m2","pairKey":"k0","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"m8","pairKey":"k3","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"m6","pairKey":"k2","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}}],"columns":4,"peekAfterMismatches":5}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l6-q3'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"],["m7","m8"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l6'), (select id from public.questions where slug = 'mg-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l6-q4', (select id from public.skills where slug = 'mg-s1'), 'memory', 3, 'Tìm hai chữ giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Chữ M","visual":{"kind":"glyph","text":"M","tone":"lavender"}},{"id":"m3","pairKey":"k1","label":"Chữ N","visual":{"kind":"glyph","text":"N","tone":"lavender"}},{"id":"m5","pairKey":"k2","label":"Chữ O","visual":{"kind":"glyph","text":"O","tone":"lavender"}},{"id":"m7","pairKey":"k3","label":"Chữ Ô","visual":{"kind":"glyph","text":"Ô","tone":"lavender"}},{"id":"m9","pairKey":"k4","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}},{"id":"m11","pairKey":"k5","label":"Chữ P","visual":{"kind":"glyph","text":"P","tone":"lavender"}},{"id":"m2","pairKey":"k0","label":"Chữ M","visual":{"kind":"glyph","text":"M","tone":"lavender"}},{"id":"m4","pairKey":"k1","label":"Chữ N","visual":{"kind":"glyph","text":"N","tone":"lavender"}},{"id":"m12","pairKey":"k5","label":"Chữ P","visual":{"kind":"glyph","text":"P","tone":"lavender"}},{"id":"m6","pairKey":"k2","label":"Chữ O","visual":{"kind":"glyph","text":"O","tone":"lavender"}},{"id":"m8","pairKey":"k3","label":"Chữ Ô","visual":{"kind":"glyph","text":"Ô","tone":"lavender"}},{"id":"m10","pairKey":"k4","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}}],"columns":4,"peekAfterMismatches":7}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l6-q4'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"],["m7","m8"],["m9","m10"],["m11","m12"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l6'), (select id from public.questions where slug = 'mg-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'memory-garden'), 'mg-s2', 'Nhớ và kể lại', 20, 'Quan sát, ghi nhớ và kể lại điều vừa thấy.', 'Đặt 3–4 đồ vật lên bàn, che lại, lấy bớt một món và hỏi bé món nào đã biến mất.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -527,6 +1181,102 @@ values ((select id from public.questions where slug = 'mg-l4-q3'), '{"type":"ord
 on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'mg-l4'), (select id from public.questions where slug = 'mg-l4-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'mg-s2'), 'mg-l7', 'Nhìn kỹ, nhớ lâu', 'Con sẽ nhìn thật kỹ rồi nhớ lại hình vừa thấy.', 6, '{"kind":"illustration","name":"food.orange"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l7-q1', (select id from public.skills where slug = 'mg-s2'), 'image_choice', 1, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"animal.dog"}],"seconds":3}'::jsonb, null, '{"options":[{"id":"a","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"b","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"c","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l7-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l7'), (select id from public.questions where slug = 'mg-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l7-q2', (select id from public.skills where slug = 'mg-s2'), 'image_choice', 1, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"food.grapes"}],"seconds":3}'::jsonb, null, '{"options":[{"id":"a","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"b","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"c","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l7-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l7'), (select id from public.questions where slug = 'mg-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l7-q3', (select id from public.skills where slug = 'mg-s2'), 'image_choice', 2, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"shape.circle"},{"kind":"illustration","name":"object.ball"}],"seconds":4}'::jsonb, null, '{"options":[{"id":"a","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"b","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"c","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l7-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l7'), (select id from public.questions where slug = 'mg-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l7-q4', (select id from public.skills where slug = 'mg-s2'), 'image_choice', 2, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"object.book"},{"kind":"illustration","name":"animal.chicken"}],"seconds":4}'::jsonb, null, '{"options":[{"id":"a","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"b","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"c","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l7-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l7'), (select id from public.questions where slug = 'mg-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l7-q5', (select id from public.skills where slug = 'mg-s2'), 'image_choice', 3, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"color.red"},{"kind":"illustration","name":"color.yellow"},{"kind":"illustration","name":"color.blue"}],"seconds":5}'::jsonb, null, '{"options":[{"id":"a","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"b","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"c","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l7-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l7'), (select id from public.questions where slug = 'mg-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'mg-s2'), 'mg-l8', 'Nhớ thứ tự dài hơn', 'Con sẽ nhớ và xếp lại bốn hình theo đúng thứ tự.', 6, '{"kind":"illustration","name":"object.pencil"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l8-q1', (select id from public.skills where slug = 'mg-s2'), 'ordering', 2, 'Xếp lại đúng thứ tự con vừa thấy.', null, null, '{"visuals":[{"kind":"illustration","name":"animal.cat"},{"kind":"illustration","name":"animal.dog"},{"kind":"illustration","name":"animal.fish"}],"seconds":4}'::jsonb, null, '{"items":[{"id":"i1","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"i2","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"i3","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l8-q1'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l8'), (select id from public.questions where slug = 'mg-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l8-q2', (select id from public.skills where slug = 'mg-s2'), 'ordering', 2, 'Xếp lại đúng thứ tự con vừa thấy.', null, null, '{"visuals":[{"kind":"illustration","name":"color.red"},{"kind":"illustration","name":"color.green"},{"kind":"illustration","name":"color.yellow"}],"seconds":4}'::jsonb, null, '{"items":[{"id":"i1","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"i2","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"i3","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l8-q2'), '{"type":"ordering","order":["i3","i1","i2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l8'), (select id from public.questions where slug = 'mg-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l8-q3', (select id from public.skills where slug = 'mg-s2'), 'ordering', 3, 'Xếp lại đúng thứ tự con vừa thấy.', null, null, '{"visuals":[{"kind":"illustration","name":"food.apple"},{"kind":"illustration","name":"food.banana"},{"kind":"illustration","name":"food.orange"},{"kind":"illustration","name":"food.grapes"}],"seconds":5}'::jsonb, null, '{"items":[{"id":"i1","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"i2","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"i3","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"i4","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l8-q3'), '{"type":"ordering","order":["i3","i2","i4","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l8'), (select id from public.questions where slug = 'mg-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l8-q4', (select id from public.skills where slug = 'mg-s2'), 'ordering', 3, 'Xếp lại đúng thứ tự con vừa thấy.', null, null, '{"visuals":[{"kind":"illustration","name":"shape.star"},{"kind":"illustration","name":"shape.circle"},{"kind":"illustration","name":"shape.triangle"},{"kind":"illustration","name":"shape.square"}],"seconds":5}'::jsonb, null, '{"items":[{"id":"i1","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"i2","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"i3","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"i4","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l8-q4'), '{"type":"ordering","order":["i4","i3","i1","i2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l8'), (select id from public.questions where slug = 'mg-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('mg-l8-q5', (select id from public.skills where slug = 'mg-s2'), 'image_choice', 2, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"animal.bird"},{"kind":"illustration","name":"object.ball"}],"seconds":4}'::jsonb, null, '{"options":[{"id":"a","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"b","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"c","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'mg-l8-q5'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'mg-l8'), (select id from public.questions where slug = 'mg-l8-q5'), 5)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- English Island
@@ -596,6 +1346,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'ei-l2'), (select id from public.questions where slug = 'ei-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ei-s1'), 'ei-l5', 'Colours review', 'Con sẽ ôn lại tên các màu bằng tiếng Anh.', 6, '{"kind":"illustration","name":"color.green"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l5-q1', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find red! Con hãy tìm “red”.', null, null, null, '{"correctText":"Yes! red — màu đỏ.","hint":"“red” là màu đỏ."}'::jsonb, '{"options":[{"id":"a","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"b","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"c","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l5-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l5'), (select id from public.questions where slug = 'ei-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l5-q2', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find green! Con hãy tìm “green”.', null, null, null, '{"correctText":"Yes! green — màu xanh lá.","hint":"“green” là màu xanh lá."}'::jsonb, '{"options":[{"id":"a","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"b","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"c","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l5-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l5'), (select id from public.questions where slug = 'ei-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l5-q3', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find purple! Con hãy tìm “purple”.', null, null, null, '{"correctText":"Yes! purple — màu tím.","hint":"“purple” là màu tím."}'::jsonb, '{"options":[{"id":"a","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"b","label":"Màu cam","visual":{"kind":"illustration","name":"color.orange"}},{"id":"c","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l5-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l5'), (select id from public.questions where slug = 'ei-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l5-q4', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find orange! Con hãy tìm “orange”.', null, null, null, '{"correctText":"Yes! orange — màu cam.","hint":"“orange” là màu cam."}'::jsonb, '{"options":[{"id":"a","label":"Màu cam","visual":{"kind":"illustration","name":"color.orange"}},{"id":"b","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"c","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l5-q4'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l5'), (select id from public.questions where slug = 'ei-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l5-q5', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find yellow! Con hãy tìm “yellow”.', null, null, null, '{"correctText":"Yes! yellow — màu vàng.","hint":"“yellow” là màu vàng."}'::jsonb, '{"options":[{"id":"a","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"b","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"c","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l5-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l5'), (select id from public.questions where slug = 'ei-l5-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ei-s1'), 'ei-l6', 'Colours everywhere', 'Con sẽ nghe và tìm đúng màu thật nhanh.', 6, '{"kind":"illustration","name":"color.yellow"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l6-q1', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find blue! Con hãy tìm “blue”.', null, null, null, '{"correctText":"Yes! blue — màu xanh dương.","hint":"“blue” là màu xanh dương."}'::jsonb, '{"options":[{"id":"a","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"b","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"c","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l6-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l6'), (select id from public.questions where slug = 'ei-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l6-q2', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find purple! Con hãy tìm “purple”.', null, null, null, '{"correctText":"Yes! purple — màu tím.","hint":"“purple” là màu tím."}'::jsonb, '{"options":[{"id":"a","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"b","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"c","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l6-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l6'), (select id from public.questions where slug = 'ei-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l6-q3', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find green! Con hãy tìm “green”.', null, null, null, '{"correctText":"Yes! green — màu xanh lá.","hint":"“green” là màu xanh lá."}'::jsonb, '{"options":[{"id":"a","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"b","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"c","label":"Màu cam","visual":{"kind":"illustration","name":"color.orange"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l6-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l6'), (select id from public.questions where slug = 'ei-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l6-q4', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find red! Con hãy tìm “red”.', null, null, null, '{"correctText":"Yes! red — màu đỏ.","hint":"“red” là màu đỏ."}'::jsonb, '{"options":[{"id":"a","label":"Màu cam","visual":{"kind":"illustration","name":"color.orange"}},{"id":"b","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}},{"id":"c","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l6-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l6'), (select id from public.questions where slug = 'ei-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l6-q5', (select id from public.skills where slug = 'ei-s1'), 'image_choice', 1, 'Find orange! Con hãy tìm “orange”.', null, null, null, '{"correctText":"Yes! orange — màu cam.","hint":"“orange” là màu cam."}'::jsonb, '{"options":[{"id":"a","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"b","label":"Màu cam","visual":{"kind":"illustration","name":"color.orange"}},{"id":"c","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l6-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l6'), (select id from public.questions where slug = 'ei-l6-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'english-island'), 'ei-s2', 'Animals & things — Con vật và đồ vật', 20, 'Làm quen tên con vật và đồ vật bằng tiếng Anh.', 'Chỉ vào đồ chơi con vật, nói tên tiếng Anh và để bé nhắc lại theo.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -658,6 +1504,102 @@ values ((select id from public.questions where slug = 'ei-l4-q3'), '{"type":"cho
 on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'ei-l4'), (select id from public.questions where slug = 'ei-l4-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ei-s2'), 'ei-l7', 'Animals', 'Con sẽ nghe tên con vật tiếng Anh và tìm hình.', 6, '{"kind":"illustration","name":"animal.chicken"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l7-q1', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the chicken! Con hãy tìm “the chicken”.', null, null, null, '{"correctText":"Yes! the chicken — con gà.","hint":"“the chicken” là con gà."}'::jsonb, '{"options":[{"id":"a","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}},{"id":"b","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"c","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l7-q1'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l7'), (select id from public.questions where slug = 'ei-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l7-q2', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the fish! Con hãy tìm “the fish”.', null, null, null, '{"correctText":"Yes! the fish — con cá.","hint":"“the fish” là con cá."}'::jsonb, '{"options":[{"id":"a","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"b","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"c","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l7-q2'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l7'), (select id from public.questions where slug = 'ei-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l7-q3', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the dog! Con hãy tìm “the dog”.', null, null, null, '{"correctText":"Yes! the dog — con chó.","hint":"“the dog” là con chó."}'::jsonb, '{"options":[{"id":"a","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"b","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"c","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l7-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l7'), (select id from public.questions where slug = 'ei-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l7-q4', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the bird! Con hãy tìm “the bird”.', null, null, null, '{"correctText":"Yes! the bird — con chim.","hint":"“the bird” là con chim."}'::jsonb, '{"options":[{"id":"a","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"b","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"c","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l7-q4'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l7'), (select id from public.questions where slug = 'ei-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l7-q5', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the cat! Con hãy tìm “the cat”.', null, null, null, '{"correctText":"Yes! the cat — con mèo.","hint":"“the cat” là con mèo."}'::jsonb, '{"options":[{"id":"a","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"b","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"c","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l7-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l7'), (select id from public.questions where slug = 'ei-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ei-s2'), 'ei-l8', 'Things and fruit', 'Con sẽ tìm đồ vật và quả quen thuộc bằng tiếng Anh.', 6, '{"kind":"illustration","name":"food.banana"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l8-q1', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the banana! Con hãy tìm “the banana”.', null, null, null, '{"correctText":"Yes! the banana — quả chuối.","hint":"“the banana” là quả chuối."}'::jsonb, '{"options":[{"id":"a","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"b","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"c","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l8-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l8'), (select id from public.questions where slug = 'ei-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l8-q2', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the pencil! Con hãy tìm “the pencil”.', null, null, null, '{"correctText":"Yes! the pencil — bút chì.","hint":"“the pencil” là bút chì."}'::jsonb, '{"options":[{"id":"a","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"b","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"c","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l8-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l8'), (select id from public.questions where slug = 'ei-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l8-q3', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the book! Con hãy tìm “the book”.', null, null, null, '{"correctText":"Yes! the book — quyển sách.","hint":"“the book” là quyển sách."}'::jsonb, '{"options":[{"id":"a","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"b","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"c","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l8-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l8'), (select id from public.questions where slug = 'ei-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l8-q4', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the apple! Con hãy tìm “the apple”.', null, null, null, '{"correctText":"Yes! the apple — quả táo.","hint":"“the apple” là quả táo."}'::jsonb, '{"options":[{"id":"a","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}},{"id":"b","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"c","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l8-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l8'), (select id from public.questions where slug = 'ei-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ei-l8-q5', (select id from public.skills where slug = 'ei-s2'), 'image_choice', 1, 'Find the ball! Con hãy tìm “the ball”.', null, null, null, '{"correctText":"Yes! the ball — quả bóng.","hint":"“the ball” là quả bóng."}'::jsonb, '{"options":[{"id":"a","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"b","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"c","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ei-l8-q5'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ei-l8'), (select id from public.questions where slug = 'ei-l8-q5'), 5)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- School Town
@@ -727,6 +1669,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'st-l2'), (select id from public.questions where slug = 'st-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'st-s1'), 'st-l5', 'Chuẩn bị đi học', 'Con sẽ chọn đúng đồ cần mang đi học.', 6, '{"kind":"illustration","name":"object.backpack"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l5-q1', (select id from public.skills where slug = 'st-s1'), 'image_choice', 1, 'Đâu là cặp sách?', null, null, null, null, '{"options":[{"id":"a","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"b","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"c","label":"Ăn cơm","visual":{"kind":"illustration","name":"routine.bowl"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l5-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l5'), (select id from public.questions where slug = 'st-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l5-q2', (select id from public.skills where slug = 'st-s1'), 'image_choice', 1, 'Con đựng sách vở vào đâu?', null, null, null, null, '{"options":[{"id":"a","label":"Ăn cơm","visual":{"kind":"illustration","name":"routine.bowl"}},{"id":"b","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"c","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l5-q2'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l5'), (select id from public.questions where slug = 'st-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l5-q3', (select id from public.skills where slug = 'st-s1'), 'image_choice', 1, 'Đâu là bút chì?', null, null, null, null, '{"options":[{"id":"a","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"b","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"c","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l5-q3'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l5'), (select id from public.questions where slug = 'st-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l5-q4', (select id from public.skills where slug = 'st-s1'), 'image_choice', 2, 'Cái nào không phải đồ dùng học tập?', null, null, null, null, '{"options":[{"id":"a","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"b","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"c","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l5-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l5'), (select id from public.questions where slug = 'st-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l5-q5', (select id from public.skills where slug = 'st-s1'), 'memory', 2, 'Tìm hai đồ dùng giống nhau.', null, null, null, null, '{"cards":[{"id":"m1","pairKey":"k0","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"m3","pairKey":"k1","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"m5","pairKey":"k2","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"m2","pairKey":"k0","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}},{"id":"m6","pairKey":"k2","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"m4","pairKey":"k1","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}}],"columns":3,"peekAfterMismatches":4}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l5-q5'), '{"type":"memory","pairs":[["m1","m2"],["m3","m4"],["m5","m6"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l5'), (select id from public.questions where slug = 'st-l5-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'st-s1'), 'st-l6', 'Đếm đồ dùng', 'Con sẽ đếm sách, bút và cặp.', 6, '{"kind":"group","name":"object.book","count":3}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l6-q1', (select id from public.skills where slug = 'st-s1'), 'single_choice', 1, 'Có bao nhiêu quyển sách?', null, '{"kind":"group","name":"object.book","count":3}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}},{"id":"b","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}},{"id":"c","label":"Số 2","visual":{"kind":"glyph","text":"2","tone":"blue"}}],"confirm":false}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l6-q1'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l6'), (select id from public.questions where slug = 'st-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l6-q2', (select id from public.skills where slug = 'st-s1'), 'single_choice', 2, 'Có bao nhiêu bút chì?', null, '{"kind":"group","name":"object.pencil","count":5}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}},{"id":"b","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"c","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}}],"confirm":false}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l6-q2'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l6'), (select id from public.questions where slug = 'st-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l6-q3', (select id from public.skills where slug = 'st-s1'), 'image_choice', 2, 'Nhóm nào có 2 cặp sách?', null, null, null, '{"hint":"Đếm từng nhóm nhé."}'::jsonb, '{"options":[{"id":"a","label":"3 cặp sách","visual":{"kind":"group","name":"object.backpack","count":3}},{"id":"b","label":"2 cặp sách","visual":{"kind":"group","name":"object.backpack","count":2}},{"id":"c","label":"1 cặp sách","visual":{"kind":"group","name":"object.backpack","count":1}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l6-q3'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l6'), (select id from public.questions where slug = 'st-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l6-q4', (select id from public.skills where slug = 'st-s1'), 'matching', 2, 'Nối mỗi nhóm với số đúng.', null, null, null, '{"hint":"Đếm từng nhóm trước nhé."}'::jsonb, '{"left":[{"id":"l1","label":"1 quyển sách","visual":{"kind":"group","name":"object.book","count":1}},{"id":"l2","label":"3 quyển sách","visual":{"kind":"group","name":"object.book","count":3}},{"id":"l3","label":"2 quyển sách","visual":{"kind":"group","name":"object.book","count":2}}],"right":[{"id":"r1","label":"Số 2","visual":{"kind":"glyph","text":"2","tone":"blue"}},{"id":"r2","label":"Số 1","visual":{"kind":"glyph","text":"1","tone":"blue"}},{"id":"r3","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l6-q4'), '{"type":"matching","pairs":[["l1","r2"],["l2","r3"],["l3","r1"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l6'), (select id from public.questions where slug = 'st-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l6-q5', (select id from public.skills where slug = 'st-s1'), 'ordering', 2, 'Xếp từ ít đến nhiều.', null, null, null, null, '{"items":[{"id":"i1","label":"4 bút chì","visual":{"kind":"group","name":"object.pencil","count":4}},{"id":"i2","label":"1 bút chì","visual":{"kind":"group","name":"object.pencil","count":1}},{"id":"i3","label":"3 bút chì","visual":{"kind":"group","name":"object.pencil","count":3}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l6-q5'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l6'), (select id from public.questions where slug = 'st-l6-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'school-town'), 'st-s2', 'Nề nếp hằng ngày', 20, 'Làm quen nề nếp hằng ngày và làm theo hướng dẫn.', 'Đưa cho bé hướng dẫn hai bước (“cất giày rồi rửa tay”) và khen khi bé làm theo.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -789,6 +1827,102 @@ values ((select id from public.questions where slug = 'st-l4-q3'), '{"type":"cho
 on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'st-l4'), (select id from public.questions where slug = 'st-l4-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'st-s2'), 'st-l7', 'Một ngày của bé', 'Con sẽ biết việc cần làm vào từng lúc trong ngày.', 6, '{"kind":"illustration","name":"routine.toothbrush"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l7-q1', (select id from public.skills where slug = 'st-s2'), 'image_choice', 1, 'Thức dậy buổi sáng, con làm gì trước?', null, null, null, null, '{"options":[{"id":"a","label":"Đi ngủ","visual":{"kind":"illustration","name":"routine.bed"}},{"id":"b","label":"Đánh răng","visual":{"kind":"illustration","name":"routine.toothbrush"}},{"id":"c","label":"Chơi bóng","visual":{"kind":"illustration","name":"object.ball"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l7-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l7'), (select id from public.questions where slug = 'st-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l7-q2', (select id from public.skills where slug = 'st-s2'), 'image_choice', 1, 'Khi tay bị bẩn, con làm gì?', null, null, null, null, '{"options":[{"id":"a","label":"Rửa tay","visual":{"kind":"illustration","name":"routine.soap"}},{"id":"b","label":"Đi ngủ","visual":{"kind":"illustration","name":"routine.bed"}},{"id":"c","label":"Đọc sách","visual":{"kind":"illustration","name":"object.book"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l7-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l7'), (select id from public.questions where slug = 'st-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l7-q3', (select id from public.skills where slug = 'st-s2'), 'image_choice', 1, 'Đến giờ ăn trưa, con làm gì?', null, null, null, null, '{"options":[{"id":"a","label":"Chơi bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"b","label":"Đi học","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"c","label":"Ăn cơm","visual":{"kind":"illustration","name":"routine.bowl"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l7-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l7'), (select id from public.questions where slug = 'st-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l7-q4', (select id from public.skills where slug = 'st-s2'), 'ordering', 2, 'Xếp việc buổi tối theo thứ tự.', null, null, null, '{"hint":"Việc nào làm sau cùng trước khi ngủ?"}'::jsonb, '{"items":[{"id":"i1","label":"Đi ngủ","visual":{"kind":"illustration","name":"routine.bed"}},{"id":"i2","label":"Ăn tối","visual":{"kind":"illustration","name":"routine.bowl"}},{"id":"i3","label":"Đánh răng","visual":{"kind":"illustration","name":"routine.toothbrush"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l7-q4'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l7'), (select id from public.questions where slug = 'st-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l7-q5', (select id from public.skills where slug = 'st-s2'), 'ordering', 2, 'Xếp việc trước bữa ăn theo thứ tự.', null, null, null, '{"hint":"Trước khi ăn, con làm gì?"}'::jsonb, '{"items":[{"id":"i1","label":"Ăn cơm","visual":{"kind":"illustration","name":"routine.bowl"}},{"id":"i2","label":"Đánh răng","visual":{"kind":"illustration","name":"routine.toothbrush"}},{"id":"i3","label":"Rửa tay","visual":{"kind":"illustration","name":"routine.soap"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l7-q5'), '{"type":"ordering","order":["i3","i1","i2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l7'), (select id from public.questions where slug = 'st-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'st-s2'), 'st-l8', 'Lắng nghe lời cô', 'Con sẽ nghe và làm theo hướng dẫn dài hơn.', 6, '{"kind":"illustration","name":"object.book"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l8-q1', (select id from public.skills where slug = 'st-s2'), 'ordering', 2, 'Xếp theo lời cô: quả cam, quả táo, quả chuối.', null, null, null, null, '{"items":[{"id":"i1","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"i2","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"i3","label":"Quả cam","visual":{"kind":"illustration","name":"food.orange"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l8-q1'), '{"type":"ordering","order":["i3","i1","i2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l8'), (select id from public.questions where slug = 'st-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l8-q2', (select id from public.skills where slug = 'st-s2'), 'ordering', 2, 'Xếp theo lời cô: con mèo, con cá, con chim.', null, null, null, null, '{"items":[{"id":"i1","label":"Con chim","visual":{"kind":"illustration","name":"animal.bird"}},{"id":"i2","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"i3","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l8-q2'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l8'), (select id from public.questions where slug = 'st-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l8-q3', (select id from public.skills where slug = 'st-s2'), 'ordering', 2, 'Xếp theo lời cô: hình vuông, ngôi sao, hình tròn.', null, null, null, null, '{"items":[{"id":"i1","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"i2","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"i3","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l8-q3'), '{"type":"ordering","order":["i1","i3","i2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l8'), (select id from public.questions where slug = 'st-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l8-q4', (select id from public.skills where slug = 'st-s2'), 'ordering', 3, 'Xếp theo lời cô: quyển sách, bút chì, cặp sách.', null, null, null, null, '{"items":[{"id":"i1","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"i2","label":"Cặp sách","visual":{"kind":"illustration","name":"object.backpack"}},{"id":"i3","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l8-q4'), '{"type":"ordering","order":["i3","i1","i2"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l8'), (select id from public.questions where slug = 'st-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('st-l8-q5', (select id from public.skills where slug = 'st-s2'), 'image_choice', 1, 'Đèn giao thông màu gì thì phải dừng lại?', null, null, null, '{"hint":"Đèn đỏ: dừng lại."}'::jsonb, '{"options":[{"id":"a","label":"Màu xanh","visual":{"kind":"illustration","name":"color.green"}},{"id":"b","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"c","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'st-l8-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'st-l8'), (select id from public.questions where slug = 'st-l8-q5'), 5)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- Challenge Arena
@@ -858,6 +1992,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'ca-l2'), (select id from public.questions where slug = 'ca-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ca-s1'), 'ca-l5', 'Thử thách số 5', 'Con sẽ đếm, tìm chữ, tìm quy luật và nghe tiếng Anh.', 6, '{"kind":"illustration","name":"shape.star"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l5-q1', (select id from public.skills where slug = 'ca-s1'), 'single_choice', 2, 'Có bao nhiêu con chim?', null, '{"kind":"group","name":"animal.bird","count":7}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"b","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"c","label":"Số 8","visual":{"kind":"glyph","text":"8","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l5-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l5'), (select id from public.questions where slug = 'ca-l5-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l5-q2', (select id from public.skills where slug = 'ca-s1'), 'image_choice', 2, 'Đâu là chữ Ơ?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ Ô","visual":{"kind":"glyph","text":"Ô","tone":"lavender"}},{"id":"b","label":"Chữ O","visual":{"kind":"glyph","text":"O","tone":"lavender"}},{"id":"c","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l5-q2'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l5'), (select id from public.questions where slug = 'ca-l5-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l5-q3', (select id from public.skills where slug = 'ca-s1'), 'pattern', 2, 'Chọn hình tiếp theo.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"s2","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"s3","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"s4","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"s5","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},null],"palette":[{"id":"p1","label":"Hình tròn","visual":{"kind":"illustration","name":"shape.circle"}},{"id":"p2","label":"Ngôi sao","visual":{"kind":"illustration","name":"shape.star"}},{"id":"p3","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l5-q3'), '{"type":"pattern","fills":["p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l5'), (select id from public.questions where slug = 'ca-l5-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l5-q4', (select id from public.skills where slug = 'ca-s1'), 'image_choice', 1, 'Find the dog! Con hãy tìm “the dog”.', null, null, null, '{"correctText":"Yes! the dog — con chó.","hint":"“the dog” là con chó."}'::jsonb, '{"options":[{"id":"a","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"b","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"c","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l5-q4'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l5'), (select id from public.questions where slug = 'ca-l5-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l5-q5', (select id from public.skills where slug = 'ca-s1'), 'single_choice', 2, 'Số nào lớn nhất?', null, null, null, null, '{"options":[{"id":"a","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}},{"id":"b","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}},{"id":"c","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l5-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l5'), (select id from public.questions where slug = 'ca-l5-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ca-s1'), 'ca-l6', 'Thử thách số 6', 'Con sẽ nghe âm đầu, ghi nhớ và so sánh.', 6, '{"kind":"illustration","name":"food.grapes"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l6-q1', (select id from public.skills where slug = 'ca-s1'), 'image_choice', 2, 'Tiếng nào bắt đầu bằng chữ C?', null, '{"kind":"glyph","text":"C","tone":"lavender"}'::jsonb, null, '{"hint":"Cờ… cam. Chó bắt đầu bằng “ch” nhé."}'::jsonb, '{"options":[{"id":"a","label":"chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"b","label":"cam","visual":{"kind":"illustration","name":"food.orange"}},{"id":"c","label":"gà","visual":{"kind":"illustration","name":"animal.chicken"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l6-q1'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l6'), (select id from public.questions where slug = 'ca-l6-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l6-q2', (select id from public.skills where slug = 'ca-s1'), 'memory', 2, 'Tìm hai quả giống nhau.', null, null, null, null, '{"cards":[{"id":"m3","pairKey":"k1","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}},{"id":"m1","pairKey":"k0","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"m5","pairKey":"k2","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"m2","pairKey":"k0","label":"Quả chuối","visual":{"kind":"illustration","name":"food.banana"}},{"id":"m6","pairKey":"k2","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"m4","pairKey":"k1","label":"Chùm nho","visual":{"kind":"illustration","name":"food.grapes"}}],"columns":3,"peekAfterMismatches":4}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l6-q2'), '{"type":"memory","pairs":[["m3","m4"],["m1","m2"],["m5","m6"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l6'), (select id from public.questions where slug = 'ca-l6-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l6-q3', (select id from public.skills where slug = 'ca-s1'), 'ordering', 2, 'Xếp các số từ bé đến lớn.', null, null, null, '{"hint":"Số nào đếm trước tiên?"}'::jsonb, '{"items":[{"id":"i1","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}},{"id":"i2","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}},{"id":"i3","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}},{"id":"i4","label":"Số 4","visual":{"kind":"glyph","text":"4","tone":"blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l6-q3'), '{"type":"ordering","order":["i2","i4","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l6'), (select id from public.questions where slug = 'ca-l6-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l6-q4', (select id from public.skills where slug = 'ca-s1'), 'image_choice', 2, 'Cái nào không phải là con vật?', null, null, null, null, '{"options":[{"id":"a","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"b","label":"Bút chì","visual":{"kind":"illustration","name":"object.pencil"}},{"id":"c","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l6-q4'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l6'), (select id from public.questions where slug = 'ca-l6-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l6-q5', (select id from public.skills where slug = 'ca-s1'), 'image_choice', 2, 'Con vừa thấy hình nào?', null, null, '{"visuals":[{"kind":"illustration","name":"shape.star"},{"kind":"illustration","name":"animal.fish"}],"seconds":4}'::jsonb, null, '{"options":[{"id":"a","label":"Con cá","visual":{"kind":"illustration","name":"animal.fish"}},{"id":"b","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}},{"id":"c","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l6-q5'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l6'), (select id from public.questions where slug = 'ca-l6-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
 values ((select id from public.modules where slug = 'challenge-arena'), 'ca-s2', 'Thử thách lớn', 20, 'Kết hợp ghi nhớ, so sánh và tiếng Anh trong một bài.', 'Hỏi bé điều bé thích nhất trong bài thử thách và cùng nghĩ một câu đố tương tự.', 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
@@ -921,6 +2151,102 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'ca-l4'), (select id from public.questions where slug = 'ca-l4-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ca-s2'), 'ca-l7', 'Thử thách số 7', 'Con sẽ nối, đếm tiếp và làm theo lời cô.', 6, '{"kind":"illustration","name":"food.orange"}'::jsonb, 30, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l7-q1', (select id from public.skills where slug = 'ca-s2'), 'matching', 2, 'Nối mỗi nhóm với số đúng.', null, null, null, '{"hint":"Đếm từng nhóm trước nhé."}'::jsonb, '{"left":[{"id":"l1","label":"2 quả táo","visual":{"kind":"group","name":"food.apple","count":2}},{"id":"l2","label":"5 quả táo","visual":{"kind":"group","name":"food.apple","count":5}},{"id":"l3","label":"3 quả táo","visual":{"kind":"group","name":"food.apple","count":3}}],"right":[{"id":"r1","label":"Số 3","visual":{"kind":"glyph","text":"3","tone":"blue"}},{"id":"r2","label":"Số 2","visual":{"kind":"glyph","text":"2","tone":"blue"}},{"id":"r3","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l7-q1'), '{"type":"matching","pairs":[["l1","r2"],["l2","r3"],["l3","r1"]]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l7'), (select id from public.questions where slug = 'ca-l7-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l7-q2', (select id from public.skills where slug = 'ca-s2'), 'single_choice', 2, 'Số nào đứng ngay sau số 8?', null, '{"kind":"glyph","text":"8","tone":"blue"}'::jsonb, null, '{"hint":"Đếm tiếp từ 8 nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"b","label":"Số 9","visual":{"kind":"glyph","text":"9","tone":"blue"}},{"id":"c","label":"Số 10","visual":{"kind":"glyph","text":"10","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l7-q2'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l7'), (select id from public.questions where slug = 'ca-l7-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l7-q3', (select id from public.skills where slug = 'ca-s2'), 'image_choice', 1, 'Find purple! Con hãy tìm “purple”.', null, null, null, '{"correctText":"Yes! purple — màu tím.","hint":"“purple” là màu tím."}'::jsonb, '{"options":[{"id":"a","label":"Màu xanh dương","visual":{"kind":"illustration","name":"color.blue"}},{"id":"b","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}},{"id":"c","label":"Màu tím","visual":{"kind":"illustration","name":"color.purple"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l7-q3'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l7'), (select id from public.questions where slug = 'ca-l7-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l7-q4', (select id from public.skills where slug = 'ca-s2'), 'ordering', 3, 'Xếp theo lời cô: con gà, con chó, con mèo.', null, null, null, null, '{"items":[{"id":"i1","label":"Con mèo","visual":{"kind":"illustration","name":"animal.cat"}},{"id":"i2","label":"Con gà","visual":{"kind":"illustration","name":"animal.chicken"}},{"id":"i3","label":"Con chó","visual":{"kind":"illustration","name":"animal.dog"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l7-q4'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l7'), (select id from public.questions where slug = 'ca-l7-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l7-q5', (select id from public.skills where slug = 'ca-s2'), 'pattern', 3, 'Chọn hai màu còn thiếu.', null, null, null, '{"hint":"Nói to quy luật rồi đoán tiếp nhé."}'::jsonb, '{"sequence":[{"id":"s1","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"s2","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"s3","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"s4","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},null,null],"palette":[{"id":"p1","label":"Màu vàng","visual":{"kind":"illustration","name":"color.yellow"}},{"id":"p2","label":"Màu xanh lá","visual":{"kind":"illustration","name":"color.green"}},{"id":"p3","label":"Màu đỏ","visual":{"kind":"illustration","name":"color.red"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l7-q5'), '{"type":"pattern","fills":["p2","p1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l7'), (select id from public.questions where slug = 'ca-l7-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
+values ((select id from public.skills where slug = 'ca-s2'), 'ca-l8', 'Thử thách số 8', 'Con sẽ so sánh, ghi nhớ thứ tự và tìm điểm khác.', 6, '{"kind":"illustration","name":"object.ball"}'::jsonb, 40, 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l8-q1', (select id from public.skills where slug = 'ca-s2'), 'image_choice', 2, 'Nhóm nào có ít con cá hơn?', null, null, null, null, '{"options":[{"id":"a","label":"5 con cá","visual":{"kind":"group","name":"animal.fish","count":5}},{"id":"b","label":"7 con cá","visual":{"kind":"group","name":"animal.fish","count":7}},{"id":"c","label":"2 con cá","visual":{"kind":"group","name":"animal.fish","count":2}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l8-q1'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l8'), (select id from public.questions where slug = 'ca-l8-q1'), 1)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l8-q2', (select id from public.skills where slug = 'ca-s2'), 'image_choice', 2, 'Đâu là chữ Ư?', null, null, null, null, '{"options":[{"id":"a","label":"Chữ Ư","visual":{"kind":"glyph","text":"Ư","tone":"lavender"}},{"id":"b","label":"Chữ U","visual":{"kind":"glyph","text":"U","tone":"lavender"}},{"id":"c","label":"Chữ Ơ","visual":{"kind":"glyph","text":"Ơ","tone":"lavender"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l8-q2'), '{"type":"choice","optionId":"a"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l8'), (select id from public.questions where slug = 'ca-l8-q2'), 2)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l8-q3', (select id from public.skills where slug = 'ca-s2'), 'ordering', 3, 'Xếp lại đúng thứ tự con vừa thấy.', null, null, '{"visuals":[{"kind":"illustration","name":"object.ball"},{"kind":"illustration","name":"object.book"},{"kind":"illustration","name":"food.apple"}],"seconds":4}'::jsonb, null, '{"items":[{"id":"i1","label":"Quả táo","visual":{"kind":"illustration","name":"food.apple"}},{"id":"i2","label":"Quả bóng","visual":{"kind":"illustration","name":"object.ball"}},{"id":"i3","label":"Quyển sách","visual":{"kind":"illustration","name":"object.book"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l8-q3'), '{"type":"ordering","order":["i2","i3","i1"]}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l8'), (select id from public.questions where slug = 'ca-l8-q3'), 3)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l8-q4', (select id from public.skills where slug = 'ca-s2'), 'single_choice', 2, 'Có bao nhiêu con gà?', null, '{"kind":"group","name":"animal.chicken","count":6}'::jsonb, null, '{"hint":"Chạm vào từng cái và đếm thật chậm nhé."}'::jsonb, '{"options":[{"id":"a","label":"Số 5","visual":{"kind":"glyph","text":"5","tone":"blue"}},{"id":"b","label":"Số 7","visual":{"kind":"glyph","text":"7","tone":"blue"}},{"id":"c","label":"Số 6","visual":{"kind":"glyph","text":"6","tone":"blue"}}],"confirm":true}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l8-q4'), '{"type":"choice","optionId":"c"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l8'), (select id from public.questions where slug = 'ca-l8-q4'), 4)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
+insert into public.questions (slug, skill_id, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts, status, published_at)
+values ('ca-l8-q5', (select id from public.skills where slug = 'ca-s2'), 'image_choice', 2, 'Hình nào khác các hình còn lại?', null, null, null, null, '{"options":[{"id":"a","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}},{"id":"b","label":"Hình vuông","visual":{"kind":"illustration","name":"shape.square"}},{"id":"c","label":"Hình tam giác","visual":{"kind":"illustration","name":"shape.triangle"}}]}'::jsonb, 2, 'published', now())
+on conflict (slug) do update set skill_id = excluded.skill_id, type = excluded.type, difficulty = excluded.difficulty, prompt_vi = excluded.prompt_vi, instruction_audio_url = excluded.instruction_audio_url, stimulus = excluded.stimulus, memorize = excluded.memorize, feedback = excluded.feedback, config = excluded.config, max_attempts = excluded.max_attempts;
+insert into private.question_answer_keys (question_id, answer, hint_eliminate)
+values ((select id from public.questions where slug = 'ca-l8-q5'), '{"type":"choice","optionId":"b"}'::jsonb, null)
+on conflict (question_id) do update set answer = excluded.answer, hint_eliminate = excluded.hint_eliminate;
+insert into public.lesson_questions (lesson_id, question_id, position)
+values ((select id from public.lessons where slug = 'ca-l8'), (select id from public.questions where slug = 'ca-l8-q5'), 5)
+on conflict (lesson_id, position) do update set question_id = excluded.question_id;
 
 -- Rewards
 insert into public.rewards (key, kind, title_vi, title_en, criteria_vi, illustration, rule, sort_order, status, published_at)
@@ -977,14 +2303,14 @@ declare
   v_bad text;
 begin
   select string_agg(q.slug || ':' || private.question_key_problem(q.id), ', ') into v_bad
-  from public.questions q where q.slug in ('af-l1-q1', 'af-l1-q2', 'af-l1-q3', 'af-l2-q1', 'af-l2-q2', 'af-l2-q3', 'af-l3-q1', 'af-l3-q2', 'af-l3-q3', 'af-l4-q1', 'af-l4-q2', 'af-l4-q3', 'nk-l1-q1', 'nk-l1-q2', 'nk-l1-q3', 'nk-l2-q1', 'nk-l2-q2', 'nk-l2-q3', 'nk-l3-q1', 'nk-l3-q2', 'nk-l3-q3', 'nk-l4-q1', 'nk-l4-q2', 'nk-l4-q3', 'iq-l1-q1', 'iq-l1-q2', 'iq-l1-q3', 'iq-l2-q1', 'iq-l2-q2', 'iq-l2-q3', 'iq-l3-q1', 'iq-l3-q2', 'iq-l3-q3', 'iq-l4-q1', 'iq-l4-q2', 'iq-l4-q3', 'mg-l1-q1', 'mg-l1-q2', 'mg-l1-q3', 'mg-l2-q1', 'mg-l2-q2', 'mg-l2-q3', 'mg-l3-q1', 'mg-l3-q2', 'mg-l3-q3', 'mg-l4-q1', 'mg-l4-q2', 'mg-l4-q3', 'ei-l1-q1', 'ei-l1-q2', 'ei-l1-q3', 'ei-l2-q1', 'ei-l2-q2', 'ei-l2-q3', 'ei-l3-q1', 'ei-l3-q2', 'ei-l3-q3', 'ei-l4-q1', 'ei-l4-q2', 'ei-l4-q3', 'st-l1-q1', 'st-l1-q2', 'st-l1-q3', 'st-l2-q1', 'st-l2-q2', 'st-l2-q3', 'st-l3-q1', 'st-l3-q2', 'st-l3-q3', 'st-l4-q1', 'st-l4-q2', 'st-l4-q3', 'ca-l1-q1', 'ca-l1-q2', 'ca-l1-q3', 'ca-l2-q1', 'ca-l2-q2', 'ca-l2-q3', 'ca-l3-q1', 'ca-l3-q2', 'ca-l3-q3', 'ca-l4-q1', 'ca-l4-q2', 'ca-l4-q3')
+  from public.questions q where q.slug in ('af-l1-q1', 'af-l1-q2', 'af-l1-q3', 'af-l2-q1', 'af-l2-q2', 'af-l2-q3', 'af-l5-q1', 'af-l5-q2', 'af-l5-q3', 'af-l5-q4', 'af-l5-q5', 'af-l6-q1', 'af-l6-q2', 'af-l6-q3', 'af-l6-q4', 'af-l6-q5', 'af-l3-q1', 'af-l3-q2', 'af-l3-q3', 'af-l4-q1', 'af-l4-q2', 'af-l4-q3', 'af-l7-q1', 'af-l7-q2', 'af-l7-q3', 'af-l7-q4', 'af-l7-q5', 'af-l8-q1', 'af-l8-q2', 'af-l8-q3', 'af-l8-q4', 'af-l8-q5', 'nk-l1-q1', 'nk-l1-q2', 'nk-l1-q3', 'nk-l2-q1', 'nk-l2-q2', 'nk-l2-q3', 'nk-l5-q1', 'nk-l5-q2', 'nk-l5-q3', 'nk-l5-q4', 'nk-l5-q5', 'nk-l6-q1', 'nk-l6-q2', 'nk-l6-q3', 'nk-l6-q4', 'nk-l6-q5', 'nk-l3-q1', 'nk-l3-q2', 'nk-l3-q3', 'nk-l4-q1', 'nk-l4-q2', 'nk-l4-q3', 'nk-l7-q1', 'nk-l7-q2', 'nk-l7-q3', 'nk-l7-q4', 'nk-l7-q5', 'nk-l8-q1', 'nk-l8-q2', 'nk-l8-q3', 'nk-l8-q4', 'nk-l8-q5', 'iq-l1-q1', 'iq-l1-q2', 'iq-l1-q3', 'iq-l2-q1', 'iq-l2-q2', 'iq-l2-q3', 'iq-l5-q1', 'iq-l5-q2', 'iq-l5-q3', 'iq-l5-q4', 'iq-l5-q5', 'iq-l6-q1', 'iq-l6-q2', 'iq-l6-q3', 'iq-l6-q4', 'iq-l6-q5', 'iq-l3-q1', 'iq-l3-q2', 'iq-l3-q3', 'iq-l4-q1', 'iq-l4-q2', 'iq-l4-q3', 'iq-l7-q1', 'iq-l7-q2', 'iq-l7-q3', 'iq-l7-q4', 'iq-l7-q5', 'iq-l8-q1', 'iq-l8-q2', 'iq-l8-q3', 'iq-l8-q4', 'iq-l8-q5', 'mg-l1-q1', 'mg-l1-q2', 'mg-l1-q3', 'mg-l2-q1', 'mg-l2-q2', 'mg-l2-q3', 'mg-l5-q1', 'mg-l5-q2', 'mg-l5-q3', 'mg-l5-q4', 'mg-l6-q1', 'mg-l6-q2', 'mg-l6-q3', 'mg-l6-q4', 'mg-l3-q1', 'mg-l3-q2', 'mg-l3-q3', 'mg-l4-q1', 'mg-l4-q2', 'mg-l4-q3', 'mg-l7-q1', 'mg-l7-q2', 'mg-l7-q3', 'mg-l7-q4', 'mg-l7-q5', 'mg-l8-q1', 'mg-l8-q2', 'mg-l8-q3', 'mg-l8-q4', 'mg-l8-q5', 'ei-l1-q1', 'ei-l1-q2', 'ei-l1-q3', 'ei-l2-q1', 'ei-l2-q2', 'ei-l2-q3', 'ei-l5-q1', 'ei-l5-q2', 'ei-l5-q3', 'ei-l5-q4', 'ei-l5-q5', 'ei-l6-q1', 'ei-l6-q2', 'ei-l6-q3', 'ei-l6-q4', 'ei-l6-q5', 'ei-l3-q1', 'ei-l3-q2', 'ei-l3-q3', 'ei-l4-q1', 'ei-l4-q2', 'ei-l4-q3', 'ei-l7-q1', 'ei-l7-q2', 'ei-l7-q3', 'ei-l7-q4', 'ei-l7-q5', 'ei-l8-q1', 'ei-l8-q2', 'ei-l8-q3', 'ei-l8-q4', 'ei-l8-q5', 'st-l1-q1', 'st-l1-q2', 'st-l1-q3', 'st-l2-q1', 'st-l2-q2', 'st-l2-q3', 'st-l5-q1', 'st-l5-q2', 'st-l5-q3', 'st-l5-q4', 'st-l5-q5', 'st-l6-q1', 'st-l6-q2', 'st-l6-q3', 'st-l6-q4', 'st-l6-q5', 'st-l3-q1', 'st-l3-q2', 'st-l3-q3', 'st-l4-q1', 'st-l4-q2', 'st-l4-q3', 'st-l7-q1', 'st-l7-q2', 'st-l7-q3', 'st-l7-q4', 'st-l7-q5', 'st-l8-q1', 'st-l8-q2', 'st-l8-q3', 'st-l8-q4', 'st-l8-q5', 'ca-l1-q1', 'ca-l1-q2', 'ca-l1-q3', 'ca-l2-q1', 'ca-l2-q2', 'ca-l2-q3', 'ca-l5-q1', 'ca-l5-q2', 'ca-l5-q3', 'ca-l5-q4', 'ca-l5-q5', 'ca-l6-q1', 'ca-l6-q2', 'ca-l6-q3', 'ca-l6-q4', 'ca-l6-q5', 'ca-l3-q1', 'ca-l3-q2', 'ca-l3-q3', 'ca-l4-q1', 'ca-l4-q2', 'ca-l4-q3', 'ca-l7-q1', 'ca-l7-q2', 'ca-l7-q3', 'ca-l7-q4', 'ca-l7-q5', 'ca-l8-q1', 'ca-l8-q2', 'ca-l8-q3', 'ca-l8-q4', 'ca-l8-q5')
     and private.question_key_problem(q.id) is not null;
   if v_bad is not null then
     raise exception 'seed: inconsistent answer keys: %', v_bad;
   end if;
   if (select count(*) from public.modules where slug in ('alphabet-forest', 'number-kingdom', 'iq-castle', 'memory-garden', 'english-island', 'school-town', 'challenge-arena')) <> 7
-    or (select count(*) from public.questions where slug in ('af-l1-q1', 'af-l1-q2', 'af-l1-q3', 'af-l2-q1', 'af-l2-q2', 'af-l2-q3', 'af-l3-q1', 'af-l3-q2', 'af-l3-q3', 'af-l4-q1', 'af-l4-q2', 'af-l4-q3', 'nk-l1-q1', 'nk-l1-q2', 'nk-l1-q3', 'nk-l2-q1', 'nk-l2-q2', 'nk-l2-q3', 'nk-l3-q1', 'nk-l3-q2', 'nk-l3-q3', 'nk-l4-q1', 'nk-l4-q2', 'nk-l4-q3', 'iq-l1-q1', 'iq-l1-q2', 'iq-l1-q3', 'iq-l2-q1', 'iq-l2-q2', 'iq-l2-q3', 'iq-l3-q1', 'iq-l3-q2', 'iq-l3-q3', 'iq-l4-q1', 'iq-l4-q2', 'iq-l4-q3', 'mg-l1-q1', 'mg-l1-q2', 'mg-l1-q3', 'mg-l2-q1', 'mg-l2-q2', 'mg-l2-q3', 'mg-l3-q1', 'mg-l3-q2', 'mg-l3-q3', 'mg-l4-q1', 'mg-l4-q2', 'mg-l4-q3', 'ei-l1-q1', 'ei-l1-q2', 'ei-l1-q3', 'ei-l2-q1', 'ei-l2-q2', 'ei-l2-q3', 'ei-l3-q1', 'ei-l3-q2', 'ei-l3-q3', 'ei-l4-q1', 'ei-l4-q2', 'ei-l4-q3', 'st-l1-q1', 'st-l1-q2', 'st-l1-q3', 'st-l2-q1', 'st-l2-q2', 'st-l2-q3', 'st-l3-q1', 'st-l3-q2', 'st-l3-q3', 'st-l4-q1', 'st-l4-q2', 'st-l4-q3', 'ca-l1-q1', 'ca-l1-q2', 'ca-l1-q3', 'ca-l2-q1', 'ca-l2-q2', 'ca-l2-q3', 'ca-l3-q1', 'ca-l3-q2', 'ca-l3-q3', 'ca-l4-q1', 'ca-l4-q2', 'ca-l4-q3')) <> 84
-    or (select count(*) from private.question_answer_keys k join public.questions q on q.id = k.question_id where q.slug in ('af-l1-q1', 'af-l1-q2', 'af-l1-q3', 'af-l2-q1', 'af-l2-q2', 'af-l2-q3', 'af-l3-q1', 'af-l3-q2', 'af-l3-q3', 'af-l4-q1', 'af-l4-q2', 'af-l4-q3', 'nk-l1-q1', 'nk-l1-q2', 'nk-l1-q3', 'nk-l2-q1', 'nk-l2-q2', 'nk-l2-q3', 'nk-l3-q1', 'nk-l3-q2', 'nk-l3-q3', 'nk-l4-q1', 'nk-l4-q2', 'nk-l4-q3', 'iq-l1-q1', 'iq-l1-q2', 'iq-l1-q3', 'iq-l2-q1', 'iq-l2-q2', 'iq-l2-q3', 'iq-l3-q1', 'iq-l3-q2', 'iq-l3-q3', 'iq-l4-q1', 'iq-l4-q2', 'iq-l4-q3', 'mg-l1-q1', 'mg-l1-q2', 'mg-l1-q3', 'mg-l2-q1', 'mg-l2-q2', 'mg-l2-q3', 'mg-l3-q1', 'mg-l3-q2', 'mg-l3-q3', 'mg-l4-q1', 'mg-l4-q2', 'mg-l4-q3', 'ei-l1-q1', 'ei-l1-q2', 'ei-l1-q3', 'ei-l2-q1', 'ei-l2-q2', 'ei-l2-q3', 'ei-l3-q1', 'ei-l3-q2', 'ei-l3-q3', 'ei-l4-q1', 'ei-l4-q2', 'ei-l4-q3', 'st-l1-q1', 'st-l1-q2', 'st-l1-q3', 'st-l2-q1', 'st-l2-q2', 'st-l2-q3', 'st-l3-q1', 'st-l3-q2', 'st-l3-q3', 'st-l4-q1', 'st-l4-q2', 'st-l4-q3', 'ca-l1-q1', 'ca-l1-q2', 'ca-l1-q3', 'ca-l2-q1', 'ca-l2-q2', 'ca-l2-q3', 'ca-l3-q1', 'ca-l3-q2', 'ca-l3-q3', 'ca-l4-q1', 'ca-l4-q2', 'ca-l4-q3')) <> 84
+    or (select count(*) from public.questions where slug in ('af-l1-q1', 'af-l1-q2', 'af-l1-q3', 'af-l2-q1', 'af-l2-q2', 'af-l2-q3', 'af-l5-q1', 'af-l5-q2', 'af-l5-q3', 'af-l5-q4', 'af-l5-q5', 'af-l6-q1', 'af-l6-q2', 'af-l6-q3', 'af-l6-q4', 'af-l6-q5', 'af-l3-q1', 'af-l3-q2', 'af-l3-q3', 'af-l4-q1', 'af-l4-q2', 'af-l4-q3', 'af-l7-q1', 'af-l7-q2', 'af-l7-q3', 'af-l7-q4', 'af-l7-q5', 'af-l8-q1', 'af-l8-q2', 'af-l8-q3', 'af-l8-q4', 'af-l8-q5', 'nk-l1-q1', 'nk-l1-q2', 'nk-l1-q3', 'nk-l2-q1', 'nk-l2-q2', 'nk-l2-q3', 'nk-l5-q1', 'nk-l5-q2', 'nk-l5-q3', 'nk-l5-q4', 'nk-l5-q5', 'nk-l6-q1', 'nk-l6-q2', 'nk-l6-q3', 'nk-l6-q4', 'nk-l6-q5', 'nk-l3-q1', 'nk-l3-q2', 'nk-l3-q3', 'nk-l4-q1', 'nk-l4-q2', 'nk-l4-q3', 'nk-l7-q1', 'nk-l7-q2', 'nk-l7-q3', 'nk-l7-q4', 'nk-l7-q5', 'nk-l8-q1', 'nk-l8-q2', 'nk-l8-q3', 'nk-l8-q4', 'nk-l8-q5', 'iq-l1-q1', 'iq-l1-q2', 'iq-l1-q3', 'iq-l2-q1', 'iq-l2-q2', 'iq-l2-q3', 'iq-l5-q1', 'iq-l5-q2', 'iq-l5-q3', 'iq-l5-q4', 'iq-l5-q5', 'iq-l6-q1', 'iq-l6-q2', 'iq-l6-q3', 'iq-l6-q4', 'iq-l6-q5', 'iq-l3-q1', 'iq-l3-q2', 'iq-l3-q3', 'iq-l4-q1', 'iq-l4-q2', 'iq-l4-q3', 'iq-l7-q1', 'iq-l7-q2', 'iq-l7-q3', 'iq-l7-q4', 'iq-l7-q5', 'iq-l8-q1', 'iq-l8-q2', 'iq-l8-q3', 'iq-l8-q4', 'iq-l8-q5', 'mg-l1-q1', 'mg-l1-q2', 'mg-l1-q3', 'mg-l2-q1', 'mg-l2-q2', 'mg-l2-q3', 'mg-l5-q1', 'mg-l5-q2', 'mg-l5-q3', 'mg-l5-q4', 'mg-l6-q1', 'mg-l6-q2', 'mg-l6-q3', 'mg-l6-q4', 'mg-l3-q1', 'mg-l3-q2', 'mg-l3-q3', 'mg-l4-q1', 'mg-l4-q2', 'mg-l4-q3', 'mg-l7-q1', 'mg-l7-q2', 'mg-l7-q3', 'mg-l7-q4', 'mg-l7-q5', 'mg-l8-q1', 'mg-l8-q2', 'mg-l8-q3', 'mg-l8-q4', 'mg-l8-q5', 'ei-l1-q1', 'ei-l1-q2', 'ei-l1-q3', 'ei-l2-q1', 'ei-l2-q2', 'ei-l2-q3', 'ei-l5-q1', 'ei-l5-q2', 'ei-l5-q3', 'ei-l5-q4', 'ei-l5-q5', 'ei-l6-q1', 'ei-l6-q2', 'ei-l6-q3', 'ei-l6-q4', 'ei-l6-q5', 'ei-l3-q1', 'ei-l3-q2', 'ei-l3-q3', 'ei-l4-q1', 'ei-l4-q2', 'ei-l4-q3', 'ei-l7-q1', 'ei-l7-q2', 'ei-l7-q3', 'ei-l7-q4', 'ei-l7-q5', 'ei-l8-q1', 'ei-l8-q2', 'ei-l8-q3', 'ei-l8-q4', 'ei-l8-q5', 'st-l1-q1', 'st-l1-q2', 'st-l1-q3', 'st-l2-q1', 'st-l2-q2', 'st-l2-q3', 'st-l5-q1', 'st-l5-q2', 'st-l5-q3', 'st-l5-q4', 'st-l5-q5', 'st-l6-q1', 'st-l6-q2', 'st-l6-q3', 'st-l6-q4', 'st-l6-q5', 'st-l3-q1', 'st-l3-q2', 'st-l3-q3', 'st-l4-q1', 'st-l4-q2', 'st-l4-q3', 'st-l7-q1', 'st-l7-q2', 'st-l7-q3', 'st-l7-q4', 'st-l7-q5', 'st-l8-q1', 'st-l8-q2', 'st-l8-q3', 'st-l8-q4', 'st-l8-q5', 'ca-l1-q1', 'ca-l1-q2', 'ca-l1-q3', 'ca-l2-q1', 'ca-l2-q2', 'ca-l2-q3', 'ca-l5-q1', 'ca-l5-q2', 'ca-l5-q3', 'ca-l5-q4', 'ca-l5-q5', 'ca-l6-q1', 'ca-l6-q2', 'ca-l6-q3', 'ca-l6-q4', 'ca-l6-q5', 'ca-l3-q1', 'ca-l3-q2', 'ca-l3-q3', 'ca-l4-q1', 'ca-l4-q2', 'ca-l4-q3', 'ca-l7-q1', 'ca-l7-q2', 'ca-l7-q3', 'ca-l7-q4', 'ca-l7-q5', 'ca-l8-q1', 'ca-l8-q2', 'ca-l8-q3', 'ca-l8-q4', 'ca-l8-q5')) <> 222
+    or (select count(*) from private.question_answer_keys k join public.questions q on q.id = k.question_id where q.slug in ('af-l1-q1', 'af-l1-q2', 'af-l1-q3', 'af-l2-q1', 'af-l2-q2', 'af-l2-q3', 'af-l5-q1', 'af-l5-q2', 'af-l5-q3', 'af-l5-q4', 'af-l5-q5', 'af-l6-q1', 'af-l6-q2', 'af-l6-q3', 'af-l6-q4', 'af-l6-q5', 'af-l3-q1', 'af-l3-q2', 'af-l3-q3', 'af-l4-q1', 'af-l4-q2', 'af-l4-q3', 'af-l7-q1', 'af-l7-q2', 'af-l7-q3', 'af-l7-q4', 'af-l7-q5', 'af-l8-q1', 'af-l8-q2', 'af-l8-q3', 'af-l8-q4', 'af-l8-q5', 'nk-l1-q1', 'nk-l1-q2', 'nk-l1-q3', 'nk-l2-q1', 'nk-l2-q2', 'nk-l2-q3', 'nk-l5-q1', 'nk-l5-q2', 'nk-l5-q3', 'nk-l5-q4', 'nk-l5-q5', 'nk-l6-q1', 'nk-l6-q2', 'nk-l6-q3', 'nk-l6-q4', 'nk-l6-q5', 'nk-l3-q1', 'nk-l3-q2', 'nk-l3-q3', 'nk-l4-q1', 'nk-l4-q2', 'nk-l4-q3', 'nk-l7-q1', 'nk-l7-q2', 'nk-l7-q3', 'nk-l7-q4', 'nk-l7-q5', 'nk-l8-q1', 'nk-l8-q2', 'nk-l8-q3', 'nk-l8-q4', 'nk-l8-q5', 'iq-l1-q1', 'iq-l1-q2', 'iq-l1-q3', 'iq-l2-q1', 'iq-l2-q2', 'iq-l2-q3', 'iq-l5-q1', 'iq-l5-q2', 'iq-l5-q3', 'iq-l5-q4', 'iq-l5-q5', 'iq-l6-q1', 'iq-l6-q2', 'iq-l6-q3', 'iq-l6-q4', 'iq-l6-q5', 'iq-l3-q1', 'iq-l3-q2', 'iq-l3-q3', 'iq-l4-q1', 'iq-l4-q2', 'iq-l4-q3', 'iq-l7-q1', 'iq-l7-q2', 'iq-l7-q3', 'iq-l7-q4', 'iq-l7-q5', 'iq-l8-q1', 'iq-l8-q2', 'iq-l8-q3', 'iq-l8-q4', 'iq-l8-q5', 'mg-l1-q1', 'mg-l1-q2', 'mg-l1-q3', 'mg-l2-q1', 'mg-l2-q2', 'mg-l2-q3', 'mg-l5-q1', 'mg-l5-q2', 'mg-l5-q3', 'mg-l5-q4', 'mg-l6-q1', 'mg-l6-q2', 'mg-l6-q3', 'mg-l6-q4', 'mg-l3-q1', 'mg-l3-q2', 'mg-l3-q3', 'mg-l4-q1', 'mg-l4-q2', 'mg-l4-q3', 'mg-l7-q1', 'mg-l7-q2', 'mg-l7-q3', 'mg-l7-q4', 'mg-l7-q5', 'mg-l8-q1', 'mg-l8-q2', 'mg-l8-q3', 'mg-l8-q4', 'mg-l8-q5', 'ei-l1-q1', 'ei-l1-q2', 'ei-l1-q3', 'ei-l2-q1', 'ei-l2-q2', 'ei-l2-q3', 'ei-l5-q1', 'ei-l5-q2', 'ei-l5-q3', 'ei-l5-q4', 'ei-l5-q5', 'ei-l6-q1', 'ei-l6-q2', 'ei-l6-q3', 'ei-l6-q4', 'ei-l6-q5', 'ei-l3-q1', 'ei-l3-q2', 'ei-l3-q3', 'ei-l4-q1', 'ei-l4-q2', 'ei-l4-q3', 'ei-l7-q1', 'ei-l7-q2', 'ei-l7-q3', 'ei-l7-q4', 'ei-l7-q5', 'ei-l8-q1', 'ei-l8-q2', 'ei-l8-q3', 'ei-l8-q4', 'ei-l8-q5', 'st-l1-q1', 'st-l1-q2', 'st-l1-q3', 'st-l2-q1', 'st-l2-q2', 'st-l2-q3', 'st-l5-q1', 'st-l5-q2', 'st-l5-q3', 'st-l5-q4', 'st-l5-q5', 'st-l6-q1', 'st-l6-q2', 'st-l6-q3', 'st-l6-q4', 'st-l6-q5', 'st-l3-q1', 'st-l3-q2', 'st-l3-q3', 'st-l4-q1', 'st-l4-q2', 'st-l4-q3', 'st-l7-q1', 'st-l7-q2', 'st-l7-q3', 'st-l7-q4', 'st-l7-q5', 'st-l8-q1', 'st-l8-q2', 'st-l8-q3', 'st-l8-q4', 'st-l8-q5', 'ca-l1-q1', 'ca-l1-q2', 'ca-l1-q3', 'ca-l2-q1', 'ca-l2-q2', 'ca-l2-q3', 'ca-l5-q1', 'ca-l5-q2', 'ca-l5-q3', 'ca-l5-q4', 'ca-l5-q5', 'ca-l6-q1', 'ca-l6-q2', 'ca-l6-q3', 'ca-l6-q4', 'ca-l6-q5', 'ca-l3-q1', 'ca-l3-q2', 'ca-l3-q3', 'ca-l4-q1', 'ca-l4-q2', 'ca-l4-q3', 'ca-l7-q1', 'ca-l7-q2', 'ca-l7-q3', 'ca-l7-q4', 'ca-l7-q5', 'ca-l8-q1', 'ca-l8-q2', 'ca-l8-q3', 'ca-l8-q4', 'ca-l8-q5')) <> 222
   then
     raise exception 'seed: unexpected row counts';
   end if;

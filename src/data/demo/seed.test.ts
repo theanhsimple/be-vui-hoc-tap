@@ -13,9 +13,9 @@ describe("supabase/seed.sql", () => {
     expect(seedStats()).toEqual({
       modules: 7,
       skills: 14,
-      lessons: 28,
-      questions: 84,
-      keys: 84,
+      lessons: 56,
+      questions: 222,
+      keys: 222,
       rewards: 6,
     });
   });

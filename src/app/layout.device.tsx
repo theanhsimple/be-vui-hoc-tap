@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Nunito_Sans } from "next/font/google";
 
 import { DeviceRuntimeProvider } from "@/device/runtime";
+import { ServiceWorker } from "@/device/service-worker";
 
 import "./globals.css";
 import { Providers } from "./providers";
@@ -54,6 +55,7 @@ export default function DeviceRootLayout({
       <body className="min-h-full">
         <Providers>
           <DeviceRuntimeProvider>{children}</DeviceRuntimeProvider>
+          <ServiceWorker />
         </Providers>
       </body>
     </html>

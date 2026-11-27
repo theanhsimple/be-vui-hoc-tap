@@ -48,7 +48,7 @@ const chosen = (q: LearningQuestion) => {
 };
 
 describe("demo content library — structure", () => {
-  it("has 7 worlds, ≥2 skills and ≥2 lessons each, ≥3 questions per lesson, 84 questions", () => {
+  it("has 7 worlds, ≥2 skills and ≥2 lessons each, ≥3 questions per lesson, 222 questions", () => {
     expect(catalog.worlds).toHaveLength(7);
     for (const w of catalog.worlds) {
       expect(w.skills.length, w.id).toBeGreaterThanOrEqual(2);
@@ -59,7 +59,8 @@ describe("demo content library — structure", () => {
     }
     for (const l of lessons)
       expect(l.questions.length, l.id).toBeGreaterThanOrEqual(3);
-    expect(questions).toHaveLength(84);
+    expect(questions).toHaveLength(222);
+    expect(lessons).toHaveLength(56);
   });
 
   it("uses all six question types", () => {
@@ -369,6 +370,9 @@ describe("demo content library — semantic answer checks", () => {
       "the book": "object.book",
       "the ball": "object.ball",
       "the apple": "food.apple",
+      "the chicken": "animal.chicken",
+      "the banana": "food.banana",
+      "the pencil": "object.pencil",
     };
     const qs = find(/^Find /);
     expect(qs.length).toBeGreaterThanOrEqual(12);
@@ -439,5 +443,108 @@ describe("answer keys: server edition never ships them", () => {
         /@\/data\/demo|data\/demo\//.test(readFileSync(f, "utf8")),
       );
     expect(offenders).toEqual([]);
+  });
+});
+
+describe("release 2 question types — semantic checks", () => {
+  const find = (re: RegExp) => questions.filter((q) => re.test(q.prompt));
+  const CATEGORY: Record<string, string> = {
+    quả: "food.",
+    "con vật": "animal.",
+    hình: "shape.",
+  };
+  const isSchoolThing = (v: Visual) =>
+    v.kind === "illustration" &&
+    /^object\.(book|pencil|backpack)$/.test(v.name);
+
+  it("'số đứng ngay sau/trước số N' picks N±1", () => {
+    const qs = find(/^Số nào đứng ngay (sau|trước) số \d+\?$/);
+    expect(qs.length).toBeGreaterThanOrEqual(4);
+    for (const q of qs) {
+      const [, dir, n] = q.prompt.match(/ngay (sau|trước) số (\d+)/)!;
+      expect(numberOf(chosen(q)!), q.id).toBe(
+        Number(n) + (dir === "sau" ? 1 : -1),
+      );
+    }
+  });
+
+  it("'Cái nào không phải là …' picks the only option outside the category", () => {
+    for (const q of find(/^Cái nào không phải là (quả|con vật|hình)\?$/)) {
+      const prefix = CATEGORY[q.prompt.match(/là (.+)\?$/)![1]!]!;
+      const outside = optionsOf(q).filter(
+        (o) => !visualId(o.visual).startsWith(prefix),
+      );
+      expect(
+        outside.map((o) => o.id),
+        q.id,
+      ).toEqual([(key(q) as { optionId: string }).optionId]);
+    }
+  });
+
+  it("'Cái nào không phải đồ dùng học tập?' picks the only non-school thing", () => {
+    for (const q of find(/^Cái nào không phải đồ dùng học tập\?$/)) {
+      const outside = optionsOf(q).filter((o) => !isSchoolThing(o.visual));
+      expect(
+        outside.map((o) => o.id),
+        q.id,
+      ).toEqual([(key(q) as { optionId: string }).optionId]);
+    }
+  });
+
+  it("'Hình nào khác các hình còn lại?' picks the picture that appears once", () => {
+    for (const q of find(/^Hình nào khác các hình còn lại\?$/)) {
+      const ids = optionsOf(q).map((o) => visualId(o.visual));
+      const unique = optionsOf(q).filter(
+        (o) => ids.filter((x) => x === visualId(o.visual)).length === 1,
+      );
+      expect(
+        unique.map((o) => o.id),
+        q.id,
+      ).toEqual([(key(q) as { optionId: string }).optionId]);
+    }
+  });
+
+  it("'Tiếng “w” bắt đầu bằng chữ nào?' picks the first letter", () => {
+    const qs = find(/^Tiếng “.+” bắt đầu bằng chữ nào\?$/);
+    expect(qs.length).toBeGreaterThanOrEqual(4);
+    for (const q of qs) {
+      const word = q.prompt.match(/“(.+)”/)![1]!;
+      expect(chosen(q)?.label, q.id).toBe(`Chữ ${word[0]!.toUpperCase()}`);
+    }
+  });
+
+  it("'Đâu là con vật / quả / đồ dùng học tập?' picks the only member", () => {
+    const want: Record<string, (v: Visual) => boolean> = {
+      "con vật": (v) => visualId(v).startsWith("animal."),
+      quả: (v) => visualId(v).startsWith("food."),
+      "đồ dùng học tập": isSchoolThing,
+    };
+    for (const q of find(/^Đâu là (con vật|quả|đồ dùng học tập)\?$/)) {
+      const test = want[q.prompt.match(/^Đâu là (.+)\?$/)![1]!]!;
+      const members = optionsOf(q).filter((o) => test(o.visual));
+      expect(
+        members.map((o) => o.id),
+        q.id,
+      ).toEqual([(key(q) as { optionId: string }).optionId]);
+    }
+  });
+
+  it("matching colour ↔ fruit pairs real colours", () => {
+    const colourOf: Record<string, string> = {
+      "food.apple": "color.red",
+      "food.banana": "color.yellow",
+      "food.grapes": "color.purple",
+      "food.orange": "color.orange",
+    };
+    for (const q of questions.filter(
+      (q) => q.type === "matching" && q.prompt.startsWith("Nối màu với quả"),
+    )) {
+      if (q.type !== "matching") continue;
+      const k = key(q) as Extract<AnswerKey, { type: "matching" }>;
+      for (const [l, r] of k.pairs)
+        expect(colourOf[visualId(byId(q.config.right, r).visual)], q.id).toBe(
+          visualId(byId(q.config.left, l).visual),
+        );
+    }
   });
 });

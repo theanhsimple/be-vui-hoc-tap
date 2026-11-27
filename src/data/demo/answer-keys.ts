@@ -1,5 +1,7 @@
 import type { AnswerKey } from "@/features/learning/grading/keys";
 
+import { EXPANSION_KEYS } from "./expansion";
+
 /**
  * DEMO ANSWER KEYS. Server edition: only the seed generator reads them (they
  * live in private.question_answer_keys; a test forbids other imports).
@@ -119,6 +121,8 @@ export const DEMO_ANSWER_KEYS: Readonly<Record<string, AnswerKey>> = {
   "ca-l4-q1": order("i2", "i3", "i1"),
   "ca-l4-q2": fills("p2", "p1"),
   "ca-l4-q3": choice("c", "b"),
+  // Release 2 lessons (derived from their specs in expansion.ts).
+  ...EXPANSION_KEYS,
 };
 
 export function getDemoAnswerKey(questionId: string): AnswerKey | undefined {

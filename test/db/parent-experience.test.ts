@@ -276,7 +276,10 @@ describe("child report", () => {
     expect(report.last7).toHaveLength(7);
     expect(
       report.modules.find((m) => m.moduleId === "alphabet-forest"),
-    ).toMatchObject({ completed: 1, total: 4 });
+    ).toMatchObject({
+      completed: 1,
+      total: LESSONS.filter((l) => l.worldId === "alphabet-forest").length,
+    });
     expect(report.skills).toHaveLength(14);
     expect(report.skills.find((s) => s.skillId === "af-s1")).toMatchObject({
       state: "learning",

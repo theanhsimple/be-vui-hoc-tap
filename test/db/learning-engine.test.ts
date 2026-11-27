@@ -56,7 +56,7 @@ const overview = (childId: string) =>
   rpc<Overview>(parent.client, "get_student_overview", { p_child_id: childId });
 
 describe("server-side grading", () => {
-  it("grades all 84 demo questions correct when answered with the key (all six types)", async () => {
+  it("grades every demo question correct when answered with the key (all six types)", async () => {
     const child = await newChild("Tất cả");
     // Order satisfies the progression rules: worlds in order, arena last.
     const order = [
@@ -82,7 +82,7 @@ describe("server-side grading", () => {
       l.questions.forEach((q) => types.add(q.type));
       graded += results.length;
     }
-    expect(graded).toBe(84);
+    expect(graded).toBe(LESSONS.flatMap((l) => l.questions).length);
     expect([...types].sort()).toEqual([
       "image_choice",
       "matching",

@@ -12,6 +12,7 @@ import {
   startSession,
   submit,
   type TestUser,
+  LESSONS,
 } from "./helpers";
 
 /**
@@ -250,9 +251,9 @@ describe("7. private answer keys", () => {
     const { data, error } = await parentA.client
       .from("questions")
       .select("*")
-      .limit(200);
+      .limit(1000);
     expect(error).toBeNull();
-    expect(data?.length).toBe(84);
+    expect(data?.length).toBe(LESSONS.flatMap((l) => l.questions).length);
     const text = JSON.stringify(data);
     expect(text).not.toMatch(
       /"optionId"|"hint_eliminate"|"answer"|"fills"|"order"/,

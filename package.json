@@ -19,8 +19,8 @@
     "db:seed:generate": "UPDATE_SEED=1 vitest run src/data/demo/seed.test.ts",
     "test:db": "vitest run --config vitest.db.config.mts",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts",
-    "build:device": "LITTLE_EDITION=device next build",
-    "build:pages": "LITTLE_EDITION=device NEXT_PUBLIC_BASE_PATH=/be-vui-hoc-tap next build"
+    "build:device": "LITTLE_EDITION=device next build && node scripts/build-sw.mjs",
+    "build:pages": "NEXT_PUBLIC_BASE_PATH=/be-vui-hoc-tap pnpm build:device"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
