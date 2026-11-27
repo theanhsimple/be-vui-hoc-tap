@@ -6,6 +6,8 @@ A premium 3D playful learning platform for children aged 5–6 in Vietnam (iPad 
 
 > Status: **Sprint 05 — Parent dashboard & placement activity** (on top of Sprint 04's backend). Parent progress report, placement activity, break reminder, second-guardian invitations, data export and deletion. Parent accounts, families and child profiles on Supabase; lessons graded and recorded in Postgres. Runs against a **local** Supabase stack (no hosted project yet). See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) and [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md).
 
+> **Published edition: GitHub Pages (device edition).** No backend needed — everything runs on the child's device. See [`docs/DEPLOY_GITHUB_PAGES.md`](docs/DEPLOY_GITHUB_PAGES.md). The Supabase server edition below stays available for later.
+
 ## Requirements
 
 - Node.js 22+

@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState } from "react";
 
+import { useLearningRuntime } from "@/features/learning/runtime";
+
 import { StudentShell } from "../layout/StudentShell";
 import { StudentNavigation } from "../navigation/StudentNavigation";
 import { LittleStatePanel } from "../ui/LittleStatePanel";
@@ -33,6 +35,7 @@ export function StudentScreen({
   align = "start",
 }: StudentScreenProps) {
   const router = useRouter();
+  const runtime = useLearningRuntime();
   const [parentOpen, setParentOpen] = useState(false);
   return (
     <StudentShell
@@ -44,7 +47,10 @@ export function StudentScreen({
           center={center}
           start={start}
           end={end}
-          onParentAccess={() => setParentOpen(true)}
+          onParentAccess={() => {
+            runtime.grantParentAccess?.();
+            setParentOpen(true);
+          }}
         />
       }
     >

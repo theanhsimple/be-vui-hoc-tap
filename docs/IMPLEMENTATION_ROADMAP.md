@@ -164,6 +164,10 @@ Deferred from the original Sprint 04 plan: offline attempt queue, magic-link sig
 
 ---
 
+## Release — Device edition on GitHub Pages ✅ (built and browser-tested locally; deployment needs the Pages setting)
+
+Static build of the same app for GitHub Pages; learning engine runs on the device (D-056). Deploy guide: [`DEPLOY_GITHUB_PAGES.md`](DEPLOY_GITHUB_PAGES.md). Verified: engine unit tests (all 84 questions, unlocking, stars, rewards, mastery, placement, deletion); browser flow on the `/be-vui-hoc-tap` base path (parent gate, profile, placement, lessons, resume after refresh, persistence across tabs, report, break reminder, backup/erase/restore, archive/delete; no external requests, no console errors); 15 routes × 4 viewports, axe 0 serious/critical. Not done: offline service worker, sync between devices, real iPad/Safari test.
+
 ## Sprint 06 — Admin CMS & Production QA
 
 **Deliverables**

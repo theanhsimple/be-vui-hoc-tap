@@ -1,10 +1,9 @@
-import "server-only";
-
 import type { AnswerKey } from "@/features/learning/grading/keys";
 
 /**
- * DEMO ANSWER KEYS — server only. Importing this from client code fails the
- * build. Replaced by private.question_keys in Supabase (Sprint 04).
+ * DEMO ANSWER KEYS. Server edition: only the seed generator reads them (they
+ * live in private.question_answer_keys; a test forbids other imports).
+ * Device edition (static hosting, D-056): bundled to grade on the device.
  * The marker below lets QA confirm this module never reaches the browser.
  */
 export const ANSWER_KEYS_MARKER = "little-demo-answer-keys-v1";

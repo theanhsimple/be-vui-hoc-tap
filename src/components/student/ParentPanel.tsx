@@ -4,8 +4,7 @@ import { LayoutDashboard, LogOut, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
-import { signOutAction } from "@/features/auth/actions";
-import { leaveStudentAction } from "@/features/family/actions";
+import { useLearningRuntime } from "@/features/learning/runtime";
 
 import { LittleButton } from "../ui/LittleButton";
 import { LittleModal } from "../ui/LittleModal";
@@ -19,6 +18,8 @@ export function ParentPanel({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const runtime = useLearningRuntime();
+  const signOut = runtime.signOut;
   const [pending, start] = useTransition();
   return (
     <LittleModal
@@ -26,7 +27,11 @@ export function ParentPanel({
       onClose={onClose}
       eyebrow="Dành cho bố mẹ"
       title="Khu vực phụ huynh"
-      description="Quản lý hồ sơ của bé, đổi bé đang học hoặc đăng xuất."
+      description={
+        runtime.signOut
+          ? "Quản lý hồ sơ của bé, đổi bé đang học hoặc đăng xuất."
+          : "Quản lý hồ sơ của bé hoặc đổi bé đang học."
+      }
       footer={
         <LittleButton variant="ghost" onClick={onClose}>
           Đóng
@@ -40,7 +45,7 @@ export function ParentPanel({
           fullWidth
           onClick={() => {
             onClose();
-            router.push("/parent");
+            router.push(runtime.links.parentHome);
           }}
         >
           Mở khu vực phụ huynh
@@ -50,19 +55,21 @@ export function ParentPanel({
           iconStart={<Users />}
           fullWidth
           loading={pending}
-          onClick={() => start(() => leaveStudentAction())}
+          onClick={() => start(() => runtime.leaveStudent())}
         >
           Đổi bé đang học
         </LittleButton>
-        <LittleButton
-          variant="ghost"
-          iconStart={<LogOut />}
-          fullWidth
-          loading={pending}
-          onClick={() => start(() => signOutAction())}
-        >
-          Đăng xuất
-        </LittleButton>
+        {runtime.signOut && (
+          <LittleButton
+            variant="ghost"
+            iconStart={<LogOut />}
+            fullWidth
+            loading={pending}
+            onClick={() => signOut && start(() => signOut())}
+          >
+            Đăng xuất
+          </LittleButton>
+        )}
       </div>
     </LittleModal>
   );

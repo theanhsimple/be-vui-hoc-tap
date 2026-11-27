@@ -4,8 +4,8 @@ import { ArrowRight, Heart, House } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { submitPlacementAction } from "@/features/learning/backend/actions";
-import type { PlacementRun } from "@/features/learning/backend/student";
+import type { PlacementRun } from "@/features/learning/backend/placement";
+import { useLearningRuntime } from "@/features/learning/runtime";
 import type {
   LearningQuestion,
   QuestionResponse,
@@ -53,6 +53,7 @@ export function PlacementPlayer({
   childId: string;
 }) {
   const router = useRouter();
+  const runtime = useLearningRuntime();
   const { play, playSfx } = useAudio();
   const [index, setIndex] = useState(run.currentIndex);
   const question = questions[index];
@@ -77,7 +78,7 @@ export function PlacementPlayer({
       setError(null);
       pendingKey.current ??= crypto.randomUUID();
       try {
-        const r = await submitPlacementAction({
+        const r = await runtime.submitPlacement({
           runId: run.runId,
           questionId: question.id,
           response,
@@ -107,7 +108,7 @@ export function PlacementPlayer({
         setPhase("answering");
       }
     },
-    [question, phase, run.runId, router, play, playSfx, thanks],
+    [question, phase, run.runId, router, runtime, play, playSfx, thanks],
   );
 
   const next = () => {
@@ -155,7 +156,8 @@ export function PlacementPlayer({
           onCancel={() => setGateOpen(false)}
           onPass={() => {
             setGateOpen(false);
-            router.push(`/parent/children/${childId}?saved=discover`);
+            runtime.grantParentAccess?.();
+            router.push(runtime.links.childReport(childId, "discover"));
           }}
         />
       </StudentScreen>

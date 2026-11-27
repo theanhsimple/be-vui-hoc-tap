@@ -168,6 +168,9 @@ Per-child limit (none/10/15/20/30 min, default 20 for new profiles). Time counts
 ### D-055 · 2026-11-27 · Approved (Sprint 05) — Published placement activities are public content
 Like lessons (D-044): `assessments`/`assessment_items` with status published are readable by anon, so the activity is cached without a session. Runs and answers stay family-only.
 
+### D-056 · 2026-11-27 · Approved (product owner: "chưa dùng Supabase, tận dụng GitHub") — Device edition for GitHub Pages
+Until a hosted backend exists, the product ships as a **static device edition** on GitHub Pages, built from the same codebase (`LITTLE_EDITION=device`, `pageExtensions: device.tsx`, `output: export`). Screens are shared through a `LearningRuntime` context; the device runtime runs a TypeScript port of the PostgreSQL rules (grading, progression, stars, rewards, mastery, placement, report) and stores one validated JSON document in localStorage, with backup/restore files. Consequences, accepted for a family's own device: answer keys ship in the bundle (Sprint 04 rule 1 applies to the server edition only — a test forbids the server edition from importing keys or device code); the parent area is protected by the parent gate, not an account; data is per device. The server edition (Supabase) is unchanged and remains the path for multi-family use.
+
 ## Pending decisions
 
 | ID | Question | Owner |

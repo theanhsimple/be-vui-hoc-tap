@@ -29,6 +29,8 @@ export interface ChildDashboardProps {
   catalog: Catalog;
   guides: Record<string, SkillGuide>;
   now: Date;
+  /** Where the placement activity intro lives (differs per edition). */
+  discoverHref?: string;
 }
 
 /**
@@ -42,6 +44,7 @@ export function ChildDashboard({
   catalog,
   guides,
   now,
+  discoverHref = `/parent/children/${childId}/discover`,
 }: ChildDashboardProps) {
   const worldMeta = new Map(LEARNING_WORLDS.map((w) => [w.id, w]));
   const lessons = new Map(
@@ -130,10 +133,7 @@ export function ChildDashboard({
                   </p>
                 )}
                 <div>
-                  <LittleLinkButton
-                    href={`/parent/children/${childId}/discover`}
-                    variant="secondary"
-                  >
+                  <LittleLinkButton href={discoverHref} variant="secondary">
                     Làm lại cùng bé
                   </LittleLinkButton>
                 </div>
@@ -156,7 +156,7 @@ export function ChildDashboard({
                 có điểm số.
               </p>
             </div>
-            <LittleLinkButton href={`/parent/children/${childId}/discover`}>
+            <LittleLinkButton href={discoverHref}>
               Xem hướng dẫn
             </LittleLinkButton>
           </LittleCard>

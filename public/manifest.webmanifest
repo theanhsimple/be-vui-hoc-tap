@@ -1,0 +1,22 @@
+{
+  "name": "little — Bé vui học",
+  "short_name": "little",
+  "description": "Học mà chơi cho bé 5–6 tuổi.",
+  "lang": "vi",
+  "start_url": "./student/welcome/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#eaf6ff",
+  "theme_color": "#d3ecff",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

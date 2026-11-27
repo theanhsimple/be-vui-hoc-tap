@@ -12,6 +12,8 @@ import { demoContentRepository as contentRepository } from "@/data/demo/reposito
 import type { SessionState } from "@/features/learning/backend/overview";
 import type { QuestionResponse } from "@/features/learning/types";
 
+import { testRuntime, withRuntime } from "@/test/runtime";
+
 import { LessonPlayer } from "./LessonPlayer";
 
 const router = {
@@ -21,8 +23,6 @@ const router = {
   prefetch: vi.fn(),
 };
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
-vi.mock("@/features/auth/actions", () => ({ signOutAction: vi.fn() }));
-vi.mock("@/features/family/actions", () => ({ leaveStudentAction: vi.fn() }));
 
 /**
  * The Server Functions are replaced by a fake server: it grades choice and
@@ -72,10 +72,12 @@ const requestHintAction = vi.fn(async () => ({
   text: "Hình tròn không có góc nhọn.",
   eliminateOptionId: "a",
 }));
-vi.mock("@/features/learning/backend/actions", () => ({
-  submitAnswerAction: (i: never) => submitAnswerAction(i),
-  requestHintAction: () => requestHintAction(),
-}));
+const wrapper = withRuntime(
+  testRuntime({
+    submitAnswer: (i) => submitAnswerAction(i),
+    requestHint: () => requestHintAction(),
+  }),
+);
 
 const lesson = contentRepository.getLesson("nk-l3")!; // image_choice, image_choice, pattern
 const world = contentRepository.getWorld("number-kingdom")!;
@@ -102,7 +104,9 @@ describe("LessonPlayer (server-graded session)", () => {
   });
 
   it("plays a full lesson: correct, try-again then correct, pattern, then opens the result", async () => {
-    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />);
+    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />, {
+      wrapper,
+    });
 
     expect(screen.getByText("Đâu là hình tròn?")).toBeTruthy();
     tap("Hình tròn");
@@ -139,7 +143,9 @@ describe("LessonPlayer (server-graded session)", () => {
 
   it("reuses the idempotency key when a request fails, so the answer is recorded once", async () => {
     submitAnswerAction.mockRejectedValueOnce(new Error("network"));
-    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />);
+    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />, {
+      wrapper,
+    });
     tap("Hình tròn");
     await screen.findByText("Mạng đang chậm. Con thử lại nhé.");
     tap("Hình tròn");
@@ -155,7 +161,9 @@ describe("LessonPlayer (server-graded session)", () => {
       ok: false,
       code: "question_mismatch",
     } as never);
-    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />);
+    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />, {
+      wrapper,
+    });
     tap("Hình tròn");
     await waitFor(() =>
       expect(router.replace).toHaveBeenCalledWith("/student/lessons/nk-l3"),
@@ -163,7 +171,9 @@ describe("LessonPlayer (server-graded session)", () => {
   });
 
   it("asks before exiting and keeps progress", async () => {
-    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />);
+    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />, {
+      wrapper,
+    });
     tap("Dừng lại");
     expect(
       await screen.findByRole("dialog", { name: "Con muốn dừng lại không?" }),
@@ -175,7 +185,9 @@ describe("LessonPlayer (server-graded session)", () => {
   });
 
   it("hint fades out one wrong option", async () => {
-    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />);
+    render(<LessonPlayer lesson={lesson} world={world} session={fresh} />, {
+      wrapper,
+    });
     tap("Gợi ý");
     await screen.findByText("Hình tròn không có góc nhọn.");
     const faded = screen
@@ -211,6 +223,7 @@ describe("LessonPlayer (server-graded session)", () => {
             ],
           }}
         />,
+        { wrapper },
       );
     });
     expect(screen.getByText("Chọn hình tiếp theo.")).toBeTruthy();

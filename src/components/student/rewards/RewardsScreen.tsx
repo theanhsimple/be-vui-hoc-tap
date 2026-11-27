@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { rewardItem, rewardReveal } from "@/design-system/motion/presets";
 import { allLessons } from "@/features/learning/content/catalog";
-import { markRewardsSeenAction } from "@/features/learning/backend/actions";
+import { useLearningRuntime } from "@/features/learning/runtime";
 import { APP_TIME_ZONE, totalStars } from "@/features/learning/progress/calc";
 import { REWARDS, rewardById } from "@/features/learning/progress/rewards";
 import { useStudent } from "@/features/learning/student-context";
@@ -28,6 +28,7 @@ const formatDay = (iso: string) =>
 export function RewardsScreen({ catalog }: { catalog: Catalog }) {
   const { progress } = useStudent();
   const { playSfx, unlocked } = useAudio();
+  const runtime = useLearningRuntime();
   const lessonTitles = useMemo(
     () => new Map(allLessons(catalog).map((l) => [l.id, l.title])),
     [catalog],
@@ -46,8 +47,8 @@ export function RewardsScreen({ catalog }: { catalog: Catalog }) {
     [progress.rewards, seenAt],
   );
   useEffect(() => {
-    void markRewardsSeenAction();
-  }, []);
+    void runtime.markRewardsSeen();
+  }, [runtime]);
   const hasFresh = fresh.size > 0;
   useEffect(() => {
     if (unlocked && hasFresh) playSfx("reward");

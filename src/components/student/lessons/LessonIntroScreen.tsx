@@ -3,7 +3,7 @@
 import { ArrowRight, Clock, Puzzle, RotateCcw } from "lucide-react";
 import { useState, useTransition } from "react";
 
-import { startLessonAction } from "@/features/learning/backend/actions";
+import { useLearningRuntime } from "@/features/learning/runtime";
 import { useStudent } from "@/features/learning/student-context";
 import type { LessonSummary, World } from "@/features/learning/types";
 
@@ -24,6 +24,7 @@ export function LessonIntroScreen({
   world: World;
 }) {
   const { progress, lessonStates } = useStudent();
+  const runtime = useLearningRuntime();
   const [pending, startTransition] = useTransition();
   const [failed, setFailed] = useState(false);
   const back = `/student/worlds/${world.id}`;
@@ -37,8 +38,11 @@ export function LessonIntroScreen({
   const start = (restart: boolean) =>
     startTransition(async () => {
       setFailed(false);
-      const result = await startLessonAction({ lessonId: lesson.id, restart });
-      if (!result.ok) setFailed(true);
+      const result = await runtime.startLesson({
+        lessonId: lesson.id,
+        restart,
+      });
+      if (result && !result.ok) setFailed(true);
     });
 
   if (state === "locked") {

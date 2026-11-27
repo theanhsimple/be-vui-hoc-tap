@@ -25,3 +25,5 @@ jobs:
       - run: pnpm test
       - run: pnpm format:check
       - run: pnpm build
+      - name: Build the device edition (GitHub Pages)
+        run: pnpm build:device

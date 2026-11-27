@@ -2,7 +2,6 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { z } from "zod";
 
 import { requireUser } from "@/features/auth/session";
 import { getSelectedChild } from "@/features/family/queries";
@@ -15,6 +14,7 @@ import {
   starsOnDay,
 } from "../progress/calc";
 import { getCatalog } from "./content";
+import { type PlacementRun, placementRunSchema } from "./placement";
 import {
   type Overview,
   overviewSchema,
@@ -148,15 +148,7 @@ export async function getSessionResult(
   return sessionResultSchema.parse(data);
 }
 
-export const placementRunSchema = z.object({
-  runId: z.uuid(),
-  assessmentId: z.string(),
-  status: z.enum(["in_progress", "completed", "abandoned"]),
-  currentIndex: z.number().int().min(0),
-  total: z.number().int().min(1),
-  startedAt: z.string(),
-});
-export type PlacementRun = z.infer<typeof placementRunSchema>;
+export type { PlacementRun };
 
 /** The open placement run of a child (read-only), or null. */
 export async function getActivePlacement(

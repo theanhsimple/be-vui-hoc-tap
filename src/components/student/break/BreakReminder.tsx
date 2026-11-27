@@ -11,6 +11,7 @@ import {
   type Stint,
   touchStint,
 } from "@/features/learning/break-timer";
+import { useLearningRuntime } from "@/features/learning/runtime";
 import { useAudio } from "@/lib/audio";
 
 import { LittleMascot } from "../../learning/LittleMascot";
@@ -50,6 +51,7 @@ export function BreakReminder({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const runtime = useLearningRuntime();
   const { play } = useAudio();
   const [due, setDue] = useState(false);
   const [gate, setGate] = useState(false);
@@ -114,7 +116,7 @@ export function BreakReminder({
               <LittleButton
                 variant="secondary"
                 iconStart={<LayoutDashboard />}
-                onClick={() => router.push("/parent")}
+                onClick={() => router.push(runtime.links.parentHome)}
               >
                 Về khu vực phụ huynh
               </LittleButton>
@@ -144,6 +146,7 @@ export function BreakReminder({
         onCancel={() => setGate(false)}
         onPass={() => {
           setGate(false);
+          runtime.grantParentAccess?.();
           setAdult(true);
         }}
       />

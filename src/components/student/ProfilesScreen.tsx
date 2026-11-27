@@ -3,7 +3,7 @@
 import { Lock } from "lucide-react";
 import { useState, useTransition } from "react";
 
-import { selectChildAction } from "@/features/family/actions";
+import { useLearningRuntime } from "@/features/learning/runtime";
 import { useAudio } from "@/lib/audio";
 
 import { AudioPlayer } from "../learning/AudioPlayer";
@@ -34,6 +34,7 @@ export function ProfilesScreen({
   selectedId?: string;
 }) {
   const { play } = useAudio();
+  const runtime = useLearningRuntime();
   const [pending, startTransition] = useTransition();
   const [choosing, setChoosing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +83,7 @@ export function ProfilesScreen({
                       setChoosing(child.id);
                       setError(null);
                       startTransition(async () => {
-                        const r = await selectChildAction(child.id);
+                        const r = await runtime.selectChild(child.id);
                         if (r && !r.ok) {
                           setError(r.message);
                           setChoosing(null);

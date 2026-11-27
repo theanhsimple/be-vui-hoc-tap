@@ -12,11 +12,11 @@ const router = {
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
 
 const selectChildAction = vi.fn();
-vi.mock("@/features/family/actions", () => ({
-  selectChildAction: (id: string) => selectChildAction(id),
-  leaveStudentAction: vi.fn(),
-}));
-vi.mock("@/features/auth/actions", () => ({ signOutAction: vi.fn() }));
+const wrapper = withRuntime(
+  testRuntime({ selectChild: (id: string) => selectChildAction(id) }),
+);
+
+import { testRuntime, withRuntime } from "@/test/runtime";
 
 const profiles = [
   { id: "c1", nickname: "Mầm Nhỏ", avatar: "sun" as const, ageLabel: "5 tuổi" },
@@ -28,7 +28,7 @@ describe("ProfilesScreen", () => {
 
   it("lists the family's children and selects through the server", async () => {
     selectChildAction.mockResolvedValue(undefined);
-    render(<ProfilesScreen profiles={profiles} />);
+    render(<ProfilesScreen profiles={profiles} />, { wrapper });
     expect(screen.getByText("Hôm nay ai sẽ khám phá?")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: /Bông/ }));
     await waitFor(() => expect(selectChildAction).toHaveBeenCalledWith("c2"));
@@ -39,7 +39,7 @@ describe("ProfilesScreen", () => {
       ok: false,
       message: "Không tìm thấy hồ sơ của bé.",
     });
-    render(<ProfilesScreen profiles={profiles} />);
+    render(<ProfilesScreen profiles={profiles} />, { wrapper });
     fireEvent.click(screen.getByRole("button", { name: /Mầm Nhỏ/ }));
     expect(await screen.findByRole("alert")).toHaveProperty(
       "textContent",
@@ -48,7 +48,7 @@ describe("ProfilesScreen", () => {
   });
 
   it("guides parents when there are no profiles yet", () => {
-    render(<ProfilesScreen profiles={[]} />);
+    render(<ProfilesScreen profiles={[]} />, { wrapper });
     expect(screen.getByText("Chưa có hồ sơ của bé")).toBeTruthy();
     expect(
       screen

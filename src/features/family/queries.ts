@@ -10,6 +10,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 import { type ChildPreferences, parsePreferences, uuidSchema } from "./schemas";
 
+export { ageLabel } from "./age";
+
 /**
  * Family & child reads. Every query runs as the signed-in guardian, so RLS
  * limits results to their own family; ids from cookies or URLs are only
@@ -121,12 +123,6 @@ export const getSelectedChild = cache(
     return child?.status === "active" ? child : null;
   },
 );
-
-export function ageLabel(birthYear: number | null, now = new Date()): string {
-  if (!birthYear) return "";
-  const age = now.getUTCFullYear() - birthYear;
-  return age > 0 ? `${age} tuổi` : "";
-}
 
 export interface FamilyMember {
   userId: string;

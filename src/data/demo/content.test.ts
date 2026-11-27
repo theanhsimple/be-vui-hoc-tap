@@ -386,13 +386,24 @@ describe("demo content library — semantic answer checks", () => {
   });
 });
 
-describe("answer keys stay on the server", () => {
-  it("the keys module is marked server-only", () => {
-    const src = readFileSync(
-      join(process.cwd(), "src/data/demo/answer-keys.ts"),
-      "utf8",
+describe("answer keys: server edition never ships them", () => {
+  // The DEVICE edition (static hosting, D-056) grades on the device and so
+  // must ship the keys; it lives in src/device and *.device.tsx routes only.
+  const walkSrc = (d: string): string[] =>
+    readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? walkSrc(join(d, e.name)) : [join(d, e.name)],
     );
-    expect(src.startsWith('import "server-only";')).toBe(true);
+  const isDeviceFile = (f: string) =>
+    /[\\/]src[\\/]device[\\/]/.test(f) || /\.device\.tsx?$/.test(f);
+
+  it("server-edition code never imports the device edition", () => {
+    const offenders = walkSrc(join(process.cwd(), "src"))
+      .filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f))
+      .filter((f) => !isDeviceFile(f))
+      .filter((f) =>
+        /from "@\/device|from "\.\.?\/.*device\//.test(readFileSync(f, "utf8")),
+      );
+    expect(offenders).toEqual([]);
   });
 
   it("public content files never import or contain answer keys", () => {
@@ -404,32 +415,26 @@ describe("answer keys stay on the server", () => {
   });
 
   it("no client component imports the keys", () => {
-    const walk = (d: string): string[] =>
-      readdirSync(d, { withFileTypes: true }).flatMap((e) =>
-        e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)],
-      );
-    const offenders = walk(join(process.cwd(), "src"))
+    const offenders = walkSrc(join(process.cwd(), "src"))
       .filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f))
       .filter((f) => {
         const src = readFileSync(f, "utf8");
         return (
           src.includes("answer-keys") &&
-          // The seed generator (server-only, run by tests/CLI) is the only user.
+          // Users: the seed generator (tests/CLI) and the device edition.
           !f.endsWith("data/demo/seed-sql.ts") &&
+          !isDeviceFile(f) &&
           !f.endsWith("answer-keys.ts")
         );
       });
     expect(offenders).toEqual([]);
   });
 
-  it("app code never imports demo data (content comes from the database)", () => {
-    const walk = (d: string): string[] =>
-      readdirSync(d, { withFileTypes: true }).flatMap((e) =>
-        e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)],
-      );
+  it("server-edition app code never imports demo data (content comes from the database)", () => {
     const offenders = ["src/app", "src/components", "src/features", "src/lib"]
-      .flatMap((d) => walk(join(process.cwd(), d)))
+      .flatMap((d) => walkSrc(join(process.cwd(), d)))
       .filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f))
+      .filter((f) => !isDeviceFile(f))
       .filter((f) =>
         /@\/data\/demo|data\/demo\//.test(readFileSync(f, "utf8")),
       );

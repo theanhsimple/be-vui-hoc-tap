@@ -11,11 +11,8 @@ import {
   useState,
 } from "react";
 
-import {
-  requestHintAction,
-  submitAnswerAction,
-} from "@/features/learning/backend/actions";
 import type { SessionState } from "@/features/learning/backend/overview";
+import { useLearningRuntime } from "@/features/learning/runtime";
 import {
   createPlayerReducer,
   initPlayer,
@@ -57,6 +54,7 @@ const STALE = new Set(["question_mismatch", "session_not_active", "forbidden"]);
  */
 export function LessonPlayer({ lesson, world, session }: LessonPlayerProps) {
   const router = useRouter();
+  const runtime = useLearningRuntime();
   const { play, playSfx } = useAudio();
   const reducer = useMemo(
     () => createPlayerReducer(lesson.questions),
@@ -93,7 +91,7 @@ export function LessonPlayer({ lesson, world, session }: LessonPlayerProps) {
       pendingKey.current ??= crypto.randomUUID();
       dispatch({ type: "SUBMIT" });
       try {
-        const result = await submitAnswerAction({
+        const result = await runtime.submitAnswer({
           sessionId: session.sessionId,
           questionId: question.id,
           response,
@@ -126,6 +124,7 @@ export function LessonPlayer({ lesson, world, session }: LessonPlayerProps) {
       session.sessionId,
       lesson.id,
       router,
+      runtime,
       play,
       playSfx,
     ],
@@ -134,7 +133,7 @@ export function LessonPlayer({ lesson, world, session }: LessonPlayerProps) {
   const hint = async () => {
     if (!question || state.hintUsed) return;
     try {
-      const h = await requestHintAction({
+      const h = await runtime.requestHint({
         sessionId: session.sessionId,
         questionId: question.id,
       });

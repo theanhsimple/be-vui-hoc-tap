@@ -9,6 +9,7 @@ import { DEMO_ANSWER_KEYS } from "./answer-keys";
 import type { WorldSource } from "./helpers";
 import { DEMO_WORLD_SOURCES } from "./index";
 import { PLACEMENT_ASSESSMENT, SKILL_GUIDES } from "./parent-guides";
+import { REWARD_RULES } from "./reward-rules";
 
 /**
  * Generates supabase/seed.sql from the Sprint 03 demo library, so the
@@ -60,31 +61,6 @@ export function privateAnswer(
   if (key.type === "choice") return { type: "choice", optionId: key.optionId };
   return key;
 }
-
-const REWARD_RULES: Record<string, Record<string, unknown>> = {
-  "explorer-star": { kind: "lessons_completed", count: 1 },
-  "curious-mind": { kind: "modules_explored", count: 3 },
-  "little-reader": {
-    kind: "module_lessons_completed",
-    module: "alphabet-forest",
-    count: 2,
-  },
-  "number-finder": {
-    kind: "module_lessons_completed",
-    module: "number-kingdom",
-    count: 2,
-  },
-  "memory-master": {
-    kind: "module_lessons_completed",
-    module: "memory-garden",
-    count: 2,
-  },
-  "brave-challenger": {
-    kind: "module_lessons_completed",
-    module: "challenge-arena",
-    count: 1,
-  },
-};
 
 export interface SeedStats {
   modules: number;
