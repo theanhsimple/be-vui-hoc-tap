@@ -1,4 +1,4 @@
-# little — Student Experience & Learning Engine (Sprints 03–04)
+# little — Student Experience & Learning Engine (Sprints 03–05)
 
 > **Status (Sprint 04):** the student experience runs on **Supabase**: content from PostgreSQL, grading inside a Postgres RPC with private keys, sessions/attempts/progress/rewards/mastery persisted per child, behind parent sign-in. Verified on a local Supabase stack; not deployed to a hosted project. The Sprint 03 device-local demo store has been removed. Backend details: BACKEND_ARCHITECTURE.md, API_CONTRACT.md, SECURITY_AND_RLS.md.
 
@@ -146,6 +146,12 @@ The 84 demo questions are the **development seed** (`supabase/seed.sql`, generat
 - With a recorded file: real playback, a loading state while downloading, and a fallback to speech if the file fails.
 - **No recorded audio exists yet.** Without a file the control is labelled **"Âm thanh demo"** and uses the browser's speech synthesis. If the device has no Vietnamese voice, it shows **"Chưa có âm thanh"** (unavailable). It never pretends audio played.
 - Feedback lines and hints are spoken the same way (demo voice).
+
+## 9b. Sprint 05 — placement activity, break reminder, parent report
+
+- **Placement** (`/parent/children/[id]/discover` → `/student/discover/first-discovery`): the parent starts it on the child's page; the player (`components/student/discover/PlacementPlayer.tsx`) reuses the question renderers with one try per item and the same encouraging message whatever the answer. Answers go to `submit_assessment_item` (graded with the private key, nothing returned to the device). After the last item the child hands the device to the parent through the parent gate and the parent sees bands per world plus a suggested start (D-050). It changes no stars, rewards or mastery.
+- **Break reminder** (`components/student/break/BreakReminder.tsx`, `features/learning/break-timer.ts`): per-child limit from the profile form; shown on the next non-activity screen once the time is up; continuing needs the parent gate (D-054).
+- **Parent report** (`/parent/children/[id]`): `get_child_report` + `features/parent/report-model.ts` (Zod + plain-language mapping, unit-tested). Engine states → bands (D-051); at-home ideas from `skills.home_activity_vi`.
 
 ## 10. Known limitations
 

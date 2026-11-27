@@ -181,3 +181,68 @@ export async function getLesson(lessonId: string): Promise<Lesson | null> {
     questions,
   };
 }
+
+export interface SkillGuide {
+  summary: string;
+  homeActivity: string;
+}
+
+/** Parent-facing texts per published skill slug (public content, cached). */
+export async function getSkillGuides(): Promise<Record<string, SkillGuide>> {
+  "use cache";
+  cacheTag(CONTENT_TAG);
+  cacheLife("minutes");
+
+  const db = createSupabasePublicClient();
+  const { data, error } = await db
+    .from("skills")
+    .select("slug, parent_summary_vi, home_activity_vi");
+  if (error)
+    throw new Error(`skill guide query failed: ${error.code} ${error.message}`);
+  return Object.fromEntries(
+    (data ?? []).map((s) => [
+      s.slug,
+      { summary: s.parent_summary_vi, homeActivity: s.home_activity_vi },
+    ]),
+  );
+}
+
+export interface PlacementActivity {
+  id: string;
+  title: string;
+  intro: string;
+  questions: LearningQuestion[];
+}
+
+/** A published placement activity with its ordered public questions. */
+export async function getPlacement(
+  slug: string,
+): Promise<PlacementActivity | null> {
+  "use cache";
+  cacheTag(CONTENT_TAG);
+  cacheLife("minutes");
+
+  if (!/^[a-z0-9-]{1,64}$/.test(slug)) return null;
+  const db = createSupabasePublicClient();
+  const { data, error } = await db
+    .from("assessments")
+    .select(
+      `slug, title_vi, intro_vi,
+       assessment_items ( position, questions ( slug, type, difficulty, prompt_vi, instruction_audio_url, stimulus, memorize, feedback, config, max_attempts ) )`,
+    )
+    .eq("slug", slug)
+    .order("position", { referencedTable: "assessment_items" })
+    .maybeSingle();
+  if (error)
+    throw new Error(`placement query failed: ${error.code} ${error.message}`);
+  if (!data) return null;
+  return {
+    id: data.slug,
+    title: data.title_vi,
+    intro: data.intro_vi,
+    questions: data.assessment_items
+      .map((i) => i.questions)
+      .filter((q): q is NonNullable<typeof q> => Boolean(q))
+      .map(toQuestion),
+  };
+}

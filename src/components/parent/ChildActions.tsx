@@ -26,7 +26,7 @@ export function StartLearningButton({
         size="md"
         iconStart={<Gamepad2 />}
         loading={pending}
-        aria-label={`Cho ${nickname} học`}
+        aria-label={`Cho bé học: ${nickname}`}
         onClick={() =>
           start(async () => {
             const r = await selectChildAction(childId);

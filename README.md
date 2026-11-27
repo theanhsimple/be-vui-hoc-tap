@@ -4,7 +4,7 @@
 
 A premium 3D playful learning platform for children aged 5–6 in Vietnam (iPad & desktop), with parent and admin experiences. Product and technical docs live in [`docs/`](docs/).
 
-> Status: **Sprint 04 — Backend integration & learning engine.** Parent accounts, families and child profiles on Supabase; lessons graded and recorded in Postgres. Runs against a **local** Supabase stack (no hosted project yet). See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) and [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md).
+> Status: **Sprint 05 — Parent dashboard & placement activity** (on top of Sprint 04's backend). Parent progress report, placement activity, break reminder, second-guardian invitations, data export and deletion. Parent accounts, families and child profiles on Supabase; lessons graded and recorded in Postgres. Runs against a **local** Supabase stack (no hosted project yet). See [`docs/IMPLEMENTATION_ROADMAP.md`](docs/IMPLEMENTATION_ROADMAP.md) and [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md).
 
 ## Requirements
 

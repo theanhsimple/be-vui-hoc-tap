@@ -129,9 +129,24 @@ Deferred from the original Sprint 04 plan: offline attempt queue, magic-link sig
 
 ---
 
-## Sprint 05 — Parent Dashboard & Assessment
+## Sprint 05 — Parent Dashboard & Assessment ✅ (implemented on a local stack, awaiting review)
 
-**Deliverables**
+| Deliverable / criterion | Status |
+|---|---|
+| Onboarding hand-off (family → consent → first child → placement intro) | ✅ browser-tested |
+| Child profiles: edit, archive, **restore**, **permanent delete** (owner) | ✅ DB + browser tested (birth *year* only, by design D-043) |
+| Placement activity (parent intro → child activity → parent summary) | ✅ DB + browser tested; item choice pending education review |
+| Progress view (time estimate, days, lessons, stars, worlds, recent activity) + skill bands with at-home ideas | ✅ browser-tested; texts are drafts (P-4) |
+| Settings: break reminder per child | ✅ browser-tested (reminder, gate, waits during lessons) |
+| Settings: data export, family deletion, account deletion | ✅ DB-verified deletion by owner-level counts; export browser-tested |
+| Second guardian (one-time code) | ✅ DB + browser tested |
+| Privacy text placeholder flagged pending legal review | ✅ `/privacy` draft + link from consent |
+| Music / captions settings | ⬜ not started (no background music exists; spoken prompts are already shown as text) |
+| Parent UI language vi/en | ⬜ not started (P-6 pending) |
+| "≤ 5 minutes signup to play" moderated test | ⬜ needs real parents |
+| axe zero serious/critical | ✅ on the 9 Sprint 05 routes at 375 px and 1180 px (automated only; no manual screen-reader pass) |
+
+**Deliverables (original plan)**
 1. Parent auth screens, onboarding wizard (family → consent → child → assessment hand-off).
 2. Child profiles CRUD (nickname, avatar, birth month/year), archive.
 3. Initial placement assessment flow (parent intro → kid activity → parent summary).

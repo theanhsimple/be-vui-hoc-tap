@@ -2,6 +2,7 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { z } from "zod";
 
 import { requireUser } from "@/features/auth/session";
 import { getSelectedChild } from "@/features/family/queries";
@@ -145,4 +146,28 @@ export async function getSessionResult(
   });
   if (error) throw new BackendError(error.message);
   return sessionResultSchema.parse(data);
+}
+
+export const placementRunSchema = z.object({
+  runId: z.uuid(),
+  assessmentId: z.string(),
+  status: z.enum(["in_progress", "completed", "abandoned"]),
+  currentIndex: z.number().int().min(0),
+  total: z.number().int().min(1),
+  startedAt: z.string(),
+});
+export type PlacementRun = z.infer<typeof placementRunSchema>;
+
+/** The open placement run of a child (read-only), or null. */
+export async function getActivePlacement(
+  childId: string,
+  activityId: string,
+): Promise<PlacementRun | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.rpc("get_active_assessment", {
+    p_child_id: childId,
+    p_assessment_slug: activityId,
+  });
+  if (error) throw new BackendError(error.message);
+  return data ? placementRunSchema.parse(data) : null;
 }

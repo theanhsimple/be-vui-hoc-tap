@@ -8,6 +8,7 @@ import type { LearningQuestion } from "@/features/learning/types";
 import { DEMO_ANSWER_KEYS } from "./answer-keys";
 import type { WorldSource } from "./helpers";
 import { DEMO_WORLD_SOURCES } from "./index";
+import { PLACEMENT_ASSESSMENT, SKILL_GUIDES } from "./parent-guides";
 
 /**
  * Generates supabase/seed.sql from the Sprint 03 demo library, so the
@@ -135,10 +136,12 @@ export function buildSeedSql(
       `on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;`,
     );
     w.skills.forEach((s, si) => {
+      const guide = SKILL_GUIDES[s.id];
+      if (!guide) throw new Error(`Missing parent guide for ${s.id}`);
       out.push(
-        `insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)`,
-        `values ((select id from public.modules where slug = ${lit(w.id)}), ${lit(s.id)}, ${lit(s.title)}, ${num((si + 1) * 10)}, 'published', now())`,
-        `on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;`,
+        `insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)`,
+        `values ((select id from public.modules where slug = ${lit(w.id)}), ${lit(s.id)}, ${lit(s.title)}, ${num((si + 1) * 10)}, ${lit(guide.summary)}, ${lit(guide.homeActivity)}, 'published', now())`,
+        `on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;`,
       );
       s.lessons.forEach((l, li) => {
         out.push(
@@ -175,6 +178,22 @@ export function buildSeedSql(
       `insert into public.rewards (key, kind, title_vi, title_en, criteria_vi, illustration, rule, sort_order, status, published_at)`,
       `values (${lit(r.id)}, 'badge', ${lit(r.name)}, ${lit(r.nameEn)}, ${lit(r.criteria)}, ${lit(r.illustration)}, ${json(rule)}, ${num((i + 1) * 10)}, 'published', now())`,
       `on conflict (key) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, criteria_vi = excluded.criteria_vi, illustration = excluded.illustration, rule = excluded.rule, sort_order = excluded.sort_order;`,
+    );
+  });
+
+  const a = PLACEMENT_ASSESSMENT;
+  out.push(
+    "",
+    "-- Placement activity (observations, not a test)",
+    `insert into public.assessments (slug, title_vi, intro_vi, purpose, status)`,
+    `values (${lit(a.slug)}, ${lit(a.title)}, ${lit(a.intro)}, 'placement', 'published')`,
+    `on conflict (slug) do update set title_vi = excluded.title_vi, intro_vi = excluded.intro_vi;`,
+  );
+  a.questionSlugs.forEach((q, i) => {
+    out.push(
+      `insert into public.assessment_items (assessment_id, question_id, position)`,
+      `values ((select id from public.assessments where slug = ${lit(a.slug)}), (select id from public.questions where slug = ${lit(q)}), ${num(i + 1)})`,
+      `on conflict (assessment_id, position) do update set question_id = excluded.question_id;`,
     );
   });
 

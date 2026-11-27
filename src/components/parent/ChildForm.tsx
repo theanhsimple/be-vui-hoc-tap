@@ -12,6 +12,7 @@ import {
 import { LittleButton } from "@/components/ui/LittleButton";
 import { LittleSelect } from "@/components/ui/LittleInput";
 import { LittleSwitch } from "@/components/ui/LittleSwitch";
+import { SESSION_MINUTE_OPTIONS } from "@/features/family/schemas";
 import type { FormState } from "@/features/forms";
 import { IDLE } from "@/features/forms";
 import { cn } from "@/lib/cn";
@@ -31,6 +32,7 @@ export interface ChildFormValues {
   birthYear: number | null;
   voice: boolean;
   sounds: boolean;
+  sessionMinutes: number | null;
 }
 
 /** Create / edit a child profile. Collects only what learning needs. */
@@ -39,11 +41,14 @@ export function ChildForm({
   initial,
   submitLabel,
   currentYear,
+  onboarding,
 }: {
   action: (prev: FormState, form: FormData) => Promise<FormState>;
   initial?: ChildFormValues;
   submitLabel: string;
   currentYear: number;
+  /** Creating the first child during onboarding (continues to the placement activity). */
+  onboarding?: boolean;
 }) {
   const [state, action, pending] = useActionState(serverAction, IDLE);
   const [avatar, setAvatar] = useState<AvatarKey>(initial?.avatar ?? "sun");
@@ -53,6 +58,7 @@ export function ChildForm({
 
   return (
     <form action={action} className="flex flex-col gap-5" noValidate>
+      {onboarding && <input type="hidden" name="onboarding" value="1" />}
       <TextField
         label="Tên gọi của bé"
         name="nickname"
@@ -120,6 +126,33 @@ export function ChildForm({
             {years.map((y) => (
               <option key={y} value={y}>
                 {y}
+              </option>
+            ))}
+          </LittleSelect>
+        )}
+      </AdminFormField>
+
+      <AdminFormField
+        label="Nhắc bé nghỉ sau"
+        hint="little sẽ nhắc bé nghỉ mắt khi đã học đủ thời gian này. Bố mẹ có thể cho bé học tiếp."
+        error={state.fieldErrors?.sessionMinutes}
+      >
+        {(control) => (
+          <LittleSelect
+            id={control.id}
+            aria-describedby={control["aria-describedby"]}
+            invalid={control.invalid}
+            name="sessionMinutes"
+            key={state.values?.sessionMinutes ?? "initial-minutes"}
+            defaultValue={
+              state.values?.sessionMinutes ??
+              (initial ? String(initial.sessionMinutes ?? "") : "20")
+            }
+          >
+            <option value="">Không nhắc</option>
+            {SESSION_MINUTE_OPTIONS.map((m) => (
+              <option key={m} value={m}>
+                {m} phút
               </option>
             ))}
           </LittleSelect>

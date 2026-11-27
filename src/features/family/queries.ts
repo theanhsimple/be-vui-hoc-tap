@@ -32,6 +32,13 @@ export interface ChildProfile {
 }
 
 export const SELECTED_CHILD_COOKIE = "little_child";
+export const SELECTED_CHILD_COOKIE_OPTIONS = {
+  httpOnly: true,
+  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
+  path: "/",
+  maxAge: 60 * 60 * 24 * 30,
+} as const;
 
 export const getMyFamily = cache(async (): Promise<FamilyInfo | null> => {
   const supabase = await createSupabaseServerClient();
@@ -119,4 +126,61 @@ export function ageLabel(birthYear: number | null, now = new Date()): string {
   if (!birthYear) return "";
   const age = now.getUTCFullYear() - birthYear;
   return age > 0 ? `${age} tuổi` : "";
+}
+
+export interface FamilyMember {
+  userId: string;
+  displayName: string | null;
+  role: "owner" | "guardian";
+  since: string;
+  isMe: boolean;
+}
+
+/** Active members of the caller's family (RLS: own family only). */
+export async function listMembers(familyId: string): Promise<FamilyMember[]> {
+  const user = await requireUser("/parent/settings");
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("family_members")
+    .select(
+      "user_id, role, created_at, profiles!family_members_user_id_fkey(display_name)",
+    )
+    .eq("family_id", familyId)
+    .eq("status", "active")
+    .order("created_at");
+  if (error) throw new Error(`members lookup failed: ${error.code}`);
+  return (data ?? []).map((m) => ({
+    userId: m.user_id,
+    displayName: m.profiles?.display_name ?? null,
+    role: m.role,
+    since: m.created_at,
+    isMe: m.user_id === user.id,
+  }));
+}
+
+export interface FamilyInvite {
+  id: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+/** Open (unused, unrevoked, unexpired) invitations. Owner only (RLS). */
+export async function listOpenInvites(
+  familyId: string,
+): Promise<FamilyInvite[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("family_invitations")
+    .select("id, created_at, expires_at")
+    .eq("family_id", familyId)
+    .is("accepted_at", null)
+    .is("revoked_at", null)
+    .gt("expires_at", new Date().toISOString())
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(`invites lookup failed: ${error.code}`);
+  return (data ?? []).map((i) => ({
+    id: i.id,
+    createdAt: i.created_at,
+    expiresAt: i.expires_at,
+  }));
 }

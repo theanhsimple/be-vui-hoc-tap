@@ -150,6 +150,24 @@ No `question_options` (options belong to each question's typed public config), n
 ### D-049 · 2026-11-22 · Approved (Sprint 04) — Selected child in an httpOnly cookie
 `little_child` names the active child; it is re-validated under RLS on every request and learning actions pin sessions to it. Changing the cookie to another family's child id has no effect (tested).
 
+### D-050 · 2026-11-27 · Approved (Sprint 05) — Placement activity is an observation, not a test
+One published activity (`first-discovery`, 8 existing L1 questions across 5 worlds, no memory boards). One try per item, the same warm message whatever the answer, no stars/rewards/mastery changes. Parents see a band per world (all right → Tự tin, at least half → Đang tiến bộ, else Đang khám phá) and a suggested starting world. Copy states it is not a grade and not related to any school's admission requirements. Item choice is a dev-seed placeholder pending education review (P-4).
+
+### D-051 · 2026-11-27 · Approved (Sprint 05) — Parent report from first attempts; time is estimated
+Skill bands map engine states (learning → Đang khám phá, practicing/review → Đang tiến bộ, mastered → Tự tin). Learning time is estimated from activity (gaps between answers, each capped at 3 minutes) and labelled "ước tính"; raw session duration is not shown because a resumed or forgotten session would inflate it.
+
+### D-052 · 2026-11-27 · Approved (Sprint 05) — Second guardian by one-time code, no email
+Owners create codes (10 symbols, ~50 bits, 7-day expiry, max 3 open); only a SHA-256 hash is stored. The guardian signs up, consents and enters the code. Any code failure returns the same `invite_invalid`. One family per account. Guardians have member rights (view, manage children); invitations, removal and deletion are owner-only. Chosen over email invitations because no email provider is configured (P-1).
+
+### D-053 · 2026-11-27 · Approved (Sprint 05) — Deletion and export
+Export: any active member, JSON download of the whole family (no answer keys, no other member's email). Deletion: owner only, typed confirmation (family name / child nickname); a child must be archived before permanent deletion. Account deletion removes the auth user; an owner's family goes with it. Audit rows keep only ids. Consent withdrawal = deletion until a separate flow exists.
+
+### D-054 · 2026-11-27 · Approved (Sprint 05) — Break reminder is a nudge, stored per tab
+Per-child limit (none/10/15/20/30 min, default 20 for new profiles). Time counts per browser tab in `sessionStorage` (resets after 30 idle minutes); never interrupts a question — it waits for the next screen. Continuing requires the parent gate. Not a security control.
+
+### D-055 · 2026-11-27 · Approved (Sprint 05) — Published placement activities are public content
+Like lessons (D-044): `assessments`/`assessment_items` with status published are readable by anon, so the activity is cached without a session. Runs and answers stay family-only.
+
 ## Pending decisions
 
 | ID | Question | Owner |

@@ -2,6 +2,8 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+import { DEMO_WORLD_SOURCES } from "./index";
+import { PLACEMENT_ASSESSMENT, SKILL_GUIDES } from "./parent-guides";
 import { buildSeedSql, seedStats } from "./seed-sql";
 
 const SEED_PATH = resolve(process.cwd(), "supabase/seed.sql");
@@ -39,6 +41,34 @@ describe("supabase/seed.sql", () => {
       expect(row).not.toMatch(
         /"optionId"|"pairs"|"order"|"fills"|hintEliminate/,
       );
+    }
+  });
+
+  it("has a parent guide for every skill and nothing extra", () => {
+    const skills = DEMO_WORLD_SOURCES.flatMap((w) => w.skills.map((s) => s.id));
+    expect(Object.keys(SKILL_GUIDES).sort()).toEqual([...skills].sort());
+    for (const g of Object.values(SKILL_GUIDES)) {
+      expect(g.summary.length).toBeGreaterThan(0);
+      expect(g.summary.length).toBeLessThanOrEqual(300);
+      expect(g.homeActivity.length).toBeLessThanOrEqual(300);
+    }
+  });
+
+  it("builds the placement activity from existing, playable questions", () => {
+    const questions = new Map(
+      DEMO_WORLD_SOURCES.flatMap((w) =>
+        w.skills.flatMap((s) =>
+          s.lessons.flatMap((l) => l.questions.map((q) => [q.id, q] as const)),
+        ),
+      ),
+    );
+    const slugs = PLACEMENT_ASSESSMENT.questionSlugs;
+    expect(new Set(slugs).size).toBe(slugs.length);
+    for (const slug of slugs) {
+      const q = questions.get(slug);
+      expect(q, slug).toBeDefined();
+      // One try, no reveal: memory boards need many moves, so they are excluded.
+      expect(q?.type).not.toBe("memory");
     }
   });
 });

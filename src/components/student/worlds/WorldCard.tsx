@@ -54,7 +54,9 @@ export function WorldCard({
   const { play, playSfx } = useAudio();
   const locked = state === "locked";
   const pct = total ? Math.round((completed / total) * 100) : 0;
-  const label = `${world.nameVi}, ${world.category}. ${locked ? "Chưa mở." : `Đã học ${completed} trên ${total} bài.`}`;
+  // Accessible name = the visible text + this status (WCAG 2.5.3: the
+  // visible label must be part of the name, so no aria-label override).
+  const status = locked ? "Chưa mở." : `Đã học ${completed} trên ${total} bài.`;
 
   const body = (
     <>
@@ -88,6 +90,7 @@ export function WorldCard({
           {world.nameVi}
         </span>
         <span className="text-caption text-ink-muted">{world.category}</span>
+        <span className="sr-only">{status}</span>
         {variant === "card" && (
           <span className="text-body-sm text-ink-muted">
             {locked ? lockedHint : world.description}
@@ -117,7 +120,6 @@ export function WorldCard({
       <motion.button
         ref={scope}
         type="button"
-        aria-label={label}
         aria-disabled="true"
         data-state={state}
         className={cn(cls, "cursor-default")}
@@ -142,7 +144,6 @@ export function WorldCard({
   return (
     <MotionLink
       href={`/student/worlds/${world.id}`}
-      aria-label={label}
       data-state={state}
       className={cls}
       {...cardHover}

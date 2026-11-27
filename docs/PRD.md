@@ -65,7 +65,7 @@ Priority: **P0** = required for first release, **P1** = soon after, **P2** = lat
 
 ### A. Student experience (route area `/student`)
 
-> Sprint 03: S1–S9 implemented as a demo (device-local progress, demo voice, placeholder art). S10 break reminder not started. See LEARNING_ENGINE.md.
+> Sprint 03: S1–S9 implemented as a demo; Sprint 04 moved them onto the backend. Sprint 05: S10 break reminder implemented (per-tab nudge, D-054). See LEARNING_ENGINE.md.
 
 | ID | Screen | Requirement | Pri |
 |----|--------|-------------|-----|
@@ -83,6 +83,8 @@ Priority: **P0** = required for first release, **P1** = soon after, **P2** = lat
 Feedback rules: wrong answers get gentle encouragement and a hint, never a buzzer or red "X"; after 2 incorrect tries the correct answer is demonstrated.
 
 ### B. Parent experience (route area `/parent`)
+
+> Sprint 05 status: P1 email + password only (magic link / social not started); P2–P6 implemented (P4 placement as observations, D-050); P7 export, deletion, session limit and second-guardian invitation implemented — parent-UI language (P-6) not started. See IMPLEMENTATION_ROADMAP.md.
 
 | ID | Screen | Requirement | Pri |
 |----|--------|-------------|-----|

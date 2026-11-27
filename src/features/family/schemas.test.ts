@@ -27,7 +27,24 @@ describe("family & child validation", () => {
       birthYear: null,
       voice: false,
       sounds: false,
+      sessionMinutes: null,
     });
+    expect(
+      childSchema.parse({
+        nickname: "A",
+        avatar: "sun",
+        birthYear: "",
+        sessionMinutes: "15",
+      }).sessionMinutes,
+    ).toBe(15);
+    expect(
+      childSchema.safeParse({
+        nickname: "A",
+        avatar: "sun",
+        birthYear: "",
+        sessionMinutes: "99",
+      }).success,
+    ).toBe(false);
     expect(
       childSchema.safeParse({
         nickname: "x".repeat(21),
@@ -46,15 +63,18 @@ describe("family & child validation", () => {
   });
 
   it("defaults preferences safely", () => {
-    expect(parsePreferences(null)).toEqual({ voice: true, sounds: true });
+    const base = { voice: true, sounds: true, sessionMinutes: null };
+    expect(parsePreferences(null)).toEqual(base);
     expect(parsePreferences({ voice: false })).toEqual({
+      ...base,
       voice: false,
-      sounds: true,
     });
-    expect(parsePreferences({ voice: "yes" })).toEqual({
-      voice: true,
-      sounds: true,
+    expect(parsePreferences({ voice: "yes" })).toEqual(base);
+    expect(parsePreferences({ sessionMinutes: 20 })).toEqual({
+      ...base,
+      sessionMinutes: 20,
     });
+    expect(parsePreferences({ sessionMinutes: 7 })).toEqual(base);
   });
 });
 

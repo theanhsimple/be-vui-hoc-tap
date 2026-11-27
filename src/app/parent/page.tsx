@@ -1,5 +1,6 @@
-import { Pencil, UserPlus } from "lucide-react";
+import { ChartNoAxesColumn, UserPlus } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 
 import { StartLearningButton } from "@/components/parent/ChildActions";
@@ -19,6 +20,8 @@ const SAVED: Record<string, string> = {
   child: "Đã lưu hồ sơ của bé.",
   archived: "Đã lưu trữ hồ sơ. Kết quả học tập vẫn được giữ lại.",
   password: "Đã đổi mật khẩu.",
+  joined: "Bạn đã tham gia gia đình.",
+  deleted: "Đã xoá vĩnh viễn hồ sơ và toàn bộ dữ liệu học tập của bé.",
 };
 
 export default function ParentHomePage(props: PageProps<"/parent">) {
@@ -87,10 +90,10 @@ async function Family({ searchParams }: PageProps<"/parent">) {
                     <LittleLinkButton
                       href={`/parent/children/${c.id}`}
                       variant="secondary"
-                      iconStart={<Pencil />}
-                      aria-label={`Xem và sửa hồ sơ của ${c.nickname}`}
+                      iconStart={<ChartNoAxesColumn />}
+                      aria-label={`Xem tiến độ của ${c.nickname}`}
                     >
-                      Hồ sơ
+                      Tiến độ
                     </LittleLinkButton>
                   </>
                 }
@@ -105,9 +108,16 @@ async function Family({ searchParams }: PageProps<"/parent">) {
           <summary className="min-h-11 cursor-pointer text-body font-bold">
             Hồ sơ đã lưu trữ ({archived.length})
           </summary>
-          <ul className="mt-2 flex flex-col gap-1 text-body text-ink-muted">
+          <ul className="mt-2 flex flex-col gap-1 text-body">
             {archived.map((c) => (
-              <li key={c.id}>{c.nickname}</li>
+              <li key={c.id}>
+                <Link
+                  href={`/parent/children/${c.id}`}
+                  className="inline-flex min-h-11 items-center font-bold text-blue-strong underline-offset-4 hover:underline"
+                >
+                  {c.nickname}
+                </Link>
+              </li>
             ))}
           </ul>
         </details>

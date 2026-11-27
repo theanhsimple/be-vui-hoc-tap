@@ -1,6 +1,6 @@
 "use client";
 
-import { Gamepad2, House, LogOut, UserPlus } from "lucide-react";
+import { Gamepad2, House, LogOut, Settings, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { ParentShell } from "@/components/layout/ParentShell";
@@ -19,6 +19,12 @@ const ITEMS = [
     label: "Cho bé học",
     href: "/student/profiles",
     icon: <Gamepad2 />,
+  },
+  {
+    id: "settings",
+    label: "Cài đặt",
+    href: "/parent/settings",
+    icon: <Settings />,
   },
 ] as const;
 

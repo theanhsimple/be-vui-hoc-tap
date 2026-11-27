@@ -270,3 +270,20 @@ export async function playLessonWrong(
   }
   return s.sessionId;
 }
+
+/**
+ * VERIFICATION ONLY: a count read as the database owner, to prove that a
+ * deletion really removed rows that the API can no longer see.
+ */
+export function ownerCount(sql: string): number {
+  const out = execFileSync(
+    "psql",
+    [env().dbUrl, "-At", "-v", "ON_ERROR_STOP=1", "-c", sql],
+    {
+      encoding: "utf8",
+    },
+  );
+  return Number(out.trim());
+}
+
+export const PLACEMENT = "first-discovery";

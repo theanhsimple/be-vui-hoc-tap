@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { FamilyForm } from "@/components/parent/FamilyForm";
+import { FamilyForm, JoinFamilyForm } from "@/components/parent/FamilyForm";
 import { LittleCard } from "@/components/ui/LittleCard";
 import { LittleStatePanel } from "@/components/ui/LittleStatePanel";
 import { requireUser } from "@/features/auth/session";
@@ -11,7 +11,7 @@ import { ParentFrame } from "@/components/parent/ParentFrame";
 
 export const metadata: Metadata = { title: "Tạo gia đình" };
 
-export default function OnboardingPage() {
+export default function OnboardingPage(props: PageProps<"/parent/onboarding">) {
   return (
     <ParentFrame>
       <LittleCard
@@ -27,15 +27,41 @@ export default function OnboardingPage() {
           </p>
         </div>
         <Suspense fallback={<LittleStatePanel kind="loading" />}>
-          <Onboarding />
+          <Onboarding {...props} />
         </Suspense>
+      </LittleCard>
+      <LittleCard
+        padding="lg"
+        className="mx-auto mt-5 flex w-full max-w-xl flex-col gap-4"
+      >
+        <div>
+          <h2 className="text-h2">Tham gia bằng mã mời</h2>
+          <p className="text-body text-ink-muted">
+            Gia đình đã có tài khoản little? Nhờ chủ gia đình tạo mã mời trong
+            Cài đặt, rồi nhập mã ở đây.
+          </p>
+        </div>
+        <JoinFamilyForm />
       </LittleCard>
     </ParentFrame>
   );
 }
 
-async function Onboarding() {
+async function Onboarding({ searchParams }: PageProps<"/parent/onboarding">) {
   await requireUser("/parent/onboarding");
   if (await getMyFamily()) redirect("/parent");
-  return <FamilyForm />;
+  const { deleted } = await searchParams;
+  return (
+    <>
+      {deleted === "family" && (
+        <p
+          role="status"
+          className="rounded-md bg-success-50 p-3 text-body font-semibold text-success-strong"
+        >
+          Đã xoá gia đình và toàn bộ dữ liệu của các bé.
+        </p>
+      )}
+      <FamilyForm />
+    </>
+  );
 }

@@ -1,6 +1,6 @@
-# little — Database Schema (implemented, Sprint 04)
+# little — Database Schema (implemented, Sprints 04–05)
 
-> **Status:** implemented as versioned migrations in `supabase/migrations/` and **applied to a local Supabase stack only** (Postgres 17). Not applied to any hosted project. Source of truth: the SQL files; this document explains them. Security model: SECURITY_AND_RLS.md.
+> **Status:** implemented as 5 versioned migrations in `supabase/migrations/` (Sprint 04: core schema, security, learning engine, storage; Sprint 05: `20261127000100_parent_experience.sql`) and **applied to a local Supabase stack only** (Postgres 17). Not applied to any hosted project. Source of truth: the SQL files; this document explains them. Security model: SECURITY_AND_RLS.md.
 
 Conventions: `uuid` PKs (`gen_random_uuid()`); content also has a unique **slug** (stable id used by the app and the seed); `timestamptz` (UTC) with defaults; `updated_at` maintained by trigger; `snake_case`; enums for closed sets; family data is **archived**, not deleted.
 
@@ -36,7 +36,8 @@ questions 1─1 private.question_answer_keys          skills 1─* questions
 children 1─* learning_sessions 1─* question_attempts (→ questions, skills)
 children 1─* child_lesson_progress (→ lessons)      children 1─* skill_mastery (→ skills)
 children 1─* child_rewards (→ rewards, learning_sessions)   children 1─* child_daily_plans
-assessments 1─* assessment_items (→ questions)      children 1─* assessment_attempts
+assessments 1─* assessment_items (→ questions)      children 1─* assessment_runs 1─* assessment_attempts
+families 1─* family_invitations
 ```
 
 ## 4. Tables
@@ -50,12 +51,13 @@ assessments 1─* assessment_items (→ questions)      children 1─* assessmen
 | `guardian_consents` | `family_id`, `user_id`, `consent_version` (`^[a-z0-9.-]{1,32}$`), `consented_at`, `withdrawn_at` |
 | `children` | `family_id` → families (cascade); `nickname` 1–20; `avatar_key` from a fixed catalogue; `birth_year` optional (no full DOB, no photo, no email); `preferences` jsonb object ≤ 2 KB (`{voice, sounds}`, Zod-validated); `status` + `archived_at` (consistent by CHECK); `rewards_seen_at` |
 | `staff_roles` | PK (`user_id`, `role`); `granted_by`, `granted_at` |
+| `family_invitations` (Sprint 05) | `family_id` (cascade); **`code_hash`** (SHA-256 hex, unique, never granted to clients); `created_by`; `expires_at` (7 days); `accepted_by`/`accepted_at`; `revoked_at` |
 
 ### Content
 | Table | Key columns & constraints |
 |---|---|
 | `modules` | `slug` unique; `title_vi/en`, `category`, `description`, `tone`, `illustration`, `sort_order`; `unlock_min_completed_lessons` (D-031); `status`, `published_at` |
-| `skills` | `module_id` → modules (restrict); `slug`; `title_vi`; `sort_order`; `status` |
+| `skills` | `module_id` → modules (restrict); `slug`; `title_vi`; `sort_order`; `status`; **Sprint 05:** `parent_summary_vi`, `home_activity_vi` (≤ 300, parent texts, draft pending education review) |
 | `lessons` | `skill_id` → skills (restrict); `slug`; `title_vi`, `objective_vi`, `minutes` 1–30, `cover` jsonb; `sort_order`; `status` |
 | `questions` | `slug`; `skill_id`; `type`; `difficulty` 1–4 (L1–L4); `prompt_vi`; `instruction_audio_url` (https or relative); `stimulus`, `memorize`, `feedback` jsonb; **`config` jsonb — public options/items/cards, no correctness**; `max_attempts` 1–5 (default 2); `status` |
 | `private.question_answer_keys` | PK `question_id` → questions (cascade); `answer` jsonb (`{type:'choice',optionId}` · `{type:'matching',pairs}` · `{type:'ordering',order}` · `{type:'pattern',fills}` · `{type:'memory',pairs}`); `hint_eliminate` (a wrong option) |
@@ -74,17 +76,26 @@ assessments 1─* assessment_items (→ questions)      children 1─* assessmen
 | `child_module_progress` | **view** (`security_invoker`): completed lessons, stars, last activity per child × module |
 | `private.mastery_config` | single row: `min_accuracy 0.8`, `min_evidence 10`, `min_sessions 2`, `min_distinct_questions 4`, `window_days 60`, `learning_max_evidence 4`, `learning_max_accuracy 0.5` |
 
-### Assessment (prepared, no experience yet)
-`assessments` (slug, title, purpose placement/checkpoint, status) · `assessment_items` (ordered questions) · `assessment_attempts` (child, question, response, is_correct, idempotency key unique per assessment+child). Staff-only reads; no RPCs yet.
+### Assessment (placement activity, Sprint 05)
+| Table | Key columns & constraints |
+|---|---|
+| `assessments` | `slug`; `title_vi`; `intro_vi` (≤ 400); `purpose` placement/checkpoint; `status` (published = public content, D-055) |
+| `assessment_items` | PK (`assessment_id`, `position`); unique (`assessment_id`, `question_id`) |
+| `assessment_runs` | `assessment_id` (restrict), `child_id` (cascade), `status`, `current_index` ≤ `total_items`, `started_by`, timestamps; CHECKs tie status to timestamps; **unique open run per (child, assessment)** |
+| `assessment_attempts` | `run_id` (cascade, NOT NULL — added while the table was empty), `child_id`, `question_id`, `response`, `is_correct`, `idempotency_key`; **unique (run, question)** (one try per item) and unique (assessment, child, idempotency key) |
+
+Written only by `start_assessment` / `submit_assessment_item`; observation bands computed by `private.assessment_summary` (D-050).
 
 ### Audit
 `audit_logs` (actor, action, entity, entity_id, meta, created_at) — written by definer functions (`family.create`, `child.create`, `child.archive`, `staff_role.grant/revoke`, `content.status`); admin-readable. `content_publication_history` (entity, id, from → to, actor) — staff-readable.
 
 ## 5. Deletion & archiving
 
-- Children: `archive_child` (status + `archived_at`, open sessions abandoned). History is kept. Hard deletion only through a future guardian-initiated deletion flow (not implemented).
+- Children: `archive_child` (status + `archived_at`, open sessions abandoned; history kept) → `restore_child` or, owner only, `delete_child` (archived children only, nickname typed) which removes the child and all learning data by FK cascade.
+- Family: `delete_family` (owner, family name typed) cascades children → sessions, attempts, progress, mastery, rewards, plans, assessment runs/answers; members, consents, invitations. Verified row-by-row in `test/db/parent-experience.test.ts`.
+- Account: `delete_my_account` deletes the `auth.users` row (cascade to profile, memberships, consents, staff roles); an owner's family is deleted first.
 - Content: `restrict` FKs prevent deleting content that has learning history; content is archived via `set_content_status`.
-- Deleting an auth user cascades to `profiles`, memberships and consents; families and children are **not** deleted automatically (family owner deletion flow: future work).
+- Audit rows keep ids only (no names); `actor_id` becomes null when the account is deleted.
 
 ## 6. Not created (and why)
 
@@ -106,4 +117,4 @@ Recomputed in `submit_attempt` on every first attempt. Parameters live in `priva
 
 ## 8. Indexes
 
-`family_members(user_id) where active` · `children(family_id)` · `skills(module_id, sort_order)` · `lessons(skill_id, sort_order)` · `questions(skill_id, status)` · `lesson_questions(question_id)` · `learning_sessions(child_id, started_at desc)` + partial unique open-session index · `question_attempts(session_id)` · `question_attempts(child_id, skill_id, created_at desc)` · `child_rewards(session_id)` · `assessment_attempts(child_id, created_at desc)` · `audit_logs(created_at desc)` · `content_publication_history(entity, entity_id)` · plus all PK/unique indexes.
+`family_members(user_id) where active` · `children(family_id)` · `skills(module_id, sort_order)` · `lessons(skill_id, sort_order)` · `questions(skill_id, status)` · `lesson_questions(question_id)` · `learning_sessions(child_id, started_at desc)` + partial unique open-session index · `question_attempts(session_id)` · `question_attempts(child_id, skill_id, created_at desc)` · `child_rewards(session_id)` · `assessment_attempts(child_id, created_at desc)` · `assessment_runs(child_id, started_at desc)` + partial unique open-run index · `assessment_attempts(run_id)` · `family_invitations(family_id, created_at desc)` · `audit_logs(created_at desc)` · `content_publication_history(entity, entity_id)` · plus all PK/unique indexes.

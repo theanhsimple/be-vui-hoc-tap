@@ -3,7 +3,14 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-import { getSelectedChild } from "@/features/family/queries";
+import { cookies } from "next/headers";
+
+import {
+  getChild,
+  getSelectedChild,
+  SELECTED_CHILD_COOKIE,
+  SELECTED_CHILD_COOKIE_OPTIONS,
+} from "@/features/family/queries";
 import { getSessionUser } from "@/features/auth/session";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -186,4 +193,84 @@ export async function markRewardsSeenAction(): Promise<void> {
     .from("children")
     .update({ rewards_seen_at: new Date().toISOString() })
     .eq("id", child.id);
+}
+
+// ── Placement activity (PRD P4) ─────────────────────────────────────────
+
+const placementStartSchema = z.object({
+  childId: z.uuid(),
+  activityId: slug,
+  restart: z.boolean(),
+});
+
+/**
+ * Parent-side start: the parent chose the child on their own page, so this
+ * also selects that child for the child area, then opens the activity.
+ */
+export async function startPlacementAction(
+  input: z.input<typeof placementStartSchema>,
+): Promise<ActionFailure> {
+  const parsed = placementStartSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, code: "invalid_input" };
+  const { childId, activityId, restart } = parsed.data;
+  if (!(await getSessionUser()))
+    redirect(`/auth/login?next=/parent/children/${childId}/discover`);
+  const child = await getChild(childId);
+  if (!child || child.status !== "active")
+    return { ok: false, code: "forbidden" };
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("start_assessment", {
+    p_child_id: child.id,
+    p_assessment_slug: activityId,
+    p_restart: restart,
+  });
+  if (error) return { ok: false, code: error.message };
+  (await cookies()).set(
+    SELECTED_CHILD_COOKIE,
+    child.id,
+    SELECTED_CHILD_COOKIE_OPTIONS,
+  );
+  redirect(`/student/discover/${activityId}`);
+}
+
+const placementSubmitSchema = z.object({
+  runId: z.uuid(),
+  questionId: slug,
+  response: responseSchema,
+  idempotencyKey: z.uuid(),
+});
+
+export type SubmitPlacementResult =
+  { ok: true; nextAction: "continue" | "complete" } | ActionFailure;
+
+/** Records one placement answer. The child gets no correctness feedback. */
+export async function submitPlacementAction(
+  input: z.input<typeof placementSubmitSchema>,
+): Promise<SubmitPlacementResult> {
+  const parsed = placementSubmitSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, code: "invalid_input" };
+  const { runId, questionId, response, idempotencyKey } = parsed.data;
+  if (!(await getSessionUser())) return { ok: false, code: "forbidden" };
+  const child = await getSelectedChild();
+  if (!child) return { ok: false, code: "forbidden" };
+  const supabase = await createSupabaseServerClient();
+  // Pin the run to the selected child (RLS + explicit filter).
+  const { data: owned } = await supabase
+    .from("assessment_runs")
+    .select("id")
+    .eq("id", runId)
+    .eq("child_id", child.id)
+    .maybeSingle();
+  if (!owned) return { ok: false, code: "forbidden" };
+  const { data, error } = await supabase.rpc("submit_assessment_item", {
+    p_run_id: runId,
+    p_question_slug: questionId,
+    p_response: response,
+    p_idempotency_key: idempotencyKey,
+  });
+  if (error) return { ok: false, code: error.message };
+  const r = z
+    .object({ nextAction: z.enum(["continue", "complete"]) })
+    .parse(data);
+  return { ok: true, nextAction: r.nextAction };
 }

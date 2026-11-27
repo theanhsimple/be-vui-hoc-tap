@@ -5,7 +5,7 @@ import { ChildForm } from "@/components/parent/ChildForm";
 import { LittleCard } from "@/components/ui/LittleCard";
 import { LittleStatePanel } from "@/components/ui/LittleStatePanel";
 import { createChildAction } from "@/features/family/actions";
-import { requireFamily } from "@/features/family/queries";
+import { listChildren, requireFamily } from "@/features/family/queries";
 import { ParentFrame } from "@/components/parent/ParentFrame";
 
 export const metadata: Metadata = { title: "Thêm hồ sơ bé" };
@@ -28,11 +28,13 @@ export default function NewChildPage() {
 
 async function NewChild() {
   await requireFamily("/parent/children/new");
+  const existing = await listChildren({ includeArchived: true });
   return (
     <ChildForm
       action={createChildAction}
       submitLabel="Tạo hồ sơ"
       currentYear={new Date().getUTCFullYear()}
+      onboarding={existing.length === 0}
     />
   );
 }

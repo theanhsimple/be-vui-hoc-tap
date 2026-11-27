@@ -9,9 +9,9 @@ begin;
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('alphabet-forest', 'Rừng Chữ Cái', 'Alphabet Forest', 'Ngôn ngữ', 'Làm quen chữ cái và âm đầu của tiếng.', 'mint', 'world.alphabet-forest', 10, null, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'alphabet-forest'), 'af-s1', 'Nhận biết chữ cái', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'alphabet-forest'), 'af-s1', 'Nhận biết chữ cái', 10, 'Nhận ra hình dáng một số chữ cái quen thuộc.', 'Cùng bé tìm chữ cái trên bao bì, biển hiệu khi đi đường, rồi đọc to tên chữ.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'af-s1'), 'af-l1', 'Chữ A, B, C', 'Con sẽ tìm và nhận ra chữ A, B, C.', 5, '{"kind":"glyph","text":"A","tone":"mint"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -72,9 +72,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'af-l2'), (select id from public.questions where slug = 'af-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'alphabet-forest'), 'af-s2', 'Âm đầu', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'alphabet-forest'), 'af-s2', 'Âm đầu', 20, 'Nghe và nhận ra âm đầu của một tiếng.', 'Chơi “tiếng gì bắt đầu bằng…”: bố mẹ nói một âm, bé kể tên đồ vật trong nhà có âm đó.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'af-s2'), 'af-l3', 'Tiếng bắt đầu bằng chữ…', 'Con sẽ nghe và tìm tiếng có âm đầu giống chữ cái.', 5, '{"kind":"illustration","name":"animal.fish"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -140,9 +140,9 @@ on conflict (lesson_id, position) do update set question_id = excluded.question_
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('number-kingdom', 'Vương Quốc Số', 'Number Kingdom', 'Toán học', 'Đếm, nhận biết số, so sánh và hình dạng.', 'yellow', 'world.number-kingdom', 20, null, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'number-kingdom'), 'nk-s1', 'Đếm số lượng', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'number-kingdom'), 'nk-s1', 'Đếm số lượng', 10, 'Đếm số lượng đồ vật và nhận ra con số.', 'Nhờ bé đếm số bát, số đũa khi dọn bữa, mỗi lần chạm vào một đồ vật.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'nk-s1'), 'nk-l1', 'Đếm đến 5', 'Con sẽ đếm đồ vật và xếp số từ 1 đến 5.', 5, '{"kind":"group","name":"food.apple","count":3}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -203,9 +203,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'nk-l2'), (select id from public.questions where slug = 'nk-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'number-kingdom'), 'nk-s2', 'Hình dạng & so sánh', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'number-kingdom'), 'nk-s2', 'Hình dạng & so sánh', 20, 'Nhận biết hình dạng và so sánh nhiều hơn, ít hơn.', 'Tìm đồ vật hình tròn, hình vuông trong nhà; chia kẹo thành hai đĩa và hỏi đĩa nào nhiều hơn.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'nk-s2'), 'nk-l3', 'Nhận biết các hình dạng', 'Con sẽ tìm những hình giống nhau.', 5, '{"kind":"illustration","name":"shape.triangle"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -271,9 +271,9 @@ on conflict (lesson_id, position) do update set question_id = excluded.question_
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('iq-castle', 'Lâu Đài Tư Duy', 'IQ Castle', 'Tư duy logic', 'Tìm quy luật, tìm điểm khác và xếp nhóm.', 'lavender', 'world.iq-castle', 30, null, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'iq-castle'), 'iq-s1', 'Quy luật', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'iq-castle'), 'iq-s1', 'Quy luật', 10, 'Nhận ra quy luật lặp lại của màu sắc và hình.', 'Xếp đồ chơi theo quy luật (đỏ – xanh – đỏ – xanh…) và để bé đặt món tiếp theo.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'iq-s1'), 'iq-l1', 'Quy luật màu và hình', 'Con sẽ tìm hình còn thiếu trong dãy.', 5, '{"kind":"illustration","name":"color.red"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -334,9 +334,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'iq-l2'), (select id from public.questions where slug = 'iq-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'iq-castle'), 'iq-s2', 'Phân loại', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'iq-castle'), 'iq-s2', 'Phân loại', 20, 'Phân loại đồ vật và tìm điểm khác biệt.', 'Cùng bé xếp quần áo theo màu hoặc theo người dùng, rồi hỏi vì sao bé xếp như vậy.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'iq-s2'), 'iq-l3', 'Tìm hình khác', 'Con sẽ tìm hình không giống các hình còn lại.', 5, '{"kind":"illustration","name":"shape.square"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -402,9 +402,9 @@ on conflict (lesson_id, position) do update set question_id = excluded.question_
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('memory-garden', 'Khu Vườn Trí Nhớ', 'Memory Garden', 'Ghi nhớ', 'Lật thẻ tìm cặp và nhớ những gì con vừa thấy.', 'coral', 'world.memory-garden', 40, null, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'memory-garden'), 'mg-s1', 'Ghép cặp', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'memory-garden'), 'mg-s1', 'Ghép cặp', 10, 'Ghi nhớ vị trí để tìm các cặp giống nhau.', 'Úp vài cặp thìa, cốc giống nhau dưới khăn và cùng bé lật tìm cặp.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'mg-s1'), 'mg-l1', 'Ghép cặp hình', 'Con sẽ lật thẻ và tìm hai hình giống nhau.', 5, '{"kind":"illustration","name":"shape.star"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -465,9 +465,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'mg-l2'), (select id from public.questions where slug = 'mg-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'memory-garden'), 'mg-s2', 'Nhớ và kể lại', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'memory-garden'), 'mg-s2', 'Nhớ và kể lại', 20, 'Quan sát, ghi nhớ và kể lại điều vừa thấy.', 'Đặt 3–4 đồ vật lên bàn, che lại, lấy bớt một món và hỏi bé món nào đã biến mất.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'mg-s2'), 'mg-l3', 'Con vừa thấy gì?', 'Con sẽ nhìn thật kỹ rồi nhớ lại hình vừa thấy.', 5, '{"kind":"illustration","name":"food.apple"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -533,9 +533,9 @@ on conflict (lesson_id, position) do update set question_id = excluded.question_
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('english-island', 'Đảo Tiếng Anh', 'English Island', 'Tiếng Anh', 'Nghe và tìm màu sắc, con vật, đồ vật bằng tiếng Anh.', 'blue', 'world.english-island', 50, null, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'english-island'), 'ei-s1', 'Colours — Màu sắc', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'english-island'), 'ei-s1', 'Colours — Màu sắc', 10, 'Làm quen tên một số màu bằng tiếng Anh.', 'Khi mặc đồ, hỏi bé màu áo bằng tiếng Anh (red, blue, yellow…) như một trò chơi.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'ei-s1'), 'ei-l1', 'Red, blue, yellow', 'Con sẽ nghe tên màu tiếng Anh và tìm màu đó.', 5, '{"kind":"illustration","name":"color.blue"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -596,9 +596,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'ei-l2'), (select id from public.questions where slug = 'ei-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'english-island'), 'ei-s2', 'Animals & things — Con vật và đồ vật', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'english-island'), 'ei-s2', 'Animals & things — Con vật và đồ vật', 20, 'Làm quen tên con vật và đồ vật bằng tiếng Anh.', 'Chỉ vào đồ chơi con vật, nói tên tiếng Anh và để bé nhắc lại theo.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'ei-s2'), 'ei-l3', 'Animals', 'Con sẽ nghe tên con vật tiếng Anh và tìm hình.', 5, '{"kind":"illustration","name":"animal.dog"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -664,9 +664,9 @@ on conflict (lesson_id, position) do update set question_id = excluded.question_
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('school-town', 'Thị Trấn Trường Học', 'School Town', 'Sẵn sàng vào lớp 1', 'Làm quen đồ dùng học tập và nề nếp hằng ngày.', 'yellow', 'world.school-town', 60, null, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'school-town'), 'st-s1', 'Đồ dùng học tập', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'school-town'), 'st-s1', 'Đồ dùng học tập', 10, 'Nhận ra đồ dùng học tập và công dụng của chúng.', 'Để bé tự chuẩn bị một chiếc túi nhỏ với bút, sách, và kể mỗi món dùng để làm gì.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'st-s1'), 'st-l1', 'Đồ dùng của bé', 'Con sẽ nhận ra sách, bút chì và cặp sách.', 5, '{"kind":"illustration","name":"object.backpack"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -727,9 +727,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'st-l2'), (select id from public.questions where slug = 'st-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'school-town'), 'st-s2', 'Nề nếp hằng ngày', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'school-town'), 'st-s2', 'Nề nếp hằng ngày', 20, 'Làm quen nề nếp hằng ngày và làm theo hướng dẫn.', 'Đưa cho bé hướng dẫn hai bước (“cất giày rồi rửa tay”) và khen khi bé làm theo.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'st-s2'), 'st-l3', 'Giữ gìn vệ sinh', 'Con sẽ chọn việc làm đúng lúc.', 5, '{"kind":"illustration","name":"routine.soap"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -795,9 +795,9 @@ on conflict (lesson_id, position) do update set question_id = excluded.question_
 insert into public.modules (slug, title_vi, title_en, category, description, tone, illustration, sort_order, unlock_min_completed_lessons, status, published_at)
 values ('challenge-arena', 'Đấu Trường Thử Thách', 'Challenge Arena', 'Thử thách tổng hợp', 'Ôn lại nhiều kỹ năng trong cùng một bài.', 'coral', 'world.challenge-arena', 70, 3, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, category = excluded.category, description = excluded.description, tone = excluded.tone, illustration = excluded.illustration, sort_order = excluded.sort_order, unlock_min_completed_lessons = excluded.unlock_min_completed_lessons;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'challenge-arena'), 'ca-s1', 'Thử thách nhỏ', 10, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'challenge-arena'), 'ca-s1', 'Thử thách nhỏ', 10, 'Kết hợp đếm, chữ cái và quy luật trong một bài.', 'Chọn một trò bé đã thích trong tuần và chơi lại cùng bé, để bé làm “cô giáo” giải thích.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'ca-s1'), 'ca-l1', 'Thử thách số 1', 'Con sẽ đếm, tìm chữ và hoàn thành quy luật.', 5, '{"kind":"group","name":"shape.star","count":3}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -858,9 +858,9 @@ on conflict (question_id) do update set answer = excluded.answer, hint_eliminate
 insert into public.lesson_questions (lesson_id, question_id, position)
 values ((select id from public.lessons where slug = 'ca-l2'), (select id from public.questions where slug = 'ca-l2-q3'), 3)
 on conflict (lesson_id, position) do update set question_id = excluded.question_id;
-insert into public.skills (module_id, slug, title_vi, sort_order, status, published_at)
-values ((select id from public.modules where slug = 'challenge-arena'), 'ca-s2', 'Thử thách lớn', 20, 'published', now())
-on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order;
+insert into public.skills (module_id, slug, title_vi, sort_order, parent_summary_vi, home_activity_vi, status, published_at)
+values ((select id from public.modules where slug = 'challenge-arena'), 'ca-s2', 'Thử thách lớn', 20, 'Kết hợp ghi nhớ, so sánh và tiếng Anh trong một bài.', 'Hỏi bé điều bé thích nhất trong bài thử thách và cùng nghĩ một câu đố tương tự.', 'published', now())
+on conflict (slug) do update set title_vi = excluded.title_vi, sort_order = excluded.sort_order, parent_summary_vi = excluded.parent_summary_vi, home_activity_vi = excluded.home_activity_vi;
 insert into public.lessons (skill_id, slug, title_vi, objective_vi, minutes, cover, sort_order, status, published_at)
 values ((select id from public.skills where slug = 'ca-s2'), 'ca-l3', 'Thử thách số 3', 'Con sẽ ghép chữ, nghe tiếng Anh và so sánh số.', 5, '{"kind":"glyph","text":"T","tone":"coral"}'::jsonb, 10, 'published', now())
 on conflict (slug) do update set title_vi = excluded.title_vi, objective_vi = excluded.objective_vi, minutes = excluded.minutes, cover = excluded.cover, sort_order = excluded.sort_order;
@@ -941,6 +941,35 @@ on conflict (key) do update set title_vi = excluded.title_vi, title_en = exclude
 insert into public.rewards (key, kind, title_vi, title_en, criteria_vi, illustration, rule, sort_order, status, published_at)
 values ('brave-challenger', 'badge', 'Dũng sĩ thử thách', 'Brave Challenger', 'Hoàn thành 1 bài ở Đấu Trường Thử Thách', 'badge.brave-challenger', '{"kind":"module_lessons_completed","module":"challenge-arena","count":1}'::jsonb, 60, 'published', now())
 on conflict (key) do update set title_vi = excluded.title_vi, title_en = excluded.title_en, criteria_vi = excluded.criteria_vi, illustration = excluded.illustration, rule = excluded.rule, sort_order = excluded.sort_order;
+
+-- Placement activity (observations, not a test)
+insert into public.assessments (slug, title_vi, intro_vi, purpose, status)
+values ('first-discovery', 'Cùng khám phá', 'Một hoạt động chơi ngắn khoảng 5 phút để little hiểu bé đang quen thuộc với những gì. Không có điểm số và không có đúng sai hiện ra cho bé.', 'placement', 'published')
+on conflict (slug) do update set title_vi = excluded.title_vi, intro_vi = excluded.intro_vi;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'af-l1-q2'), 1)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'af-l2-q2'), 2)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'nk-l1-q2'), 3)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'nk-l3-q2'), 4)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'iq-l1-q1'), 5)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'iq-l3-q1'), 6)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'mg-l3-q1'), 7)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
+insert into public.assessment_items (assessment_id, question_id, position)
+values ((select id from public.assessments where slug = 'first-discovery'), (select id from public.questions where slug = 'st-l1-q1'), 8)
+on conflict (assessment_id, position) do update set question_id = excluded.question_id;
 
 -- Verify: every seeded question has a consistent private key; counts match the source.
 do $$

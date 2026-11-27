@@ -1,4 +1,4 @@
-# little — Security & Row Level Security (Sprint 04)
+# little — Security & Row Level Security (Sprints 04–05)
 
 > **Status:** implemented in `supabase/migrations/` and **verified on a local Supabase stack** (Supabase CLI 2.122.1, Postgres 17) with 41 automated tests through the public API as real signed-in users (`pnpm test:db`). **Not applied to any hosted Supabase project** — no project credentials were available (DECISIONS P-1).
 
@@ -46,7 +46,9 @@
 | lesson_questions | lesson AND question published; staff | editors insert/delete |
 | learning_sessions, question_attempts, child_lesson_progress, skill_mastery, child_rewards, child_daily_plans, assessment_attempts | `can_access_child(child_id)` | **none** (RPC only) |
 | child_module_progress (view, `security_invoker`) | inherits `child_lesson_progress` RLS | — |
-| assessments, assessment_items | staff | none |
+| assessments, assessment_items | published: anon + authenticated (D-055); drafts: staff | none |
+| assessment_runs (Sprint 05) | `can_access_child(child_id)` | **none** (RPC only) |
+| family_invitations (Sprint 05) | owner of the family; **`code_hash` column not granted** | none (RPC only) |
 | audit_logs | admin | none (written by definer functions) |
 | content_publication_history | staff | none |
 | `private.question_answer_keys`, `private.mastery_config` | **no grants, no policies** | — |
@@ -89,6 +91,18 @@ All: `set search_path = ''`; caller from `auth.uid()`; access check first; `EXEC
 - **Account enumeration:** sign-up and password reset show the same message whether or not an account exists.
 - **Email links:** `/auth/callback` exchanges PKCE codes / OTP hashes; recovery links are single-use (verified).
 
+### Sprint 05 additions
+
+| Function | Checks |
+|---|---|
+| `get_child_report`, `get_assessment_summary`, `get_active_assessment` | `assert_child_access` (archived children allowed for reports) |
+| `start_assessment`, `submit_assessment_item` | child access + active child; run locked `FOR UPDATE`; question must be the run's current item; graded with the private key; **returns no correctness**; idempotency key replay |
+| `restore_child` | member; family row locked for the 6-child limit |
+| `delete_child`, `delete_family`, `create_family_invite`, `revoke_family_invite`, `remove_family_member` | **owner** of the caller's own family (never a family id from the client); typed confirmations |
+| `accept_family_invite` | consent version; caller in no family; code compared by SHA-256 hash, row locked; one generic `invite_invalid` |
+| `export_family_data` | caller's own active membership; no answer keys; only the caller's email |
+| `delete_my_account` | confirmation; deletes only `auth.uid()`'s `auth.users` row |
+
 ## 8. Test evidence (executed, local stack)
 
 `test/db/isolation.test.ts` (24) and `test/db/learning-engine.test.ts` (17) — **41/41 passed**. Two families (A: A1, A2; B: B1) plus an unrelated signed-in user:
@@ -108,11 +122,15 @@ All: `set search_path = ''`; caller from `auth.uid()`; access check first; `EXEC
 | 11 | Duplicate submissions | ✅ (same key → same attempt, `replayed`; 6 concurrent → 1 attempt, index +1) |
 | 12 | Duplicate rewards | ✅ (4 concurrent completes + replay → 1 grant) |
 
+Sprint 05: `test/db/parent-experience.test.ts` (11) — placement (no correctness returned, idempotent replay, skip/malformed answers refused, resume/restart, other family + anon refused, published content public but runs/answers private), child report (own family only), invitations (consent, one use, normalised codes, invalid/forged codes, hash unreadable, guardian cannot invite/delete/remove, removal revokes access immediately, open-invite limit, revoke, other family cannot see/revoke, already-in-family), export (only own family, no other family's ids/emails, anon refused), deletion (wrong name refused, other family's owner refused, every child table verified empty by owner-level count, other family untouched), account deletion (auth user + profile + family gone), restore/permanent child deletion. **All 54 DB tests pass (43 + 11).**
+
 ## 9. Known limitations / not done
 
 - Not tested on hosted Supabase; email delivery uses the local Mailpit catcher (production SMTP not configured).
 - No CAPTCHA or app-level rate limiting beyond Supabase Auth's built-in limits.
-- Guardian invitations, family deletion/export (`delete_family_data`), consent withdrawal UI: not implemented.
+- Consent withdrawal has no separate flow: withdrawing = deleting data (documented in the draft privacy page).
+- Invitation codes travel outside the app (the owner shares them); no email invitations until an email provider exists (P-1).
+- The break reminder (S10) is a per-tab nudge, not an enforced limit (D-054).
 - No MFA for staff accounts yet (recommended before the admin CMS ships).
 - Memory-game pairing is inherently visible on the device (D-041).
 - Supabase's own advisors/linter were not run against a hosted project.

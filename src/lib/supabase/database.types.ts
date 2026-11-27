@@ -19,6 +19,7 @@ export type Database = {
           is_correct: boolean;
           question_id: string;
           response: NonNullable<Json>;
+          run_id: string;
         };
         ComputedFields: never;
         Insert: {
@@ -30,6 +31,7 @@ export type Database = {
           is_correct: boolean;
           question_id: string;
           response: NonNullable<Json>;
+          run_id: string;
         };
         Update: {
           assessment_id?: string;
@@ -40,6 +42,7 @@ export type Database = {
           is_correct?: boolean;
           question_id?: string;
           response?: NonNullable<Json>;
+          run_id?: string;
         };
         Relationships: [
           {
@@ -61,6 +64,13 @@ export type Database = {
             columns: ["question_id"];
             isOneToOne: false;
             referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_attempts_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "assessment_runs";
             referencedColumns: ["id"];
           },
         ];
@@ -99,10 +109,76 @@ export type Database = {
           },
         ];
       };
+      assessment_runs: {
+        Row: {
+          abandoned_at: string | null;
+          assessment_id: string;
+          child_id: string;
+          completed_at: string | null;
+          current_index: number;
+          id: string;
+          started_at: string;
+          started_by: string | null;
+          status: Database["public"]["Enums"]["session_status"];
+          total_items: number;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          abandoned_at?: string | null;
+          assessment_id: string;
+          child_id: string;
+          completed_at?: string | null;
+          current_index?: number;
+          id?: string;
+          started_at?: string;
+          started_by?: string | null;
+          status?: Database["public"]["Enums"]["session_status"];
+          total_items: number;
+          updated_at?: string;
+        };
+        Update: {
+          abandoned_at?: string | null;
+          assessment_id?: string;
+          child_id?: string;
+          completed_at?: string | null;
+          current_index?: number;
+          id?: string;
+          started_at?: string;
+          started_by?: string | null;
+          status?: Database["public"]["Enums"]["session_status"];
+          total_items?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_runs_assessment_id_fkey";
+            columns: ["assessment_id"];
+            isOneToOne: false;
+            referencedRelation: "assessments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_runs_child_id_fkey";
+            columns: ["child_id"];
+            isOneToOne: false;
+            referencedRelation: "children";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_runs_started_by_fkey";
+            columns: ["started_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       assessments: {
         Row: {
           created_at: string;
           id: string;
+          intro_vi: string;
           purpose: string;
           slug: string;
           status: Database["public"]["Enums"]["content_status"];
@@ -113,6 +189,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           id?: string;
+          intro_vi?: string;
           purpose?: string;
           slug: string;
           status?: Database["public"]["Enums"]["content_status"];
@@ -122,6 +199,7 @@ export type Database = {
         Update: {
           created_at?: string;
           id?: string;
+          intro_vi?: string;
           purpose?: string;
           slug?: string;
           status?: Database["public"]["Enums"]["content_status"];
@@ -437,6 +515,65 @@ export type Database = {
             columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      family_invitations: {
+        Row: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          code_hash: string;
+          created_at: string;
+          created_by: string | null;
+          expires_at: string;
+          family_id: string;
+          id: string;
+          revoked_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          code_hash: string;
+          created_at?: string;
+          created_by?: string | null;
+          expires_at: string;
+          family_id: string;
+          id?: string;
+          revoked_at?: string | null;
+        };
+        Update: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          code_hash?: string;
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          family_id?: string;
+          id?: string;
+          revoked_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "family_invitations_accepted_by_fkey";
+            columns: ["accepted_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "family_invitations_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "family_invitations_family_id_fkey";
+            columns: ["family_id"];
+            isOneToOne: false;
+            referencedRelation: "families";
             referencedColumns: ["id"];
           },
         ];
@@ -1042,8 +1179,10 @@ export type Database = {
       skills: {
         Row: {
           created_at: string;
+          home_activity_vi: string;
           id: string;
           module_id: string;
+          parent_summary_vi: string;
           published_at: string | null;
           slug: string;
           sort_order: number;
@@ -1054,8 +1193,10 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          home_activity_vi?: string;
           id?: string;
           module_id: string;
+          parent_summary_vi?: string;
           published_at?: string | null;
           slug: string;
           sort_order?: number;
@@ -1065,8 +1206,10 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          home_activity_vi?: string;
           id?: string;
           module_id?: string;
+          parent_summary_vi?: string;
           published_at?: string | null;
           slug?: string;
           sort_order?: number;
@@ -1152,6 +1295,10 @@ export type Database = {
     };
     Functions: {
       abandon_session: { Args: { p_session_id: string }; Returns: undefined };
+      accept_family_invite: {
+        Args: { p_code: string; p_consent_version: string };
+        Returns: string;
+      };
       archive_child: { Args: { p_child_id: string }; Returns: undefined };
       complete_session: { Args: { p_session_id: string }; Returns: Json };
       create_child: {
@@ -1168,6 +1315,13 @@ export type Database = {
         Args: { p_consent_version: string; p_display_name: string };
         Returns: string;
       };
+      create_family_invite: { Args: Record<PropertyKey, never>; Returns: Json };
+      delete_child: {
+        Args: { p_child_id: string; p_confirm_nickname: string };
+        Returns: undefined;
+      };
+      delete_family: { Args: { p_confirm_name: string }; Returns: undefined };
+      delete_my_account: { Args: { p_confirm: string }; Returns: undefined };
       ensure_daily_plan: {
         Args: {
           p_child_id: string;
@@ -1176,10 +1330,20 @@ export type Database = {
         };
         Returns: string[];
       };
+      export_family_data: { Args: Record<PropertyKey, never>; Returns: Json };
+      get_active_assessment: {
+        Args: { p_assessment_slug: string; p_child_id: string };
+        Returns: Json;
+      };
       get_active_session: {
         Args: { p_child_id: string; p_lesson_slug: string };
         Returns: Json;
       };
+      get_assessment_summary: {
+        Args: { p_child_id: string; p_run_id?: string };
+        Returns: Json;
+      };
+      get_child_report: { Args: { p_child_id: string }; Returns: Json };
       get_session_result: { Args: { p_session_id: string }; Returns: Json };
       get_session_state: { Args: { p_session_id: string }; Returns: Json };
       get_student_overview: { Args: { p_child_id: string }; Returns: Json };
@@ -1190,9 +1354,16 @@ export type Database = {
         };
         Returns: undefined;
       };
+      leave_family: { Args: Record<PropertyKey, never>; Returns: undefined };
+      remove_family_member: { Args: { p_user_id: string }; Returns: undefined };
       request_hint: {
         Args: { p_question_slug: string; p_session_id: string };
         Returns: Json;
+      };
+      restore_child: { Args: { p_child_id: string }; Returns: undefined };
+      revoke_family_invite: {
+        Args: { p_invite_id: string };
+        Returns: undefined;
       };
       revoke_staff_role: {
         Args: {
@@ -1209,11 +1380,28 @@ export type Database = {
         };
         Returns: undefined;
       };
+      start_assessment: {
+        Args: {
+          p_assessment_slug: string;
+          p_child_id: string;
+          p_restart?: boolean;
+        };
+        Returns: Json;
+      };
       start_session: {
         Args: {
           p_child_id: string;
           p_lesson_slug: string;
           p_restart?: boolean;
+        };
+        Returns: Json;
+      };
+      submit_assessment_item: {
+        Args: {
+          p_idempotency_key: string;
+          p_question_slug: string;
+          p_response: Json;
+          p_run_id: string;
         };
         Returns: Json;
       };

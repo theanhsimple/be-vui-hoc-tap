@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { AVATAR_KEYS, type AvatarKey } from "@/components/ui/LittleAvatar";
+import type { ChildPreferences } from "@/features/family/schemas";
 
 import type { LessonState, WorldState } from "../progress/calc";
 import type {
@@ -134,7 +135,7 @@ export interface StudentChild {
   id: string;
   nickname: string;
   avatar: AvatarKey;
-  preferences: { voice: boolean; sounds: boolean };
+  preferences: ChildPreferences;
 }
 
 /** Everything the child-facing screens need, computed on the server. */

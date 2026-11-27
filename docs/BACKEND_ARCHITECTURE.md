@@ -1,4 +1,4 @@
-# little — Backend Architecture (Sprint 04)
+# little — Backend Architecture (Sprints 04–05)
 
 > Implemented and verified on a local Supabase stack. Not yet deployed to a hosted project (see SUPABASE_SETUP.md).
 
@@ -31,7 +31,7 @@ Supabase
 ```
 supabase/
   config.toml                     local stack config (auth policy, redirect URLs)
-  migrations/                     4 versioned migrations (schema, security, engine, storage)
+  migrations/                     5 versioned migrations (schema, security, engine, storage, parent experience)
   seed.sql                        GENERATED dev seed (demo library)
 src/
   proxy.ts                        session refresh + route gate
@@ -46,7 +46,10 @@ src/
     student.ts                    requireStudent, loadStudentView (overview + daily plan), sessions, results
     overview.ts                   Zod schemas for RPC JSON + mapping to the view model (unit-tested)
     actions.ts                    startLesson, submitAnswer, requestHint, markRewardsSeen
-  features/learning/student-context.tsx   client context with the server-built StudentView
+  features/learning/student-context.tsx   client context with the server-built StudentView (+ break reminder)
+  features/parent/                report-model.ts (Zod + plain-language mapping) · report.ts (get_child_report, summaries)
+  features/family/settings-actions.ts     family name, invitations, membership, export/deletion wrappers
+  app/parent/settings/export/route.ts     JSON download of the family's data
   app/auth/* app/parent/* app/student/*   routes (data loaded inside Suspense)
 test/db/                          RLS & engine tests (real local stack, signed-in users)
 ```
@@ -87,6 +90,6 @@ There is **no demo mode** in the app any more (D-046). Local development uses th
 
 - Not deployed; hosted-project steps documented but not executed.
 - Supabase Auth rate limits only (no CAPTCHA).
-- Guardian invitations, consent withdrawal, data export/deletion: not implemented.
+- Consent withdrawal = deletion (no separate flow); invitations by one-time code only (no email).
 - Offline answer queue (planned in the original roadmap): not implemented; a failed request shows a retry message.
 - `notFound()` inside streamed pages returns HTTP 200 (D-037).

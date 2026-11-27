@@ -47,6 +47,11 @@ async function Login({ searchParams }: PageProps<"/auth/login">) {
           hãy đăng nhập bên dưới.
         </p>
       )}
+      {params.deleted && (
+        <p role="status" className="rounded-md bg-surface-muted p-3 text-body">
+          Tài khoản và dữ liệu đã được xoá.
+        </p>
+      )}
       {params.signedOut && (
         <p role="status" className="rounded-md bg-surface-muted p-3 text-body">
           Bố mẹ đã đăng xuất.

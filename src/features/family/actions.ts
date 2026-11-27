@@ -8,7 +8,12 @@ import { echo, type FormState, fieldErrors, formError } from "@/features/forms";
 import type { Json } from "@/lib/supabase/database.types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-import { getChild, getMyFamily, SELECTED_CHILD_COOKIE } from "./queries";
+import {
+  getChild,
+  getMyFamily,
+  SELECTED_CHILD_COOKIE,
+  SELECTED_CHILD_COOKIE_OPTIONS,
+} from "./queries";
 import {
   CONSENT_VERSION,
   childSchema,
@@ -21,14 +26,6 @@ import {
  * validated, the user is re-checked, the family id is NEVER taken from the
  * client, and writes go through RLS or checked RPCs.
  */
-
-const CHILD_COOKIE = {
-  httpOnly: true,
-  sameSite: "lax",
-  secure: process.env.NODE_ENV === "production",
-  path: "/",
-  maxAge: 60 * 60 * 24 * 30,
-} as const;
 
 function dbMessage(message: string | undefined): string {
   switch (message) {
@@ -71,7 +68,14 @@ export async function createFamilyAction(
   redirect("/parent/children/new");
 }
 
-const CHILD_FIELDS = ["nickname", "avatar", "birthYear", "voice", "sounds"];
+const CHILD_FIELDS = [
+  "nickname",
+  "avatar",
+  "birthYear",
+  "voice",
+  "sounds",
+  "sessionMinutes",
+];
 
 function childFields(form: FormData) {
   return childSchema.safeParse({
@@ -80,6 +84,7 @@ function childFields(form: FormData) {
     birthYear: form.get("birthYear") ?? "",
     voice: form.get("voice") ?? undefined,
     sounds: form.get("sounds") ?? undefined,
+    sessionMinutes: form.get("sessionMinutes") ?? "",
   });
 }
 
@@ -97,18 +102,22 @@ export async function createChildAction(
       fieldErrors: fieldErrors(parsed.error),
       values: echo(form, CHILD_FIELDS),
     };
-  const { nickname, avatar, birthYear, voice, sounds } = parsed.data;
+  const { nickname, avatar, birthYear, voice, sounds, sessionMinutes } =
+    parsed.data;
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.rpc("create_child", {
+  const { data: newId, error } = await supabase.rpc("create_child", {
     p_family_id: family.id,
     p_nickname: nickname,
     p_avatar_key: avatar,
     // Generated RPC types cannot express nullable args; null is valid here.
     p_birth_year: birthYear as number,
-    p_preferences: { voice, sounds } satisfies Json,
+    p_preferences: { voice, sounds, sessionMinutes } satisfies Json,
   });
   if (error)
     return formError(dbMessage(error.message), echo(form, CHILD_FIELDS));
+  // First child of a new family: offer the placement activity next.
+  if (form.get("onboarding") === "1" && newId)
+    redirect(`/parent/children/${newId}/discover?welcome=1`);
   redirect("/parent?saved=child");
 }
 
@@ -127,7 +136,8 @@ export async function updateChildAction(
       fieldErrors: fieldErrors(parsed.error),
       values: echo(form, CHILD_FIELDS),
     };
-  const { nickname, avatar, birthYear, voice, sounds } = parsed.data;
+  const { nickname, avatar, birthYear, voice, sounds, sessionMinutes } =
+    parsed.data;
   const supabase = await createSupabaseServerClient();
   // RLS limits the update to this family's active children; family_id and
   // status are not updatable columns.
@@ -137,13 +147,13 @@ export async function updateChildAction(
       nickname,
       avatar_key: avatar,
       birth_year: birthYear,
-      preferences: { voice, sounds },
+      preferences: { voice, sounds, sessionMinutes },
     })
     .eq("id", childId)
     .select("id");
   if (error) return formError(dbMessage(error.message));
   if (!data?.length) return formError("Không tìm thấy hồ sơ.");
-  redirect("/parent?saved=child");
+  redirect(`/parent/children/${childId}?saved=updated`);
 }
 
 export async function archiveChildAction(
@@ -172,11 +182,57 @@ export async function selectChildAction(
   const child = await getChild(childId);
   if (!child || child.status !== "active")
     return { ok: false, message: "Không tìm thấy hồ sơ của bé." };
-  (await cookies()).set(SELECTED_CHILD_COOKIE, child.id, CHILD_COOKIE);
+  (await cookies()).set(
+    SELECTED_CHILD_COOKIE,
+    child.id,
+    SELECTED_CHILD_COOKIE_OPTIONS,
+  );
   redirect("/student/home");
 }
 
 export async function leaveStudentAction(): Promise<never> {
   (await cookies()).delete(SELECTED_CHILD_COOKIE);
   redirect("/student/profiles");
+}
+
+export async function restoreChildAction(
+  childId: string,
+  ...[]: [prev: FormState, form: FormData]
+): Promise<FormState> {
+  await requireUser("/parent");
+  if (!uuidSchema.safeParse(childId).success)
+    return formError("Không tìm thấy hồ sơ.");
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("restore_child", {
+    p_child_id: childId,
+  });
+  if (error) return formError(dbMessage(error.message));
+  redirect(`/parent/children/${childId}?saved=restored`);
+}
+
+/** Permanent deletion of an ARCHIVED child; the nickname is typed to confirm. */
+export async function deleteChildAction(
+  childId: string,
+  _prev: FormState,
+  form: FormData,
+): Promise<FormState> {
+  await requireUser("/parent");
+  if (!uuidSchema.safeParse(childId).success)
+    return formError("Không tìm thấy hồ sơ.");
+  const confirm = String(form.get("confirm") ?? "").slice(0, 40);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("delete_child", {
+    p_child_id: childId,
+    p_confirm_nickname: confirm,
+  });
+  if (error)
+    return formError(
+      error.message === "confirmation_mismatch"
+        ? "Tên gọi chưa khớp. Hãy gõ đúng tên gọi của bé để xác nhận."
+        : error.message === "forbidden"
+          ? "Chỉ chủ gia đình mới xoá được hồ sơ."
+          : dbMessage(error.message),
+      { confirm },
+    );
+  redirect("/parent?saved=deleted");
 }
